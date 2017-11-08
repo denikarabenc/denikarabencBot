@@ -139,7 +139,7 @@ namespace TwitchBot.CommandHandlers
 
                 irc.SendChatMessage("Here it goes! FeelsGoodMan");
 
-                denikarabencBot.VideoWindow vw = new denikarabencBot.VideoWindow();
+                VideoWindow vw = new VideoWindow();
                 vw.mediaPlayer.Source = new Uri(@"d:\Video\ReplayClips\" + filename);
                 vw.Show();
             });

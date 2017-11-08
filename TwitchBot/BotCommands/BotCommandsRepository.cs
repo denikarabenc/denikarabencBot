@@ -129,10 +129,10 @@ namespace TwitchBot.BotCommands
         {
             List<string> specialCommandNamesList = new List<string>(4);
 
-            specialCommandNamesList.Add(denikarabencBot.Properties.Resources.botCommandPool_ADDCOMMAND);
-            specialCommandNamesList.Add(denikarabencBot.Properties.Resources.botCommandPool_EDITCOMMAND);
-            specialCommandNamesList.Add(denikarabencBot.Properties.Resources.botCommandPool_TITLE);
-            specialCommandNamesList.Add(denikarabencBot.Properties.Resources.botCommandPool_FOLLOW);
+            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_ADDCOMMAND);
+            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_EDITCOMMAND);
+            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_TITLE);
+            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_FOLLOW);
 
             return specialCommandNamesList;
         }
@@ -214,24 +214,24 @@ namespace TwitchBot.BotCommands
             if (commandPool.ContainsKey(command))
             {
                 return string.Format("{0} {1} {2}. {3} {4} {5}",
-                    denikarabencBot.Properties.Resources.botCommandPool_COMMAND, command, denikarabencBot.Properties.Resources.botCommandPool_ALREADY_EXIST, denikarabencBot.Properties.Resources.botCommandPool_USE, denikarabencBot.Properties.Resources.botCommandPool_EDITCOMMAND, denikarabencBot.Properties.Resources.botCommandPool_INSTEAD);
+                    Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_ALREADY_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_EDITCOMMAND, Properties.Resources.botCommandPool_INSTEAD);
             }
 
             commandPool.Add(command, new BotCommand(command, message));
             StringBuilder sb = new StringBuilder();
-            return string.Format("{0} {1} {2}", denikarabencBot.Properties.Resources.botCommandPool_COMMAND, command, denikarabencBot.Properties.Resources.botCommandPool_ADDED);
+            return string.Format("{0} {1} {2}", Properties.Resources.botCommandPool_COMMAND, command, TwitchBot.Properties.Resources.botCommandPool_ADDED);
         }
 
         public string EditCommandAndGetFeedback(string command, string newMessage)
         {
             if (!commandPool.ContainsKey(command))
             {
-                return string.Format("{0} {1} {2}. {3} {4} {5}", denikarabencBot.Properties.Resources.botCommandPool_COMMAND, command, denikarabencBot.Properties.Resources.botCommandPool_DOES_NOT_EXIST, denikarabencBot.Properties.Resources.botCommandPool_USE, denikarabencBot.Properties.Resources.botCommandPool_ADDCOMMAND, denikarabencBot.Properties.Resources.botCommandPool_INSTEAD);
+                return string.Format("{0} {1} {2}. {3} {4} {5}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_DOES_NOT_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_ADDCOMMAND, TwitchBot.Properties.Resources.botCommandPool_INSTEAD);
             }
 
             commandPool[command] = new BotCommand(command, newMessage);
             StringBuilder sb = new StringBuilder();
-            return string.Format("{0} {1} {2} {3}", denikarabencBot.Properties.Resources.botCommandPool_COMMAND, command, denikarabencBot.Properties.Resources.botCommandPool_EDITED_TO, newMessage);
+            return string.Format("{0} {1} {2} {3}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_EDITED_TO, newMessage);
         }
 
         public string GetReadCommandMessage(string command, string userWhoSentTheCommand) //Make string[] params

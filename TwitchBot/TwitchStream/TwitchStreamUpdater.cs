@@ -1,9 +1,8 @@
 ﻿using BotLogger;
-using System;
+using Common.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using TwitchBot.Helpers;
 using TwitchBot.TwitchStream.Json;
 
 namespace TwitchBot.TwitchStream
