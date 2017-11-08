@@ -62,9 +62,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BotRunner.cs" />
+    <Compile Include="Helpers\Commands\CommandReader.cs" />
+    <Compile Include="IrcClient.cs" />
     <Compile Include="ViewModels\CommandsViewModel.cs" />
     <Compile Include="ViewModels\GeneralViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Steam\JsonClasses\SteamPlayerInfo.cs" />
+    <Compile Include="Steam\SteamInfoProvider.cs" />
+    <Compile Include="TwitchStream\Json\TwitchStreamInfo.cs" />
+    <Compile Include="TwitchStream\TwitchGame.cs" />
+    <Compile Include="TwitchStream\TwitchGameChanger.cs" />
+    <Compile Include="TwitchStream\TwitchStreamInfoProvider.cs" />
+    <Compile Include="TwitchStream\TwitchStreamUpdater.cs" />
     <Compile Include="VideoWindow.xaml.cs">
       <DependentUpon>VideoWindow.xaml</DependentUpon>
     </Compile>
@@ -76,6 +86,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BotCommands\BotCommand.cs" />
+    <Compile Include="BotCommands\BotCommandsRepository.cs" />
+    <Compile Include="CommandHandlers\BotMessageHandler.cs" />
+    <Compile Include="CommandHandlers\TimedCommandHandler.cs" />
+    <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\MessageParser.cs" />
+    <Compile Include="Helpers\NullChecker.cs" />
+    <Compile Include="Interfaces\IIrcClient.cs" />
+    <Compile Include="LocalGameChecker\LocalGameMapper.cs" />
+    <Compile Include="LocalGameChecker\LocalRunningGameChecker.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -126,10 +146,6 @@
     <ProjectReference Include="..\Logger\BotLogger.csproj">
       <Project>{ff332dee-3904-4638-8972-f6758e7410f1}</Project>
       <Name>BotLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TwitchBot\TwitchBot.csproj">
-      <Project>{44f148dd-390d-4416-a780-c37a86d274dc}</Project>
-      <Name>TwitchBot</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

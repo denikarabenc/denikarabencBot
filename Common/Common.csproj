@@ -40,12 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CommandReader.cs" />
     <Compile Include="Creators\FileCreator.cs" />
     <Compile Include="Creators\FolderCreator.cs" />
-    <Compile Include="Helpers\NullChecker.cs" />
-    <Compile Include="Models\BotCommand.cs" />
-    <Compile Include="Models\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Writters\OBSConfigurationWriter.cs" />
   </ItemGroup>

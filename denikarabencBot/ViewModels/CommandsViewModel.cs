@@ -1,11 +1,15 @@
 ﻿using Common.Creators;
-using Common.Models;
 using denikarabencBot.Helpers.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
+using TwitchBot1;
+using TwitchBot1.BotCommands;
 
 namespace denikarabencBot.ViewModels
 {
