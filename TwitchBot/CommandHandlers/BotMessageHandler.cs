@@ -1,4 +1,5 @@
-﻿using Common.Helpers;
+﻿using BotLogger;
+using Common.Helpers;
 using Common.Models;
 using System;
 using System.Collections.Generic;
@@ -118,6 +119,7 @@ namespace TwitchBot.CommandHandlers
         {
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
             {
+                Logger.Log("[BotMessageHandler] -> Replay command handled");
                 if (!mediaCommandAllowed)
                 {
                     irc.SendChatMessage("Wow, do not spam it FeelsBadMan");
@@ -131,7 +133,7 @@ namespace TwitchBot.CommandHandlers
 
                 string filename = botCommands.GetMediaCommandFileName(parsedMessage);
 
-                if (filename == string.Empty || filename == "obs.ahk")
+                if (filename == string.Empty)
                 {
                     irc.SendChatMessage($"/w {channelName} Check the OBS replay");
                     return;
@@ -255,9 +257,9 @@ namespace TwitchBot.CommandHandlers
                     return true;
                 case UserType.Follower:
                 case UserType.Sub:
-                    return false;
+                    return true;
                 case UserType.Mod:
-                    if (modsList.Contains(user))
+                    if (modsList.Contains(user) || user == channelName)
                     {
                         return true;
                     }

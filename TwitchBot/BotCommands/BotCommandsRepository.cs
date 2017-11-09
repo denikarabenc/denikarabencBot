@@ -7,6 +7,7 @@ using System.Xml.Serialization; //TODO ovo treba skinuti odavde i napraviti tool
 using Common.Creators;
 using Common.Models;
 using WindowsInput;
+using Common.Commands;
 
 namespace TwitchBot.BotCommands
 {
@@ -20,11 +21,10 @@ namespace TwitchBot.BotCommands
         private Dictionary<string, BotCommand> commandPool;        
 
         public BotCommandsRepository()
-        {
-            //TODO Add user control (which user status can call the command)
+        {            
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
-            //AddPredefinedCommands(commandPool);
+            //AddPredefinedCommands(commandPool); //This should be tool method
             AddPredefinedCommandsFromXML();
         }
 
@@ -90,8 +90,7 @@ namespace TwitchBot.BotCommands
                 File.Delete(serializablesFolderPath + "/" + filename + ".xml");
             }
 
-            FolderCreator folderCreator = new FolderCreator();
-            folderCreator.CreateFolder(serializablesFolderPath);
+            Directory.CreateDirectory(serializablesFolderPath);
 
             FileCreator fileCreator = new FileCreator();
             fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
@@ -218,6 +217,8 @@ namespace TwitchBot.BotCommands
             }
 
             commandPool.Add(command, new BotCommand(command, message));
+            CommandSaver cs = new CommandSaver();
+            cs.AddCommandToXML(command, message);
             StringBuilder sb = new StringBuilder();
             return string.Format("{0} {1} {2}", Properties.Resources.botCommandPool_COMMAND, command, TwitchBot.Properties.Resources.botCommandPool_ADDED);
         }
@@ -230,6 +231,9 @@ namespace TwitchBot.BotCommands
             }
 
             commandPool[command] = new BotCommand(command, newMessage);
+            CommandSaver cs = new CommandSaver();
+            cs.RemoveCommandFromXML(command);
+            cs.AddCommandToXML(command, newMessage);
             StringBuilder sb = new StringBuilder();
             return string.Format("{0} {1} {2} {3}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_EDITED_TO, newMessage);
         }
@@ -290,7 +294,7 @@ namespace TwitchBot.BotCommands
              .First();
 
             if (myFile.Extension != ".mp4")
-            {
+            {              
                 BotLogger.Logger.Log("[GetMediaCommandFileName] -> Latest file created is not .mp4");
                 return String.Empty;
             }

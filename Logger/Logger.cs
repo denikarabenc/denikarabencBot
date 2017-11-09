@@ -48,7 +48,7 @@ namespace BotLogger
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
                 writer.WriteLine(" : {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException.Message))
+                if (String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }
@@ -74,7 +74,7 @@ namespace BotLogger
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
                 writer.WriteLine("  : {0}", logMessage);
                 writer.WriteLine("\t\t {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException.Message))
+                if (String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }

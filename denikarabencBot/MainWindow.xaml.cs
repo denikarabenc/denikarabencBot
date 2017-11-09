@@ -110,8 +110,8 @@ namespace denikarabencBot
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            Logger.Log("Exit application");
-            Properties.Settings.Default.Save();
+            //Logger.Log("Exit application");
+            //Properties.Settings.Default.Save();
             this.Close();
         }
 

@@ -1,10 +1,11 @@
 ﻿using Common.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
 
-namespace denikarabencBot.Helpers.Commands
+namespace Common.Commands
 {
     public class CommandReader
     {
@@ -29,8 +30,9 @@ namespace denikarabencBot.Helpers.Commands
                     botCommands = (List<BotCommand>)serializer.Deserialize(reader);
                 }
             }
-            catch
+            catch(Exception)
             {
+                
                 return botCommands;
             }
 

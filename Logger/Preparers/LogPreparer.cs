@@ -20,9 +20,8 @@ namespace BotLogger.Preparers
         }
 
         private void PrepareLog()
-        {
-            FolderCreator folderCreator = new FolderCreator();
-            folderCreator.CreateFolder(logFolderPath);
+        {            
+            Directory.CreateDirectory(logFolderPath);
 
             if (Directory.Exists(logFolderPath))
             {
@@ -33,8 +32,7 @@ namespace BotLogger.Preparers
 
         private void PrepareProcessLog()
         {
-            FolderCreator folderCreator = new FolderCreator();
-            folderCreator.CreateFolder(logProcessFolderPath);
+            Directory.CreateDirectory(logProcessFolderPath);
 
             if (Directory.Exists(logProcessFolderPath))
             {
