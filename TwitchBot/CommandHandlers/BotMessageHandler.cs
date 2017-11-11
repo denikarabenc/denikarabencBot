@@ -98,6 +98,9 @@ namespace TwitchBot.CommandHandlers
                 case CommandType.MediaCommand:
                     HandleMediaCommand(parsedMessage);
                     break;
+                case CommandType.CommandList:
+                    HandleCommandListCommand();
+                    break;
                 case CommandType.NotExist:
                     CommandType commandTypeReChecked = botCommands.GetCommandType(message);                    
                     if (commandTypeReChecked == CommandType.ModsRequest)
@@ -114,7 +117,12 @@ namespace TwitchBot.CommandHandlers
         {
             irc.PongMessage();
         }
-        
+
+        private void HandleCommandListCommand()
+        {
+            irc.SendChatMessage(botCommands.GetAllCommands());
+        }
+
         private void HandleMediaCommand(string parsedMessage)
         {
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate

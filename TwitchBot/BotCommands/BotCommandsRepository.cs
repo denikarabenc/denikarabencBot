@@ -24,7 +24,7 @@ namespace TwitchBot.BotCommands
         {            
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
-            //AddPredefinedCommands(commandPool); //This should be tool method
+           // AddPredefinedCommands(commandPool); //This should be tool method
             AddPredefinedCommandsFromXML();
         }
 
@@ -107,7 +107,7 @@ namespace TwitchBot.BotCommands
             AddAllCommandsCommand(commandPool);
         }
 
-        private void AddAllCommandsCommand(Dictionary<string, BotCommand> commandPool)
+        private void AddAllCommandsCommand(Dictionary<string, BotCommand> commandPool) //obsolette
         {
             string allCommands = string.Empty;
 
@@ -123,7 +123,7 @@ namespace TwitchBot.BotCommands
 
             commandPool.Add("!commands", new BotCommand("!commands", allCommands));
         }
-
+        
         private List<string> GetSpecialCommandNames()
         {
             List<string> specialCommandNamesList = new List<string>(4);
@@ -181,6 +181,11 @@ namespace TwitchBot.BotCommands
                 return CommandType.ModsRequest;
             }
 
+            if (message == "!commands")
+            {
+                return CommandType.CommandList;
+            }
+
             if (CommandExists(message))
             {
                 return GetBotCommand(message).Type;
@@ -206,6 +211,23 @@ namespace TwitchBot.BotCommands
             }
 
             return UserType.Invalid;
+        }
+
+        public string GetAllCommands()
+        {
+            string allCommands = string.Empty;
+
+            var enumerator = commandPool.GetEnumerator();
+
+            allCommands += "List of commands are: " + enumerator.Current.Key + " ";
+
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current.Key.StartsWith("!"))
+                    allCommands += enumerator.Current.Key + " ";
+            }
+
+            return allCommands;
         }
 
         public string AddCommandAndGetFeedback(string command, string message)
