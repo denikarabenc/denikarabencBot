@@ -29,7 +29,7 @@ namespace BotLogger
             {
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());                
-                writer.WriteLine("  : {0}", logMessage);
+                writer.WriteLine(" : {0}", logMessage);
             }
         }
 
@@ -48,7 +48,7 @@ namespace BotLogger
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
                 writer.WriteLine(" : {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException?.Message))
+                if (!String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }
@@ -67,14 +67,13 @@ namespace BotLogger
                 throw new InvalidOperationException("There is no log file");
             }
 
-
             using (StreamWriter writer = File.AppendText(filePath))
             {
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
-                writer.WriteLine("  : {0}", logMessage);
+                writer.WriteLine(" : {0}", logMessage);
                 writer.WriteLine("\t\t {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException?.Message))
+                if (!String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }
@@ -98,7 +97,7 @@ namespace BotLogger
             {
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
-                writer.WriteLine("  : Active Processes");
+                writer.WriteLine(" : Active Processes");
 
                 System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcesses();
                 List<string> currentRunningApplications = new List<string>();
