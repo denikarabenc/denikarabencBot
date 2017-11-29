@@ -19,7 +19,6 @@ namespace denikarabencBot.ViewModels
             children = new ObservableCollection<object>();
             children.Add(new GeneralViewModel());
             children.Add(new CommandsViewModel());
-            children.Add(new YoutubeControlsViewModel());
         }
 
         public ObservableCollection<object> Children => children;

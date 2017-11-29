@@ -128,23 +128,5 @@ namespace denikarabencBot
 
             (viewModel.Children[1] as CommandsViewModel).SaveCommand();
         }
-
-        private void SearchForSong(object sender, RoutedEventArgs e)
-        {
-            Logger.Log($"Command {(viewModel.Children[1] as CommandsViewModel).Command} added");
-
-            try
-            {
-                (viewModel.Children[2] as YoutubeControlsViewModel).Run().Wait();
-            }
-            catch (AggregateException ex)
-            {
-                foreach (var exx in ex.InnerExceptions)
-                {
-                    Console.WriteLine("Error: " + exx.Message);
-                }
-            }
-            
-        }
     }
 }

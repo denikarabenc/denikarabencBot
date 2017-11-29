@@ -102,11 +102,6 @@ namespace TwitchBot
             SendChatMessage("/me Joins the channel! FeelsGoodMan");            
         }
 
-        public void SendInformationChatMessage(string message)
-        {
-            SendIrcMessage(":" + username + "!" + username + "@" + username + ".tmi.twtich.tv PRIVMSG #" + channel + " :" + message);
-        }
-
         public void SendChatMessage(string message)
         {
             SendControlledIrcMessage(":" + username + "!" + username + "@" + username + ".tmi.twtich.tv PRIVMSG #" + channel + " :" + message);

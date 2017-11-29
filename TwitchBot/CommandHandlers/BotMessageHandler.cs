@@ -18,21 +18,12 @@ namespace TwitchBot.CommandHandlers
         private readonly IIrcClient irc;
         private readonly BotCommandsRepository botCommands;
         private readonly string channelName;
-
         private bool mediaCommandAllowed;
-
-        private Random radnomIndex;
         private TwitchStreamInfoProvider twitchStreamInfoProvider;
         private TwitchStreamUpdater twitchStreamUpdater;
-        
         private List<string> modsList;
-        private List<string> loadingMessages;
-        private List<string> errorMessages;
-
         private Timer modRefreshTimer;
         private Timer mediaCommandTimer;
-        
-        
 
         public BotMessageHandler(BotCommandsRepository botCommands, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName)
         {
@@ -46,13 +37,6 @@ namespace TwitchBot.CommandHandlers
             modsList = new List<string>();
             twitchStreamUpdater = new TwitchStreamUpdater(channelName);
             mediaCommandAllowed = true;
-            radnomIndex = new Random();
-
-            loadingMessages = new List<string>();
-            PopulateLoadingMessages(loadingMessages);
-
-            errorMessages = new List<string>();
-            PopulateErrorMessages(errorMessages);
 
             modRefreshTimer = new Timer(3000);
             modRefreshTimer.AutoReset = false;
@@ -63,50 +47,6 @@ namespace TwitchBot.CommandHandlers
             mediaCommandTimer.AutoReset = false;
             mediaCommandTimer.Enabled = false;
             mediaCommandTimer.Elapsed += MediaCommandTimer_Elapsed;
-        }
-
-        private string SelectRandomItem(List<string> items)
-        {
-            int i = radnomIndex.Next(items.Count);
-            return items[i];
-        }
-
-        private void PopulateErrorMessages(List<string> errorMessages)
-        {
-            errorMessages.Add("Wow, it failed miserably FeelsBadMan");
-            errorMessages.Add("It crashed and burned");
-            errorMessages.Add("Not gonna happen");
-            errorMessages.Add("Well, this is embarrassing...");
-            errorMessages.Add("PC is just not powerful enough to complete that action");
-            errorMessages.Add("Need more APM for that");
-            errorMessages.Add("My goose is cooked!");
-            errorMessages.Add("Let's pretend that didn't happen");
-            errorMessages.Add("Accidently pressed alt + F4, try again");
-            errorMessages.Add("Focus on good things, not bad like this one");
-            errorMessages.Add("I would like that to work as well");
-            errorMessages.Add("Hope streamer haven't seen that monkaS");
-            errorMessages.Add("Forgot my glasses so I cannot do that");
-        }
-
-        private void PopulateLoadingMessages(List<string> loadingMessages)
-        {
-            loadingMessages.Add("Rewinding tape...");
-            loadingMessages.Add("Making something up...");
-            //loadingMessages.Add("Asking {0} to help...");
-            loadingMessages.Add("{0}, fine, I'm working on it...");
-            loadingMessages.Add("Feeding the hamster...");
-            loadingMessages.Add("Ok MingLee ™ Kappa");
-            loadingMessages.Add("Typing ''sudo replay'' in console...");
-            loadingMessages.Add("Searching for empty video tape...");
-            loadingMessages.Add("Generating even better play...");
-            loadingMessages.Add("Entering cheat codes...");
-            loadingMessages.Add("NullReferenceException Kappa");
-            loadingMessages.Add("Wololo");
-            loadingMessages.Add("Increasing FPS to 144...");
-            loadingMessages.Add("Loading...");
-            loadingMessages.Add("Switching to quantum CPU...");
-            //loadingMessages.Add("Can {0} do that instead?");
-            loadingMessages.Add("Why do you like to torture me, {0}? FeelsBadMan");
         }
 
         private void MediaCommandTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -121,7 +61,7 @@ namespace TwitchBot.CommandHandlers
 
         private void GetModsListRequest()
         {
-            irc.SendInformationChatMessage(".mods");
+            irc.SendChatMessage(".mods");
         }
 
         public void HadleMessage(string message)
@@ -156,7 +96,7 @@ namespace TwitchBot.CommandHandlers
                     HandleUserInputCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.MediaCommand:
-                    HandleMediaCommand(parsedMessage, userWhoSentMessage);
+                    HandleMediaCommand(parsedMessage);
                     break;
                 case CommandType.CommandList:
                     HandleCommandListCommand();
@@ -183,39 +123,34 @@ namespace TwitchBot.CommandHandlers
             irc.SendChatMessage(botCommands.GetAllCommands());
         }
 
-        private void HandleMediaCommand(string parsedMessage, string userWhoSentMessage)
-        {          
+        private void HandleMediaCommand(string parsedMessage)
+        {
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
             {
                 Logger.Log("[BotMessageHandler] -> Replay command handled");
                 if (!mediaCommandAllowed)
                 {
-                    irc.SendInformationChatMessage("Wow, do not spam it FeelsBadMan");
-                    return;
-                }
-
-                string loadingMessage = SelectRandomItem(loadingMessages);
-                irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
-                
-                string filename = botCommands.GetMediaCommandFileName(parsedMessage);
-
-                if (filename == string.Empty)
-                {
-                    string error = SelectRandomItem(errorMessages);
-                    irc.SendInformationChatMessage(String.Format(error, userWhoSentMessage));
-                    irc.SendInformationChatMessage($"/w {channelName} Check the OBS replay");
+                    irc.SendChatMessage("Wow, do not spam it FeelsBadMan");
                     return;
                 }
 
                 mediaCommandAllowed = false;
 
                 mediaCommandTimer.Enabled = true;
-                mediaCommandTimer.Start();                
+                mediaCommandTimer.Start();
+
+                string filename = botCommands.GetMediaCommandFileName(parsedMessage);
+
+                if (filename == string.Empty)
+                {
+                    irc.SendChatMessage($"/w {channelName} Check the OBS replay");
+                    return;
+                }
 
                 irc.SendChatMessage("Here it goes! FeelsGoodMan");
 
                 VideoWindow vw = new VideoWindow();
-                vw.mediaPlayer.Source = new Uri("C:/Users/denik/Videos/OBS" + filename);
+                vw.mediaPlayer.Source = new Uri(@"d:\Video\ReplayClips\" + filename);
                 vw.Show();
             });
         }
