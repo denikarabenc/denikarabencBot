@@ -16,16 +16,10 @@ namespace denikarabencBot
     {
         public App()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             BotLogger.Logger.Log("Starting Application");
             MainWindowViewModel vm = new MainWindowViewModel();
             MainWindow mv = new MainWindow(vm);
             mv.Show();
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            BotLogger.Logger.Log("Application crashed", e.ExceptionObject as Exception);
         }
     }
 }

@@ -26,6 +26,6 @@ RecFormat=mp4
 
 I'm working on automating this process in the future.
 
-If you want for you replay buffer to start when you start streaming, there is an option in the obs in the general tab.
+Also, if you want for you replay buffer to start when you start streaming, there is an option in the obs in the general tab.
 
-Command interface is in progress, so keep an eye for updates
+Also work in progress for easier adding of the commands. As is now, the commands can be only be predefined or added via chat with !addcommand. But added commands are not saved when app is turned off. That will be developed as soon as possible.
