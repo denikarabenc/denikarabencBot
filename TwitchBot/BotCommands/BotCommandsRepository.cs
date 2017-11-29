@@ -176,7 +176,7 @@ namespace TwitchBot.BotCommands
                 return CommandType.Ping;
             }
 
-            if (message.Contains("NOTICE") && message.Contains("The moderators of this room are"))
+            if (message.Contains("NOTICE") && (message.Contains("The moderators of this room are")))
             {
                 return CommandType.ModsRequest;
             }
@@ -298,13 +298,14 @@ namespace TwitchBot.BotCommands
 
         public string GetMediaCommandFileName(string command)
         {
+            DateTime replayTimeReqiested = DateTime.UtcNow;
             InputSimulator.SimulateKeyDown(VirtualKeyCode.F13);
             System.Threading.Thread.Sleep(200);         
             InputSimulator.SimulateKeyUp(VirtualKeyCode.F13);
 
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(5000);
 
-            var directory = new DirectoryInfo("D:/Video/ReplayClips");
+            var directory = new DirectoryInfo("C:/Users/denik/Videos/OBS");
             if (directory.GetFiles().Length == 0)
             {
                 BotLogger.Logger.Log("[GetMediaCommandFileName] -> No files in directory!");
@@ -314,6 +315,11 @@ namespace TwitchBot.BotCommands
             FileInfo myFile = directory.GetFiles()
              .OrderByDescending(f => f.LastWriteTime)
              .First();
+
+            if (myFile.CreationTime < replayTimeReqiested)
+            {
+                return String.Empty;
+            }
 
             if (myFile.Extension != ".mp4")
             {              

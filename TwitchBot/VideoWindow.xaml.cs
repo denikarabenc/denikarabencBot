@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BotLogger;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TwitchBot
 {
@@ -22,7 +11,19 @@ namespace TwitchBot
         public VideoWindow()
         {            
             InitializeComponent();
+            mediaPlayer.BufferingStarted += MediaPlayer_BufferingStarted;
+            mediaPlayer.BufferingEnded += MediaPlayer_BufferingEnded;            
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
+        }
+
+        private void MediaPlayer_BufferingEnded(object sender, RoutedEventArgs e)
+        {
+            Logger.Log("[VideoWindow] -> Buffering ended");
+        }
+
+        private void MediaPlayer_BufferingStarted(object sender, RoutedEventArgs e)
+        {
+            Logger.Log("[VideoWindow] -> Buffering started");
         }
 
         private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e)
