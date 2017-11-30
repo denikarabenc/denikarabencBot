@@ -23,6 +23,7 @@ namespace TwitchBot.LocalGameChecker
             LocalGameList.Add("Diablo III", "Diablo III: Reaper of Souls");
             LocalGameList.Add("League of Legends (TM) Client", "League of Legends");
             LocalGameList.Add("Hearthstone", "Hearthstone");
+            LocalGameList.Add("Fortnite ", "Fortnite");
         }
     }
 }

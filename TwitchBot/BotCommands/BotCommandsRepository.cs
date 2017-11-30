@@ -296,32 +296,39 @@ namespace TwitchBot.BotCommands
             }
         }
 
-        public string GetMediaCommandFileName(string command)
+        public string GetMediaCommandFileNameAndPath(string command)
         {
+            DateTime requestedTime = DateTime.Now;
             InputSimulator.SimulateKeyDown(VirtualKeyCode.F13);
             System.Threading.Thread.Sleep(200);         
             InputSimulator.SimulateKeyUp(VirtualKeyCode.F13);
 
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(5000);
 
-            var directory = new DirectoryInfo("D:/Video/ReplayClips");
+            var directory = new DirectoryInfo(@"d:/Video/ReplayClips");
             if (directory.GetFiles().Length == 0)
             {
-                BotLogger.Logger.Log("[GetMediaCommandFileName] -> No files in directory!");
+                BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
                 return String.Empty;
             }
-
+            
             FileInfo myFile = directory.GetFiles()
              .OrderByDescending(f => f.LastWriteTime)
              .First();
 
-            if (myFile.Extension != ".mp4")
-            {              
-                BotLogger.Logger.Log("[GetMediaCommandFileName] -> Latest file created is not .mp4");
+            if (requestedTime > myFile.CreationTime)
+            {
+                BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
                 return String.Empty;
             }
 
-            return myFile.Name;    
+            if (myFile.Extension != ".mp4")
+            {              
+                BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> Latest file created is not .mp4");
+                return String.Empty;
+            }
+
+            return "d:/Video/ReplayClips/" + myFile.Name;    
             
         }
     }

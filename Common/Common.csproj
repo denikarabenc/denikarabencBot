@@ -44,6 +44,7 @@
     <Compile Include="Commands\CommandReader.cs" />
     <Compile Include="Commands\CommandSaver.cs" />
     <Compile Include="Creators\FileCreator.cs" />
+    <Compile Include="Helpers\EnumStringDescription.cs" />
     <Compile Include="Helpers\NullChecker.cs" />
     <Compile Include="Models\BotCommand.cs" />
     <Compile Include="Models\Enums.cs" />

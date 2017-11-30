@@ -1,5 +1,6 @@
 ﻿using BotLogger;
 using Common.Helpers;
+using Common.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -71,7 +72,7 @@ namespace TwitchBot.TwitchStream
             }
             catch (WebException ex)
             {
-                Logger.Log("[TwitchStreamUpdater] -> ", ex);
+                Logger.Log(LoggingType.Error, "[TwitchStreamUpdater] -> ", ex);
                 return "Game change failed FeelsBadMan";
             }
         }
@@ -124,7 +125,7 @@ namespace TwitchBot.TwitchStream
             }
             catch (WebException ex)
             {
-                Logger.Log("[TwitchStreamUpdater] -> ", ex);
+                Logger.Log(LoggingType.Error, "[TwitchStreamUpdater] -> ", ex);
                 return "Nothing, title change failed FeelsBadMan";
             }
 

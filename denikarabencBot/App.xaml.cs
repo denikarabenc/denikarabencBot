@@ -1,4 +1,5 @@
-﻿using denikarabencBot.ViewModels;
+﻿using Common.Models;
+using denikarabencBot.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,10 +17,16 @@ namespace denikarabencBot
     {
         public App()
         {
-            BotLogger.Logger.Log("Starting Application");
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; ;
+            BotLogger.Logger.Log(LoggingType.Info, "Starting Application");
             MainWindowViewModel vm = new MainWindowViewModel();
             MainWindow mv = new MainWindow(vm);
             mv.Show();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            BotLogger.Logger.Log(LoggingType.Error, "Application crashed! Unexpected error happened", e.ExceptionObject as Exception);
         }
     }
 }

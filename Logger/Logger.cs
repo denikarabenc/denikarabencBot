@@ -1,4 +1,6 @@
 ﻿using BotLogger.Preparers;
+using Common.Helpers;
+using Common.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,38 +17,39 @@ namespace BotLogger
             logPreparer.PrepareLogs();
         }
 
-        public static void Log(string logMessage)
+        public static void Log(LoggingType loggingType, string logMessage)
         {
             string filePath = logPreparer.GetLogFilePath();
 
             if (filePath == String.Empty)
             {
-                throw new InvalidOperationException("There is no log file");
+                logPreparer.PrepareLogs();
+                filePath = logPreparer.GetLogFilePath();
             }
 
             
             using (StreamWriter writer = File.AppendText(filePath))
             {
-                //writter.Write("\r\nLog Entry : ");
-                writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());                
-                writer.WriteLine("  : {0}", logMessage);
+                writer.Write("[{0} {1}] {2}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString(), loggingType.ToDescriptionString());                
+                writer.WriteLine(" : {0}", logMessage);
             }
         }
 
-        public static void Log(Exception ex)
+        public static void Log(LoggingType loggingType, Exception ex)
         {
             string filePath = logPreparer.GetLogFilePath();
 
             if (filePath == String.Empty)
             {
-                throw new InvalidOperationException("There is no log file");
+                logPreparer.PrepareLogs();
+                filePath = logPreparer.GetLogFilePath();
             }
 
 
             using (StreamWriter writer = File.AppendText(filePath))
             {
                 //writter.Write("\r\nLog Entry : ");
-                writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
+                writer.Write("[{0} {1}] {2}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString(), loggingType.ToDescriptionString());
                 writer.WriteLine(" : {0}", ex.Message);
                 if (String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
@@ -56,7 +59,7 @@ namespace BotLogger
             }
         }
 
-        public static void Log(string logMessage, Exception ex)
+        public static void Log(LoggingType loggingType, string logMessage, Exception ex)
         {
             logPreparer.PrepareLogs();
 
@@ -64,15 +67,16 @@ namespace BotLogger
 
             if (filePath == String.Empty)
             {
-                throw new InvalidOperationException("There is no log file");
+                logPreparer.PrepareLogs();
+                filePath = logPreparer.GetLogFilePath();
             }
 
 
             using (StreamWriter writer = File.AppendText(filePath))
             {
                 //writter.Write("\r\nLog Entry : ");
-                writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
-                writer.WriteLine("  : {0}", logMessage);
+                writer.Write("[{0} {1}] {2}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString(), loggingType.ToDescriptionString());
+                writer.WriteLine(" : {0}", logMessage);
                 writer.WriteLine("\t\t {0}", ex.Message);
                 if (String.IsNullOrEmpty(ex.InnerException?.Message))
                 {
@@ -91,14 +95,15 @@ namespace BotLogger
 
             if (filePath == String.Empty)
             {
-                throw new InvalidOperationException("There is no log file");
+                logPreparer.PrepareLogs();
+                filePath = logPreparer.GetLogFilePath();
             }
 
             using (StreamWriter writer = File.AppendText(filePath))
             {
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}]", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
-                writer.WriteLine("  : Active Processes");
+                writer.WriteLine(" : Active Processes");
 
                 System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcesses();
                 List<string> currentRunningApplications = new List<string>();
@@ -112,5 +117,5 @@ namespace BotLogger
 
             }
         }
-    }
+    }    
 }

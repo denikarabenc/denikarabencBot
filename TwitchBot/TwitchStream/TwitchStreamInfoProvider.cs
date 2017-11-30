@@ -1,4 +1,5 @@
 ﻿using BotLogger;
+using Common.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -47,7 +48,7 @@ namespace TwitchBot.TwitchStream
             }
             catch (WebException ex)
             {
-                Logger.Log("[TwitchStreamInfoProvider] -> ", ex);
+                Logger.Log(LoggingType.Error, "[TwitchStreamInfoProvider] -> ", ex);
                 return new TwitchJsonRootObject();
             }
         }

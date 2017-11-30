@@ -5,6 +5,7 @@ using BotLogger;
 using Common.Helpers;
 using TwitchBot.BotCommands;
 using TwitchBot.CommandHandlers;
+using Common.Models;
 
 namespace TwitchBot
 {
@@ -31,7 +32,7 @@ namespace TwitchBot
 
         public void StartBot()
         {
-            Logger.Log("[BotRunner] -> Bot started");
+            Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             BotCommandsRepository commandPool = new BotCommandsRepository();
             TwitchStreamInfoProvider twitchStreamInfoProvider = new TwitchStreamInfoProvider(ChannelName);
             SteamInfoProvider steamInfoProvider = new SteamInfoProvider(SteamID);
@@ -53,7 +54,7 @@ namespace TwitchBot
         public void ShutDownBot()
         {            
             irc.LeaveRoom();
-            Logger.Log("[BotRunner] -> Bot shutted down");
+            Logger.Log(LoggingType.Info, "[BotRunner] -> Bot shutted down");
         }
     }
 }

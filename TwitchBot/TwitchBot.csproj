@@ -59,6 +59,7 @@
     <Compile Include="CommandHandlers\BotMessageHandler.cs" />
     <Compile Include="CommandHandlers\TimedCommandHandler.cs" />
     <Compile Include="Helpers\MessageParser.cs" />
+    <Compile Include="Helpers\MessageRepository.cs" />
     <Compile Include="Interfaces\IIrcClient.cs" />
     <Compile Include="IrcClient.cs" />
     <Compile Include="LocalGameChecker\LocalGameMapper.cs" />

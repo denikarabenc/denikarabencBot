@@ -16,14 +16,17 @@ namespace TwitchBot.CommandHandlers
     public class BotMessageHandler
     {
         private readonly IIrcClient irc;
-        private readonly BotCommandsRepository botCommands;
         private readonly string channelName;
+        private readonly BotCommandsRepository botCommands;        
+        private readonly MessageRepository messageRepository;
+
         private bool mediaCommandAllowed;
         private TwitchStreamInfoProvider twitchStreamInfoProvider;
         private TwitchStreamUpdater twitchStreamUpdater;
         private List<string> modsList;
         private Timer modRefreshTimer;
         private Timer mediaCommandTimer;
+        private Random radnomIndex;
 
         public BotMessageHandler(BotCommandsRepository botCommands, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName)
         {
@@ -38,6 +41,10 @@ namespace TwitchBot.CommandHandlers
             twitchStreamUpdater = new TwitchStreamUpdater(channelName);
             mediaCommandAllowed = true;
 
+            messageRepository = new MessageRepository();
+
+            radnomIndex = new Random();
+            
             modRefreshTimer = new Timer(3000);
             modRefreshTimer.AutoReset = false;
             modRefreshTimer.Enabled = true;
@@ -49,6 +56,12 @@ namespace TwitchBot.CommandHandlers
             mediaCommandTimer.Elapsed += MediaCommandTimer_Elapsed;
         }
 
+        private string SelectRandomItem(List<string> items)
+        {
+            int i = radnomIndex.Next(items.Count);
+            return items[i];
+        }
+        
         private void MediaCommandTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             mediaCommandAllowed = true;
@@ -96,7 +109,7 @@ namespace TwitchBot.CommandHandlers
                     HandleUserInputCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.MediaCommand:
-                    HandleMediaCommand(parsedMessage);
+                    HandleMediaCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.CommandList:
                     HandleCommandListCommand();
@@ -123,34 +136,39 @@ namespace TwitchBot.CommandHandlers
             irc.SendChatMessage(botCommands.GetAllCommands());
         }
 
-        private void HandleMediaCommand(string parsedMessage)
+        private void HandleMediaCommand(string parsedMessage, string userWhoSentMessage)
         {
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
             {
-                Logger.Log("[BotMessageHandler] -> Replay command handled");
+                Logger.Log(LoggingType.Info, "[BotMessageHandler] -> Replay command handled");
                 if (!mediaCommandAllowed)
                 {
                     irc.SendChatMessage("Wow, do not spam it FeelsBadMan");
                     return;
                 }
 
+                string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
+                irc.SendChatMessage(String.Format(loadingMessage, userWhoSentMessage));
+
                 mediaCommandAllowed = false;
 
                 mediaCommandTimer.Enabled = true;
                 mediaCommandTimer.Start();
 
-                string filename = botCommands.GetMediaCommandFileName(parsedMessage);
+                string filename = botCommands.GetMediaCommandFileNameAndPath(parsedMessage);
 
                 if (filename == string.Empty)
                 {
-                    irc.SendChatMessage($"/w {channelName} Check the OBS replay");
+                    string error = SelectRandomItem(messageRepository.ErrorMessages);
+                    irc.SendChatMessage(String.Format(error, userWhoSentMessage));
+                    //irc.SendChatMessage($"/w {channelName} Check the OBS replay");
                     return;
                 }
 
                 irc.SendChatMessage("Here it goes! FeelsGoodMan");
 
                 VideoWindow vw = new VideoWindow();
-                vw.mediaPlayer.Source = new Uri(@"d:\Video\ReplayClips\" + filename);
+                vw.mediaPlayer.Source = new Uri(filename);
                 vw.Show();
             });
         }

@@ -1,4 +1,6 @@
-﻿namespace Common.Models
+﻿using System.ComponentModel;
+
+namespace Common.Models
 {
     public enum CommandType
     {
@@ -24,5 +26,15 @@
         Editor,
         King,
         Invalid
+    }
+
+    public enum LoggingType
+    {
+        [Description("Log Type: Info!")]
+        Info,
+        [Description("Log Type: Warning!")]
+        Warning,
+        [Description("Log Type: Error!")]
+        Error,
     }
 }

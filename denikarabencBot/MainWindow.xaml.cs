@@ -1,4 +1,5 @@
 ﻿using BotLogger;
+using Common.Models;
 using denikarabencBot.ViewModels;
 using System;
 using System.Threading;
@@ -80,7 +81,7 @@ namespace denikarabencBot
 
         private void JoinButton_Click(object sender, RoutedEventArgs e)
         {           
-            Logger.Log("[MainWindow] -> Join clicked");
+            Logger.Log(LoggingType.Info, "[MainWindow] -> Join clicked");
             (viewModel.Children[0] as GeneralViewModel).RemoveBotButtonVisibility = Visibility.Visible;            
             BotThread = new Thread(() =>
             {
@@ -92,7 +93,7 @@ namespace denikarabencBot
 
         private void RemoveBotButton_Click(object sender, RoutedEventArgs e)
         {
-            Logger.Log("[MainWindow] -> Remove clicked");
+            Logger.Log(LoggingType.Info, "[MainWindow] -> Remove clicked");
             if (BotThread.IsAlive)
             {
                 (viewModel.Children[0] as GeneralViewModel).StopBot();
@@ -117,14 +118,14 @@ namespace denikarabencBot
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            Logger.Log("Exit application");
+            Logger.Log(LoggingType.Info, "Exit application");
             Properties.Settings.Default.Save();
             this.Close();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Logger.Log($"Command {(viewModel.Children[1] as CommandsViewModel).Command} added");
+            Logger.Log(LoggingType.Info, $"Command {(viewModel.Children[1] as CommandsViewModel).Command} added");
 
             (viewModel.Children[1] as CommandsViewModel).SaveCommand();
         }
