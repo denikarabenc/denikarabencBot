@@ -36,7 +36,8 @@ namespace TwitchBot
 
         private void MediaPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            BotLogger.Logger.Log(LoggingType.Error, String.Format("[VideoWindow] -> Media failed Source was {0}!", mediaPlayer.Source), e.ErrorException);            
+            BotLogger.Logger.Log(LoggingType.Error, String.Format("[VideoWindow] -> Media failed Source was {0}!", mediaPlayer.Source), e.ErrorException);
+            Dispose();
             this.Close();
         }
 
@@ -47,7 +48,7 @@ namespace TwitchBot
 
         private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.MediaEnded -= MediaPlayer_MediaEnded;
+            Dispose();
             this.Close();
         }
 

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net;
 using TwitchBot.Steam.Json;
 
@@ -46,6 +47,14 @@ namespace TwitchBot.Steam
             }
 
             return json;
+        }
+
+        public List<string> GetSteamGamesWhichWouldNotBeChangedTo()
+        {
+            List<string> list = new List<string>();
+            list.Add("Wallpaper Engine");
+
+            return list;
         }
     }
 }

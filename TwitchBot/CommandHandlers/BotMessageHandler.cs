@@ -74,7 +74,7 @@ namespace TwitchBot.CommandHandlers
 
         private void GetModsListRequest()
         {
-            irc.SendChatMessage(".mods");
+            irc.SendInformationChatMessage(".mods");
         }
 
         public void HadleMessage(string message)
@@ -148,7 +148,7 @@ namespace TwitchBot.CommandHandlers
                 }
 
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
-                irc.SendChatMessage(String.Format(loadingMessage, userWhoSentMessage));
+                irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
 
                 mediaCommandAllowed = false;
 
@@ -160,12 +160,12 @@ namespace TwitchBot.CommandHandlers
                 if (filename == string.Empty)
                 {
                     string error = SelectRandomItem(messageRepository.ErrorMessages);
-                    irc.SendChatMessage(String.Format(error, userWhoSentMessage));
+                    irc.SendInformationChatMessage(String.Format(error, userWhoSentMessage));
                     //irc.SendChatMessage($"/w {channelName} Check the OBS replay");
                     return;
                 }
 
-                irc.SendChatMessage("Here it goes! FeelsGoodMan");
+                irc.SendInformationChatMessage("Here it goes! FeelsGoodMan");
 
                 VideoWindow vw = new VideoWindow();
                 vw.mediaPlayer.Source = new Uri(filename);

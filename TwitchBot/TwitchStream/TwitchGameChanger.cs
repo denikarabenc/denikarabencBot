@@ -82,8 +82,13 @@ namespace TwitchBot
 
             gameCurrentlyRunningOnMachine = GetSteamInfoGame();
 
-            if (gameCurrentlyRunningOnMachine != null)
+            if (steamInfoProvider.GetSteamGamesWhichWouldNotBeChangedTo().Contains(gameCurrentlyRunningOnMachine))
             {
+                gameCurrentlyRunningOnMachine = null;
+            }
+
+            if (gameCurrentlyRunningOnMachine != null)
+            {                
                 gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("â„¢", "");
             }
 
