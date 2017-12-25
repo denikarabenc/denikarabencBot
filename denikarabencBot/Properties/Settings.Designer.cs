@@ -46,5 +46,41 @@ namespace denikarabencBot.Properties {
                 this["TwitchUserName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsAutoGameChanegeEnabled {
+            get {
+                return ((bool)(this["IsAutoGameChanegeEnabled"]));
+            }
+            set {
+                this["IsAutoGameChanegeEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsReplayEnabled {
+            get {
+                return ((bool)(this["IsReplayEnabled"]));
+            }
+            set {
+                this["IsReplayEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ReplayPath {
+            get {
+                return ((string)(this["ReplayPath"]));
+            }
+            set {
+                this["ReplayPath"] = value;
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ using Common.Creators;
 using Common.Models;
 using WindowsInput;
 using Common.Commands;
+using Common.Helpers;
 
 namespace TwitchBot.BotCommands
 {
@@ -15,20 +16,23 @@ namespace TwitchBot.BotCommands
     public class BotCommandsRepository
     {
         private readonly string botCommandPool_PINGCOMMAND = "PING :tmi.twitch.tv";
+        private readonly string replayPath;
 
         private readonly List<string> specialCommands; //special commands need some special command parsing so it can read command and input user typed
 
-        private Dictionary<string, BotCommand> commandPool;        
+        private Dictionary<string, BotCommand> commandPool;
 
-        public BotCommandsRepository()
-        {            
+
+        public BotCommandsRepository(bool isReplayEnabled, string replayPath)
+        {
+            this.replayPath = (replayPath == null) ? string.Empty : replayPath;
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
            // AddPredefinedCommands(commandPool); //This should be tool method
-            AddPredefinedCommandsFromXML();
+            AddPredefinedCommandsFromXML(isReplayEnabled);
         }
 
-        private void AddPredefinedCommandsFromXML()
+        private void AddPredefinedCommandsFromXML(bool isReplayEnabled)
         {
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "commands";
@@ -49,10 +53,15 @@ namespace TwitchBot.BotCommands
 
             foreach (BotCommand bc in botCommands)
             {
-                commandPool.Add(bc.Command, bc);
+                if (bc.Command == "!replay" && !isReplayEnabled)
+                {
+                    continue;
+                }
+
+                commandPool[bc.Command] = bc;
             }
         }
-
+        
         private void AddPredefinedCommands(Dictionary<string, BotCommand> commandPool) //Make gamesplayed command which will contain game that has been played and for how long
         {      
             commandPool.Add("!hello", new BotCommand("!hello", "Hello to you, {0}! <3", UserType.Regular, true));
@@ -80,6 +89,8 @@ namespace TwitchBot.BotCommands
             commandPool.Add("!editcommand", new BotCommand("!editcommand", "", UserType.Mod, false, false, CommandType.EditCommand));
 
             commandPool.Add("!title", new BotCommand("!title", "{0} changed title to: {1}", UserType.Mod, true, false, CommandType.ChangeTitleCommand));
+
+            commandPool.Add("!sr", new BotCommand("!sr", "", UserType.King, false, false, CommandType.SongRequestCommand));
 
             commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, CommandType.MediaCommand));
 
@@ -126,12 +137,13 @@ namespace TwitchBot.BotCommands
         
         private List<string> GetSpecialCommandNames()
         {
-            List<string> specialCommandNamesList = new List<string>(4);
+            List<string> specialCommandNamesList = new List<string>(5);
 
             specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_ADDCOMMAND);
             specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_EDITCOMMAND);
             specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_TITLE);
             specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_FOLLOW);
+            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_SONGREQUESTCOMMAND);
 
             return specialCommandNamesList;
         }
@@ -153,6 +165,13 @@ namespace TwitchBot.BotCommands
                 return null;
             }
             return commandPool[command];
+        }
+
+        public void UpdatePredefinedCommandsFromXML(bool isReplayEnabled)
+        {
+            BotLogger.Logger.Log(LoggingType.Info, "[BotCommandRepository] -> Updating commands from XML");
+            commandPool = new Dictionary<string, BotCommand>();
+            AddPredefinedCommandsFromXML(isReplayEnabled);
         }
 
         public List<BotCommand> GetTimedCommands()
@@ -305,7 +324,12 @@ namespace TwitchBot.BotCommands
 
             System.Threading.Thread.Sleep(5000);
 
-            var directory = new DirectoryInfo(@"d:/Video/ReplayClips");
+            if (!Directory.Exists(replayPath))
+            {
+                BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> Invalid replay path! Directory does not exist!");
+                return String.Empty;
+            }
+            var directory = new DirectoryInfo(replayPath);
             if (directory.GetFiles().Length == 0)
             {
                 BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
@@ -328,7 +352,14 @@ namespace TwitchBot.BotCommands
                 return String.Empty;
             }
 
-            return "d:/Video/ReplayClips/" + myFile.Name;    
+            if (replayPath.EndsWith("/") || replayPath.EndsWith(@"\"))
+            {
+                return replayPath + myFile.Name;
+            }
+            else
+            {
+                return replayPath + "/" + myFile.Name;
+            }
             
         }
     }

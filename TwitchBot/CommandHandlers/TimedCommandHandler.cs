@@ -33,7 +33,7 @@ namespace TwitchBot
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            List<BotCommand> botCommands = botCommandsRepository.GetTimedCommands();
+            List<BotCommand> botCommands = botCommandsRepository.GetTimedCommands(); //So if new command is added, it can be automatically updated here.
             if (botCommands.Count > 0)
             {
                 if (commandCounter < botCommands.Count)

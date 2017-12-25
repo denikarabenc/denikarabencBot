@@ -1,12 +1,11 @@
 ﻿using Common.Commands;
 using Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 
 namespace denikarabencBot.ViewModels
 {
-    public class CommandsViewModel
+    public class CommandsViewModel : BaseViewModel
     {
         private readonly CommandSaver commandSaver;
         private readonly CommandConditioner commandConditioner;
@@ -20,6 +19,7 @@ namespace denikarabencBot.ViewModels
 
         public CommandsViewModel()
         {
+            this.Bot = Bot;
             commandSaver = new CommandSaver();
             commandConditioner = new CommandConditioner();
 
@@ -48,6 +48,8 @@ namespace denikarabencBot.ViewModels
             }
 
             commandSaver.AddCommandToXML(Command, Message, Permission, IsTimed);
+
+            Bot?.CommandPool.UpdatePredefinedCommandsFromXML(true); //TODO
         }
     }
 }

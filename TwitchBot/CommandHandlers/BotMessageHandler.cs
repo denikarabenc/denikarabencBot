@@ -10,6 +10,7 @@ using TwitchBot.BotCommands;
 using TwitchBot.Helpers;
 using TwitchBot.Interfaces;
 using TwitchBot.TwitchStream;
+using Youtube;
 
 namespace TwitchBot.CommandHandlers
 {
@@ -17,12 +18,13 @@ namespace TwitchBot.CommandHandlers
     {
         private readonly IIrcClient irc;
         private readonly string channelName;
-        private readonly BotCommandsRepository botCommands;        
+        private readonly BotCommandsRepository botCommands;
         private readonly MessageRepository messageRepository;
 
         private bool mediaCommandAllowed;
         private TwitchStreamInfoProvider twitchStreamInfoProvider;
         private TwitchStreamUpdater twitchStreamUpdater;
+        private YoutubeBotService youtubeProvider;
         private List<string> modsList;
         private Timer modRefreshTimer;
         private Timer mediaCommandTimer;
@@ -37,6 +39,9 @@ namespace TwitchBot.CommandHandlers
             this.irc = irc;
             this.botCommands = botCommands;
             this.channelName = channelName;
+
+            youtubeProvider = new YoutubeBotService();
+
             modsList = new List<string>();
             twitchStreamUpdater = new TwitchStreamUpdater(channelName);
             mediaCommandAllowed = true;
@@ -44,7 +49,7 @@ namespace TwitchBot.CommandHandlers
             messageRepository = new MessageRepository();
 
             radnomIndex = new Random();
-            
+
             modRefreshTimer = new Timer(3000);
             modRefreshTimer.AutoReset = false;
             modRefreshTimer.Enabled = true;
@@ -61,7 +66,7 @@ namespace TwitchBot.CommandHandlers
             int i = radnomIndex.Next(items.Count);
             return items[i];
         }
-        
+
         private void MediaCommandTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             mediaCommandAllowed = true;
@@ -111,11 +116,14 @@ namespace TwitchBot.CommandHandlers
                 case CommandType.MediaCommand:
                     HandleMediaCommand(parsedMessage, userWhoSentMessage);
                     break;
+                case CommandType.SongRequestCommand:
+                    HandleSongRequestCommand(parsedMessage, userWhoSentMessage);
+                    break;
                 case CommandType.CommandList:
                     HandleCommandListCommand();
                     break;
                 case CommandType.NotExist:
-                    CommandType commandTypeReChecked = botCommands.GetCommandType(message);                    
+                    CommandType commandTypeReChecked = botCommands.GetCommandType(message);
                     if (commandTypeReChecked == CommandType.ModsRequest)
                     {
                         HandleModsRequestCommand(parsedMessage);
@@ -129,6 +137,28 @@ namespace TwitchBot.CommandHandlers
         private void HandlePingCommand()
         {
             irc.PongMessage();
+        }
+
+        private void HandleSongRequestCommand(string parsedMessage, string userWhoSentMessage)
+        {
+            if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
+            {
+                if (parsedMessage.Split(' ').Length > 1)
+                {
+                    if (parsedMessage.Split(' ')[1].Contains("youtube.com"))
+                    {
+                        youtubeProvider.AddSongToPlaylist(parsedMessage.Split(' ')[1].Split('=')[1], userWhoSentMessage, CallbackFromSongRequest);
+                    }
+                    else
+                    {
+                        irc.SendInformationChatMessage("For now only full link to the song works FeelsBadMan");
+                    }
+                }
+                else
+                {
+                    irc.SendChatMessage("Use !sr [link]");
+                }
+            }
         }
 
         private void HandleCommandListCommand()
@@ -149,12 +179,7 @@ namespace TwitchBot.CommandHandlers
 
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
                 irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
-
-                mediaCommandAllowed = false;
-
-                mediaCommandTimer.Enabled = true;
-                mediaCommandTimer.Start();
-
+                
                 string filename = botCommands.GetMediaCommandFileNameAndPath(parsedMessage);
 
                 if (filename == string.Empty)
@@ -164,6 +189,11 @@ namespace TwitchBot.CommandHandlers
                     //irc.SendChatMessage($"/w {channelName} Check the OBS replay");
                     return;
                 }
+
+                mediaCommandAllowed = false;
+
+                mediaCommandTimer.Enabled = true;
+                mediaCommandTimer.Start();
 
                 irc.SendInformationChatMessage("Here it goes! FeelsGoodMan");
 
@@ -215,7 +245,7 @@ namespace TwitchBot.CommandHandlers
             modsList = parsedMods.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             modsList.Add(channelName);
         }
-        
+
         private void HandleReadCommand(string parsedMessage, string userWhoSentMessage)
         {
             if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
@@ -306,6 +336,11 @@ namespace TwitchBot.CommandHandlers
                 default: return false;
             }
 
+        }
+
+        private void CallbackFromSongRequest(string message)
+        {
+            irc.SendInformationChatMessage(message);
         }
     }
 }

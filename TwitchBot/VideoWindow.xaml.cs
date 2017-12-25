@@ -23,6 +23,8 @@ namespace TwitchBot
         public VideoWindow()
         {            
             InitializeComponent();
+            ShowActivated = false;
+            Topmost = false;
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
             mediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
             mediaPlayer.SourceUpdated += MediaPlayer_SourceUpdated;

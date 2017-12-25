@@ -11,10 +11,14 @@ namespace TwitchBot.Steam
         private string playerName;
         private string gameName;
         private string steamID;
+        private string gameID;
+
+        private Dictionary<string, string> gameToTwitchMapper;
 
         public SteamInfoProvider(string steamID)
         {
             this.steamID = steamID;
+            gameToTwitchMapper = SteamGamesDLCMapper();
             UpdateSteamInfo();
         }
 
@@ -23,15 +27,55 @@ namespace TwitchBot.Steam
 
         public void UpdateSteamInfo()
         {
-            string json = GetSteamJson();
+            string json = GetSteamPlayerJson();
 
             jsonResult = JsonConvert.DeserializeObject<SteamJsonRootObject>(json);
 
             PlayerName = jsonResult?.Response?.Players[0]?.PersonaName;
             GameName = jsonResult?.Response?.Players[0]?.GameExtraInfo;
+
+            //if (GameName == null)
+            //{
+            //    gameID = jsonResult?.Response?.Players[0]?.GameID;
+            //    if (gameID == null)
+            //    {
+            //        return;
+            //    }
+
+            //    string jsonGame = GetSteamGameJson(gameID);
+
+            //    SteamGameJsonRootObject jsonGameResult = JsonConvert.DeserializeObject<SteamGameJsonRootObject>(jsonGame);
+
+            //    GameName = jsonGameResult?.Game?.GameName;
+            //}
+
+            if (GameName == null)
+            {
+                gameID = jsonResult?.Response?.Players[0]?.GameID;
+                if (gameID == null)
+                {
+                    return;
+                }
+
+                string jsonGame = GetSteamGameJson(gameID);
+
+                jsonGame = jsonGame.Substring(jsonGame.IndexOf(":") + 1);
+                jsonGame = jsonGame.Remove(jsonGame.Length - 1);
+
+                SteamGameData jsonGameResult = JsonConvert.DeserializeObject<SteamGameData>(jsonGame);
+
+                if (gameToTwitchMapper.ContainsKey(jsonGameResult?.GameData?.GameName))
+                {
+                    GameName = gameToTwitchMapper[jsonGameResult.GameData.GameName];              
+                }
+                else
+                {
+                    GameName = jsonGameResult?.GameData?.GameName;                    
+                }
+            }
         }
 
-        private string GetSteamJson()
+        private string GetSteamPlayerJson()
         {
             string json;
             using (var webClient = new WebClient())
@@ -49,12 +93,40 @@ namespace TwitchBot.Steam
             return json;
         }
 
+        private string GetSteamGameJson(string gameId)
+        {
+            string json;
+            using (var webClient = new WebClient())
+            {
+                try
+                {
+                    //json = webClient.DownloadString("http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=B4139755162C446B3D350BAF8D8B0EDC&appid=" + gameId);
+                    json = webClient.DownloadString("http://store.steampowered.com/api/appdetails?appids=" + gameId);
+                }
+                catch (WebException)
+                {
+                    json = string.Empty;
+                }
+            }
+
+            return json;
+        }
+
         public List<string> GetSteamGamesWhichWouldNotBeChangedTo()
         {
             List<string> list = new List<string>();
             list.Add("Wallpaper Engine");
 
             return list;
+        }
+
+        private Dictionary<string, string> SteamGamesDLCMapper()
+        {
+            Dictionary<string, string> mapper = new Dictionary<string, string>();
+
+            mapper.Add("The Binding of Isaac: Rebirth", "The Binding of Isaac: Afterbirth");
+
+            return mapper;
         }
     }
 }

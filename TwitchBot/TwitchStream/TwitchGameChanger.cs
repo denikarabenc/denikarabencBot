@@ -88,12 +88,13 @@ namespace TwitchBot
             }
 
             if (gameCurrentlyRunningOnMachine != null)
-            {                
-                gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("â„¢", "");
+            {
+                gameCurrentlyRunningOnMachine = ParseGameName(gameCurrentlyRunningOnMachine);
             }
 
             if (gameCurrentlyRunningOnMachine != null && twitchCurrentGame != gameCurrentlyRunningOnMachine)
             {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[TwitchGameChanger] -> Game name from steam is: {gameCurrentlyRunningOnMachine}");
                 string reportMessage = twitchStreamUpdater.SetTwitchGameAndReturnWhichGameIsSet(gameCurrentlyRunningOnMachine);
                 
                 if (reportMessage != "Game change failed FeelsBadMan")
@@ -112,6 +113,7 @@ namespace TwitchBot
 
             if (gameCurrentlyRunningOnMachine != null && gameCurrentlyRunningOnMachine != twitchCurrentGame)
             {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[TwitchGameChanger] -> Game name from PC is: {gameCurrentlyRunningOnMachine}");
                 string reportMessage = twitchStreamUpdater.SetTwitchGameAndReturnWhichGameIsSet(gameCurrentlyRunningOnMachine);
                 
                 if (reportMessage != "Game change failed FeelsBadMan")
@@ -137,6 +139,15 @@ namespace TwitchBot
             {
                 return null;
             }
+        }
+
+        private string ParseGameName(string gameCurrentlyRunningOnMachine)
+        {
+            gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("â„¢", "");
+            gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("\u00ae", "");
+            gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("\u2122", "");
+
+            return gameCurrentlyRunningOnMachine;
         }
     }
 }

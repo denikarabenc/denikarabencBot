@@ -40,11 +40,11 @@ namespace denikarabencBot
             }
         }
 
-        private void ReadSettings()
-        {
-            (viewModel.Children[0] as GeneralViewModel).SteamID = Properties.Settings.Default.SteamId;
-            (viewModel.Children[0] as GeneralViewModel).TwitchChannelName = Properties.Settings.Default.TwitchUserName;
-        }
+        //private void ReadSettings()
+        //{
+        //    (viewModel.Children[0] as GeneralViewModel).SteamID = Properties.Settings.Default.SteamId;
+        //    (viewModel.Children[0] as GeneralViewModel).TwitchChannelName = Properties.Settings.Default.TwitchUserName;
+        //}
 
         //private void InitializeSpeechRecognizer()
         //{
@@ -123,11 +123,23 @@ namespace denikarabencBot
             this.Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddCommand(object sender, RoutedEventArgs e)
         {
             Logger.Log(LoggingType.Info, $"Command {(viewModel.Children[1] as CommandsViewModel).Command} added");
 
             (viewModel.Children[1] as CommandsViewModel).SaveCommand();
+        }
+
+        private void YoutubeButtonRemove(object sender, RoutedEventArgs e)
+        {
+            //(viewModel.Children[2] as YoutubeViewModel).YoutubeSongs.Remove((viewModel.Children[2] as YoutubeViewModel).SelectedSong);           
+           // Test.NavigateToString(@"<html><body><iframe width=""854"" height=""480"" src=""https://www.youtube.com/embed/BfUQWIEHTG4?list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV"" frameborder=""0"" gesture=""media"" allow=""encrypted-media"" allowfullscreen></iframe></body></html>");
+        }     
+
+        private void DG_Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Documents.Hyperlink link = (System.Windows.Documents.Hyperlink)e.OriginalSource;
+            System.Diagnostics.Process.Start(link.NavigateUri.OriginalString);
         }
     }
 }

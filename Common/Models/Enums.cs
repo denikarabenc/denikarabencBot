@@ -14,6 +14,7 @@ namespace Common.Models
         ChangeTitleCommand,
         UserInputCommand,
         MediaCommand,
+        SongRequestCommand,
         CommandList,
     }
 

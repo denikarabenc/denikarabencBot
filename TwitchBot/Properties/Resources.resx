@@ -147,6 +147,9 @@
   <data name="botCommandPool_PINGCOMMAND" xml:space="preserve">
     <value>PING :tmi.twitch.tv</value>
   </data>
+  <data name="botCommandPool_SONGREQUESTCOMMAND" xml:space="preserve">
+    <value>!sr</value>
+  </data>
   <data name="botCommandPool_TITLE" xml:space="preserve">
     <value>!title</value>
   </data>

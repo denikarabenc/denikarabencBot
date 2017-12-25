@@ -6,6 +6,7 @@ using Common.Helpers;
 using TwitchBot.BotCommands;
 using TwitchBot.CommandHandlers;
 using Common.Models;
+using System;
 
 namespace TwitchBot
 {
@@ -13,8 +14,13 @@ namespace TwitchBot
     {
         private readonly IIrcClient irc;
         private bool isCanceled;
+        private bool isReplayEnabled;
+        private bool isAutoGameChangeEnabled;
         private string channelName;
         private string steamID;
+        private string replayPath;
+
+        private BotCommandsRepository commandPool;
 
         private string mediaPlayerFileName;
 
@@ -25,15 +31,19 @@ namespace TwitchBot
             isCanceled = false;
         }
 
-        public bool IsCanceled { get => isCanceled; set => isCanceled = value; }
+        public bool IsCanceled { get => isCanceled; set => isCanceled = value; }        
+        public bool IsAutoGameChangeEnabled { get => isAutoGameChangeEnabled; set => isAutoGameChangeEnabled = value; }
+        public bool IsReplayEnabled { get => isReplayEnabled; set => isReplayEnabled = value; }
         public string SteamID { get => steamID; set => steamID = value; }
         public string ChannelName { get => channelName; set => channelName = value; }
         public string MediaPlayerFileName { get => mediaPlayerFileName; set => mediaPlayerFileName = value; }
+        public string ReplayPath { get => replayPath; set => replayPath = value; }
+        public BotCommandsRepository CommandPool => commandPool;
 
         public void StartBot()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
-            BotCommandsRepository commandPool = new BotCommandsRepository();
+            commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
             TwitchStreamInfoProvider twitchStreamInfoProvider = new TwitchStreamInfoProvider(ChannelName);
             SteamInfoProvider steamInfoProvider = new SteamInfoProvider(SteamID);
             //IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:vv0yeswj1kpcmyvi381006bl7rxaj4");            
@@ -42,7 +52,15 @@ namespace TwitchBot
 
             TimedCommandHandler timedCommandHandler = new TimedCommandHandler(commandPool, irc);
             BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, irc, twitchStreamInfoProvider, channelName);
-            TwitchGameChanger twitchGameChanger = new TwitchGameChanger(irc, twitchStreamInfoProvider, steamInfoProvider, channelName);
+            if (IsAutoGameChangeEnabled)
+            {
+                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
+                TwitchGameChanger twitchGameChanger = new TwitchGameChanger(irc, twitchStreamInfoProvider, steamInfoProvider, channelName);
+            }
+            else
+            {
+                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is disabled");
+            }
 
             while (!isCanceled)
             {

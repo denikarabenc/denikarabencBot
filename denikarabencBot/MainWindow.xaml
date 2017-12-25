@@ -23,15 +23,40 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Header="Settings" IsEnabled="{Binding JoinButtonEnabled}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <Label Grid.Column="0" Grid.Row="0"  Content="Insert your Twitch.tv channel name where bot should join"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=TwitchChannelName}"/>
-                    <Label Grid.Column="0" Grid.Row="1"  Content="Insert your Steam ID" ToolTip="SteamID is not your Steam name, but a number. You can find it here: steamidfinder.com"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SteamID}"/>
+                            <Label Grid.Column="0" Grid.Row="0" Margin="2" HorizontalAlignment="Right" Content="Use auto game changer: "/>
+                            <CheckBox Grid.Column="1" Margin="2" Grid.Row="0" VerticalAlignment="Center" IsChecked="{Binding IsAutoGameChanegeEnabled}"/>
+                            <Label Grid.Column="0" Grid.Row="1" Margin="2" HorizontalAlignment="Right" Content="Use replay: "/>
+                            <CheckBox Grid.Column="1" Margin="2" Grid.Row="1" VerticalAlignment="Center" IsChecked="{Binding IsReplayEnabled}"/>
+                            <Label Grid.Column="0" Grid.Row="2" Margin="2" HorizontalAlignment="Right" Content="Replay folder path: " ToolTip="Copy path from OBS where replay is going to be saved"/>
+                            <TextBox Grid.Column="1" Margin="2" Grid.Row="2" Text="{Binding ReplayPath}"/>
+                            <Label Grid.Column="0" Grid.Row="3" Margin="2" Content="Insert your Twitch.tv channel name where bot should join" HorizontalAlignment="Right"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" Margin="2" Text="{Binding Path=TwitchChannelName}"/>
+                            <Label Grid.Column="0" Grid.Row="4"  Content="Insert your Steam ID" HorizontalAlignment="Right" ToolTip="SteamID is not your Steam name, but a number. You can find it here: steamidfinder.com"/>
+                            <TextBox Grid.Column="1" Grid.Row="4" Margin="2" Text="{Binding Path=SteamID}" IsEnabled="{Binding IsAutoGameChanegeEnabled}"/>
+                        </Grid>
+                    </GroupBox>
+
                     <Button x:Name="removeBot" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Content="Remove Bot form channel" Visibility="{Binding RemoveBotButtonVisibility}" Click="RemoveBotButton_Click" MinWidth="80"/>
                     <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Content="Join" Click="JoinButton_Click" IsEnabled="{Binding JoinButtonEnabled}" MinWidth="80"/>
-                    <Button Grid.Column="0" Grid.Row="4" Content="log process" HorizontalAlignment="Left" MinWidth="80" Click="ProcessLog_Click"/>
-                    <Button Grid.Column="1" Grid.Row="4" Content="Exit" HorizontalAlignment="Right" MinWidth="80" Click="ExitBtn_Click"/>
+
+                    <Button Grid.Column="0" Grid.Row="5" Content="log process" HorizontalAlignment="Left" MinWidth="80" Click="ProcessLog_Click"/>
+                    <Button Grid.Column="1" Grid.Row="5" Content="Exit" HorizontalAlignment="Right" MinWidth="80" Click="ExitBtn_Click"/>
                 </Grid>
             </TabItem>
             <TabItem DataContext="{Binding Children[1]}" Header="Commands">
@@ -51,16 +76,48 @@
 
                     <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"  Content="Command: " Margin="2"/>
                     <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Command}" Margin="2"/>
-                    <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Content="Message: " ToolTip="What will bot write when command is typed in chat" Margin="2"/>
+                    <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Content="Message: " ToolTip="What will bot write when command is typed in chat. Type {0} to write name of the user who typed message, type {1} to get what he typed. For instance '{0} has written {1}' " Margin="2"/>
                     <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Message}" Margin="2"/>
                     <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Content="Permission: " ToolTip="Permission needed to activate command. King is broadcaster" Margin="2"/>
                     <ComboBox  Grid.Column="1" Grid.Row="2" ItemsSource="{Binding PermissionSource}" SelectedItem="{Binding Permission}" Margin="2"/>
                     <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Content="Is command timed: " ToolTip="If checked, command will be showed in chat every 40 minutes" Margin="2"/>
                     <CheckBox  Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsTimed}" Margin="2" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Grid.Row="5" Content="Add Command" HorizontalAlignment="Right" MinWidth="80" Click="Button_Click" Margin="2" Visibility="{Binding CanAddCommand}" />
+                    <Button Grid.Column="1" Grid.Row="5" Content="Add Command" HorizontalAlignment="Right" MinWidth="80" Click="AddCommand" Margin="2" Visibility="{Binding CanAddCommand}" />
                 </Grid>
 
             </TabItem>
+
+            <!--<TabItem DataContext="{Binding Children[2]}" Header="Youtube">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"  Content="Youtube List: " Margin="2"/>
+                    <DataGrid Grid.Column="0" Grid.Row="1" AlternatingRowBackground="WhiteSmoke" AlternationCount="2" ItemsSource="{Binding YoutubeSongs}" SelectedItem="{Binding SelectedSong}" AutoGenerateColumns="false">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="User requested" Width="Auto" Binding="{Binding UserRequested}"/>
+                            <DataGridHyperlinkColumn Header="Song name" Width="*" ContentBinding="{Binding SongName}" Binding="{Binding Link}">
+                                <DataGridHyperlinkColumn.ElementStyle>
+                                    <Style>
+                                        <EventSetter Event="Hyperlink.Click" Handler="DG_Hyperlink_Click"/>
+                                    </Style>
+                                </DataGridHyperlinkColumn.ElementStyle>
+                            </DataGridHyperlinkColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Row="2">
+                        <Button Content="Remove" Click="YoutubeButtonRemove"/>
+                    </StackPanel>
+                    <WebBrowser Grid.Row="3" Name="Test"/>
+                </Grid>
+            </TabItem>-->
         </TabControl>
     </Grid>
 </Window>

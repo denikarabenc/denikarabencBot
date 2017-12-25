@@ -151,6 +151,15 @@ namespace TwitchBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to !sr.
+        /// </summary>
+        internal static string botCommandPool_SONGREQUESTCOMMAND {
+            get {
+                return ResourceManager.GetString("botCommandPool_SONGREQUESTCOMMAND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to !title.
         /// </summary>
         internal static string botCommandPool_TITLE {
