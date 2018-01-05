@@ -109,5 +109,54 @@ namespace Common.Commands
                 serializer.Serialize(writer, currentCommands);
             }
         }
+
+        public void RemoveCommandFromXML(BotCommand botCommand)
+        {
+            string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
+            string filename = "commands";
+
+            var currentCommands = commandReader.GetAllCommandsFromXML();
+
+            var commandForRemoval = currentCommands.Where(bc => bc.Command == botCommand.Command && bc.IsTimed == botCommand.IsTimed && bc.Message == botCommand.Message && bc.Type == botCommand.Type && bc.UseAppendedStrings == botCommand.UseAppendedStrings && bc.UserPermission == botCommand.UserPermission).FirstOrDefault();
+            //var commandsForRemoval = currentCommands.Where(c => c.Command == botCommand.Command);
+            //BotCommand commandForRemoval;
+
+            if (commandForRemoval == null)
+            {
+                return; //TODO logging in common project
+            }
+            if (!currentCommands.Contains(commandForRemoval))
+            {
+                return;
+            }
+
+            if (currentCommands.Count == 0)
+            {
+                Directory.CreateDirectory(serializablesFolderPath);
+
+                FileCreator fileCreator = new FileCreator();
+                fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+            }
+
+            if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                File.WriteAllText(serializablesFolderPath + "/" + filename + ".xml", string.Empty);
+            }
+
+            //FolderCreator folderCreator = new FolderCreator();
+            //folderCreator.CreateFolder(serializablesFolderPath);
+
+            //FileCreator fileCreator = new FileCreator();
+            //fileCreator.CreateFile(serializablesFolderPath, filename, "xml");                       
+
+            currentCommands.Remove(commandForRemoval);
+
+            var serializer = new XmlSerializer(currentCommands.GetType(), new XmlRootAttribute("commands"));
+
+            using (StreamWriter writer = File.AppendText(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                serializer.Serialize(writer, currentCommands);
+            }
+        }
     }
 }

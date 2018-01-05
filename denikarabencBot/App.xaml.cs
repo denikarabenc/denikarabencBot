@@ -19,7 +19,7 @@ namespace denikarabencBot
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; ;
             BotLogger.Logger.Log(LoggingType.Info, "Starting Application");
-            MainWindowViewModel vm = new MainWindowViewModel();
+            GeneralViewModel vm = new GeneralViewModel();
             MainWindow mv = new MainWindow(vm);
             mv.Show();
         }

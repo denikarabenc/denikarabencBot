@@ -4,6 +4,7 @@ using denikarabencBot.ViewModels;
 using System;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 //using System.Speech.Recognition;
 
 namespace denikarabencBot
@@ -13,18 +14,14 @@ namespace denikarabencBot
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel viewModel;
-        private Thread BotThread;
+        private GeneralViewModel viewModel;
         //private SpeechRecognitionEngine speechRecognizer;
 
-        public MainWindow(MainWindowViewModel vm)
+        public MainWindow(GeneralViewModel vm)
         {
             viewModel = vm;
             DataContext = viewModel;
             InitializeComponent();
-
-            //ReadSettings(); //Uncomment this to read saved settings on startup
-
 
            // InitializeSpeechRecognizer();
 
@@ -33,18 +30,9 @@ namespace denikarabencBot
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            if (BotThread != null && BotThread.IsAlive)
-            {
-                (viewModel.Children[0] as GeneralViewModel).StopBot();
-                BotThread.Abort();
-            }
+            viewModel.StopBot();
+            Logger.Log(LoggingType.Info, "Exit application");
         }
-
-        //private void ReadSettings()
-        //{
-        //    (viewModel.Children[0] as GeneralViewModel).SteamID = Properties.Settings.Default.SteamId;
-        //    (viewModel.Children[0] as GeneralViewModel).TwitchChannelName = Properties.Settings.Default.TwitchUserName;
-        //}
 
         //private void InitializeSpeechRecognizer()
         //{
@@ -77,32 +65,7 @@ namespace denikarabencBot
         //private void SpeechRecognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         //{
         //    MessageBox.Show(e.Result.Text);
-        //}
-
-        private void JoinButton_Click(object sender, RoutedEventArgs e)
-        {           
-            Logger.Log(LoggingType.Info, "[MainWindow] -> Join clicked");
-            (viewModel.Children[0] as GeneralViewModel).RemoveBotButtonVisibility = Visibility.Visible;            
-            BotThread = new Thread(() =>
-            {
-                (viewModel.Children[0] as GeneralViewModel).StartBot();
-            });            
-            BotThread.Start();
-            (viewModel.Children[0] as GeneralViewModel).JoinButtonEnabled = false;
-        }
-
-        private void RemoveBotButton_Click(object sender, RoutedEventArgs e)
-        {
-            Logger.Log(LoggingType.Info, "[MainWindow] -> Remove clicked");
-            if (BotThread.IsAlive)
-            {
-                (viewModel.Children[0] as GeneralViewModel).StopBot();
-                BotThread.Abort();
-            }
-
-            (viewModel.Children[0] as GeneralViewModel).JoinButtonEnabled = true;
-            (viewModel.Children[0] as GeneralViewModel).RemoveBotButtonVisibility = Visibility.Collapsed;
-        }
+        //}       
 
         private void ProcessLog_Click(object sender, RoutedEventArgs e)
         {
@@ -111,35 +74,40 @@ namespace denikarabencBot
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            //Logger.Log("Exit application");
-            //Properties.Settings.Default.Save();
             this.Close();
         }
 
         private void Window_Closed(object sender, EventArgs e)
-        {
-            Logger.Log(LoggingType.Info, "Exit application");
+        {           
             Properties.Settings.Default.Save();
-            this.Close();
-        }
-
-        private void AddCommand(object sender, RoutedEventArgs e)
-        {
-            Logger.Log(LoggingType.Info, $"Command {(viewModel.Children[1] as CommandsViewModel).Command} added");
-
-            (viewModel.Children[1] as CommandsViewModel).SaveCommand();
-        }
+            this.Close();            
+        }    
 
         private void YoutubeButtonRemove(object sender, RoutedEventArgs e)
         {
-            //(viewModel.Children[2] as YoutubeViewModel).YoutubeSongs.Remove((viewModel.Children[2] as YoutubeViewModel).SelectedSong);           
-           // Test.NavigateToString(@"<html><body><iframe width=""854"" height=""480"" src=""https://www.youtube.com/embed/BfUQWIEHTG4?list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV"" frameborder=""0"" gesture=""media"" allow=""encrypted-media"" allowfullscreen></iframe></body></html>");
-        }     
+            //viewModel.YoutubeViewModel.YoutubeSongs.Remove(viewModel.YoutubeViewModel.SelectedSong);           
+            // Test.NavigateToString(@"<html><body><iframe width=""854"" height=""480"" src=""https://www.youtube.com/embed/BfUQWIEHTG4?list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV"" frameborder=""0"" gesture=""media"" allow=""encrypted-media"" allowfullscreen></iframe></body></html>");
+        }
 
         private void DG_Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Documents.Hyperlink link = (System.Windows.Documents.Hyperlink)e.OriginalSource;
-            System.Diagnostics.Process.Start(link.NavigateUri.OriginalString);
+            //  System.Diagnostics.Process.Start(link.NavigateUri.OriginalString););
+            Test.Navigate("https://www.youtube.com/watch?v=BfUQWIEHTG4&list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV");
+            Test.Navigating += Test_Navigating;
+            Test.Navigated += Test_Navigated;
+        }
+
+        private void Test_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            object o = (sender as WebBrowser).Source;
+            
+        }
+
+        private void Test_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            object o = (sender as WebBrowser).Source;
+            viewModel.YoutubeViewModel.YoutubeBotService.RemoveFirstSongFromPlaylist();
         }
     }
 }

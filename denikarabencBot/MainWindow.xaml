@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:denikarabencBot"
+        xmlns:local="clr-namespace:denikarabencBot.Views"
         mc:Ignorable="d"
         Closed="Window_Closed"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <TabControl>
-            <TabItem DataContext="{Binding Children[0]}" Header="General">
+            <TabItem DataContext="{Binding}" Header="General">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -52,14 +52,14 @@
                         </Grid>
                     </GroupBox>
 
-                    <Button x:Name="removeBot" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Content="Remove Bot form channel" Visibility="{Binding RemoveBotButtonVisibility}" Click="RemoveBotButton_Click" MinWidth="80"/>
-                    <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Content="Join" Click="JoinButton_Click" IsEnabled="{Binding JoinButtonEnabled}" MinWidth="80"/>
+                    <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Content="Join" Command="{Binding JoinBotCommand}" IsEnabled="{Binding JoinButtonEnabled}" MinWidth="80"/>
+                    <Button x:Name="removeBot" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Content="Remove Bot form channel" Visibility="{Binding RemoveBotButtonVisibility}" Command="{Binding RemoveBotCommand}" MinWidth="80"/>
 
                     <Button Grid.Column="0" Grid.Row="5" Content="log process" HorizontalAlignment="Left" MinWidth="80" Click="ProcessLog_Click"/>
                     <Button Grid.Column="1" Grid.Row="5" Content="Exit" HorizontalAlignment="Right" MinWidth="80" Click="ExitBtn_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem DataContext="{Binding Children[1]}" Header="Commands">
+            <TabItem DataContext="{Binding CommandsViewModel}" Header="Commands">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -70,24 +70,25 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"  Content="Command: " Margin="2"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Command}" Margin="2"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Command, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
                     <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Content="Message: " ToolTip="What will bot write when command is typed in chat. Type {0} to write name of the user who typed message, type {1} to get what he typed. For instance '{0} has written {1}' " Margin="2"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Message}" Margin="2"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
                     <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Content="Permission: " ToolTip="Permission needed to activate command. King is broadcaster" Margin="2"/>
                     <ComboBox  Grid.Column="1" Grid.Row="2" ItemsSource="{Binding PermissionSource}" SelectedItem="{Binding Permission}" Margin="2"/>
                     <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Content="Is command timed: " ToolTip="If checked, command will be showed in chat every 40 minutes" Margin="2"/>
                     <CheckBox  Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsTimed}" Margin="2" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Grid.Row="5" Content="Add Command" HorizontalAlignment="Right" MinWidth="80" Click="AddCommand" Margin="2" Visibility="{Binding CanAddCommand}" />
+                    <Button Grid.Column="1" Grid.Row="4" Content="Add Command" HorizontalAlignment="Right" MinWidth="80" Command="{Binding AddCommandCommand}" Margin="2" Visibility="{Binding CanAddCommand}" />
+                    <local:CommandsDataGridUserControl Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"/>
                 </Grid>
 
             </TabItem>
 
-            <!--<TabItem DataContext="{Binding Children[2]}" Header="Youtube">
+            <TabItem DataContext="{Binding YoutubeViewModel}" Header="Youtube">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -96,7 +97,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+
                     </Grid.RowDefinitions>
 
                     <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"  Content="Youtube List: " Margin="2"/>
@@ -117,7 +119,7 @@
                     </StackPanel>
                     <WebBrowser Grid.Row="3" Name="Test"/>
                 </Grid>
-            </TabItem>-->
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

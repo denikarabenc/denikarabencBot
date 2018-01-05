@@ -1,72 +1,126 @@
-﻿using System.ComponentModel;
+﻿using BotLogger;
+using Common.Helpers;
+using Common.Models;
+using Common.WPFCommand;
+using System.ComponentModel;
+using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using TwitchBot;
 
 namespace denikarabencBot.ViewModels
 {
-    public class GeneralViewModel : BaseViewModel, INotifyPropertyChanged
+    public class GeneralViewModel : INotifyPropertyChanged
     {
-        private Visibility removeBotButtonVisibility;
+        private bool removeBotButtonVisibility;
         private bool joinButtonEnabled;
 
         private bool isAutoGameChanegeEnabled;
         private bool isReplayEnabled;
-       // private string twitchChannelName;
         private string steamID;
         private string replayPath;
+        
+        private string twitchChannelName;
+
+        private Thread botThread;
+
+        private ICommand joinBotCommand;
+        private ICommand removeBotCommand;
+
+        private BotRunner bot;
+
+        private CommandsViewModel commandsViewModel;
+        private YoutubeViewModel youtubeViewModel;
 
         //private BotRunner bot;
 
         public GeneralViewModel()
         {
-            this.Bot = Bot;
             //twitchChannelName = "denikarabenc";
             //steamID = "76561197999517010";
             LoadSettings();
-
+            commandsViewModel = new CommandsViewModel();
+            YoutubeViewModel = new YoutubeViewModel();
             joinButtonEnabled = true;
-            removeBotButtonVisibility = Visibility.Collapsed;
-        }
 
+            removeBotButtonVisibility = false;
+        }
+      
         private void LoadSettings()
         {
             isAutoGameChanegeEnabled = Properties.Settings.Default.IsAutoGameChanegeEnabled;
             isReplayEnabled = Properties.Settings.Default.IsReplayEnabled;
-            //twitchChannelName = Properties.Settings.Default.TwitchUserName;
+            twitchChannelName = Properties.Settings.Default.TwitchUserName;
             steamID = Properties.Settings.Default.SteamId;
             replayPath = Properties.Settings.Default.ReplayPath;
         }
 
-        public Visibility RemoveBotButtonVisibility
+        public ICommand JoinBotCommand
         {
-            get => removeBotButtonVisibility;
-            set
+            get => joinBotCommand ?? (joinBotCommand = new RelayCommand(param => JoinBotCommandExecute(), param => JoinBotCommandCanExecute()));
+        }
+
+        public ICommand RemoveBotCommand
+        {
+            get => removeBotCommand ?? (removeBotCommand = new RelayCommand(param => RemoveBotCommandExecute(), param => RemoveBotCommandCanExecute()));
+        }
+
+        private void RemoveBotCommandExecute()
+        {
+            Logger.Log(LoggingType.Info, "[MainWindow] -> Remove clicked");
+            if (botThread.IsAlive)
             {
-                removeBotButtonVisibility = value;
-                OnPropertyChanged(nameof(RemoveBotButtonVisibility));
+                StopBot();
+                botThread.Abort();
             }
+
+            joinButtonEnabled = true;
+            removeBotButtonVisibility = false;
+        }        
+
+        private bool RemoveBotCommandCanExecute()
+        {
+            return RemoveBotButtonVisibility;
+        }
+
+        private void JoinBotCommandExecute()
+        {
+            Logger.Log(LoggingType.Info, "[MainWindow] -> Join clicked");
+            removeBotButtonVisibility = true;
+            botThread = new Thread(() =>
+            {
+                StartBot();
+            });
+            botThread.Start();
+            joinButtonEnabled = false;
+            OnPropertyChanged(nameof(JoinButtonEnabled));
+        }
+
+        private bool JoinBotCommandCanExecute()
+        {
+            return JoinButtonEnabled;
+        }
+
+        public bool RemoveBotButtonVisibility
+        {
+            get => removeBotButtonVisibility;           
         }
 
         public bool JoinButtonEnabled
         {
-            get => joinButtonEnabled;
-            set
-            {
-                joinButtonEnabled = value;
-                OnPropertyChanged(nameof(JoinButtonEnabled));
-            }
+            get => joinButtonEnabled;            
         }
 
-        //public string TwitchChannelName
-        //{
-        //    get => twitchChannelName;
-        //    set
-        //    {
-        //        twitchChannelName = value;
-        //        Properties.Settings.Default.TwitchUserName = twitchChannelName;
-        //        OnPropertyChanged(nameof(TwitchChannelName));
-        //    }
-        //}
+        public string TwitchChannelName
+        {
+            get => twitchChannelName;
+            set
+            {
+                twitchChannelName = value;
+                Properties.Settings.Default.TwitchUserName = twitchChannelName;
+                OnPropertyChanged(nameof(TwitchChannelName));
+            }
+        }
 
         public string SteamID
         {
@@ -110,31 +164,36 @@ namespace denikarabencBot.ViewModels
                 Properties.Settings.Default.ReplayPath = replayPath;
                 OnPropertyChanged(nameof(ReplayPath));
             }
-        }        
+        }
 
-        //public BotRunner Bot { get => bot; set => bot = value; }        
+        public CommandsViewModel CommandsViewModel { get => commandsViewModel; set => commandsViewModel = value; }
+        public YoutubeViewModel YoutubeViewModel { get => youtubeViewModel; set => youtubeViewModel = value; }
 
-        public void StartBot()
+        private void StartBot()
         {
             IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:vv0yeswj1kpcmyvi381006bl7rxaj4", TwitchChannelName);
-            Bot = new BotRunner(irc);
-            Bot.ChannelName = TwitchChannelName;
-            Bot.SteamID = SteamID;
-            Bot.IsReplayEnabled = IsReplayEnabled;
-            Bot.ReplayPath = ReplayPath;
-            Bot.IsAutoGameChangeEnabled = IsAutoGameChanegeEnabled;
+            bot = new BotRunner(irc);
+            bot.ChannelName = TwitchChannelName;
+            bot.SteamID = SteamID;
+            bot.IsReplayEnabled = IsReplayEnabled;
+            bot.ReplayPath = ReplayPath;
+            bot.IsAutoGameChangeEnabled = IsAutoGameChanegeEnabled;
             //for Deni
             //bot.ChannelName = "denikarabenc";
             //bot.SteamID = "76561197999517010";
-            Bot.IsCanceled = false;
-            Bot.StartBot();
+            bot.IsCanceled = false;
+            bot.StartBot();
         }
 
         public void StopBot()
         {
-            Bot.ShutDownBot();
-            Bot.IsCanceled = true;
-            Bot = null;
+            if (botThread != null && botThread.IsAlive && bot != null)
+            {
+                bot.ShutDownBot();
+                bot.IsCanceled = true;
+                bot = null;
+                botThread.Abort();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

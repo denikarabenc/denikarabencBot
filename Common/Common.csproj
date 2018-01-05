@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +50,7 @@
     <Compile Include="Models\BotCommand.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPFCommand\RelayCommand.cs" />
     <Compile Include="Writters\OBSConfigurationWriter.cs" />
     <Compile Include="Youtube\SongItem.cs" />
   </ItemGroup>
