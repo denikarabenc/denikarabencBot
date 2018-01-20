@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using CefSharp;
 //using System.Speech.Recognition;
 
 namespace denikarabencBot
@@ -14,18 +15,34 @@ namespace denikarabencBot
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GeneralViewModel viewModel;
+        private MainWindowViewModel viewModel;
         //private SpeechRecognitionEngine speechRecognizer;
 
-        public MainWindow(GeneralViewModel vm)
+        public MainWindow(MainWindowViewModel vm)
         {
             viewModel = vm;
             DataContext = viewModel;
             InitializeComponent();
 
-           // InitializeSpeechRecognizer();
+            // InitializeSpeechRecognizer();
 
+            Closing += MainWindow_Closing; //TODO
             Closed += MainWindow_Closed;            
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (viewModel.HasNewReminder)
+            {
+                MessageBoxResult result = MessageBoxResult.None;
+                result = MessageBox.Show("You have some unseen reminders, do you really want to exit?", "Warning", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                    Logger.Log(LoggingType.Info, "[MainWindow] -> Closing application cancelled");
+                }
+            }
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -91,23 +108,26 @@ namespace denikarabencBot
 
         private void DG_Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Documents.Hyperlink link = (System.Windows.Documents.Hyperlink)e.OriginalSource;
-            //  System.Diagnostics.Process.Start(link.NavigateUri.OriginalString););
-            Test.Navigate("https://www.youtube.com/watch?v=BfUQWIEHTG4&list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV");
-            Test.Navigating += Test_Navigating;
-            Test.Navigated += Test_Navigated;
+            //System.Windows.Documents.Hyperlink link = (System.Windows.Documents.Hyperlink)e.OriginalSource;
+            //System.Diagnostics.Process.Start(link.NavigateUri.OriginalString);
+            //Test.Navigate("https://www.twitch.tv/lirik");
+            //Test.LoadHtml(@"<iframe src=""https://clips.twitch.tv/embed?clip=HyperPhilanthropicHamKappaWealth&autoplay=false"" width=""640"" height =""360"" frameborder =""0"" scrolling =""no"" allowfullscreen =""false"" ></iframe>");
+            //Test.Address = "https://www.twitch.tv/lirik";            
+            //Test.Navigate("https://www.youtube.com/watch?v=BfUQWIEHTG4&list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV");
+            //Test.Navigating += Test_Navigating;
+            //Test.Navigated += Test_Navigated;
         }
 
-        private void Test_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            object o = (sender as WebBrowser).Source;
-            
-        }
+        //private void Test_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        //{
+        //    object o = (sender as WebBrowser).Source;
 
-        private void Test_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            object o = (sender as WebBrowser).Source;
-            viewModel.YoutubeViewModel.YoutubeBotService.RemoveFirstSongFromPlaylist();
-        }
+        //}
+
+        //private void Test_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        //{
+        //    object o = (sender as WebBrowser).Source;
+        //    viewModel.YoutubeViewModel.YoutubeBotService.RemoveFirstSongFromPlaylist();
+        //}
     }
 }

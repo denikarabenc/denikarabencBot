@@ -43,9 +43,9 @@ namespace TwitchBot.TwitchStream
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");  //26213337760
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
                 request.Method = "PUT";
-                request.Headers["Authorization"] = $"OAuth vv0yeswj1kpcmyvi381006bl7rxaj4";
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
                 request.ContentType = "application/json";
                 request.Accept = $"application/vnd.twitchtv.v3+json";
 
@@ -95,9 +95,9 @@ namespace TwitchBot.TwitchStream
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");  //26213337760
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
                 request.Method = "PUT";
-                request.Headers["Authorization"] = $"OAuth vv0yeswj1kpcmyvi381006bl7rxaj4"; //vv0yeswj1kpcmyvi381006bl7rxaj4
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967"; //vv0yeswj1kpcmyvi381006bl7rxaj4
                 request.ContentType = "application/json";
                 request.Accept = $"application/vnd.twitchtv.v3+json";
 

@@ -114,13 +114,21 @@ namespace TwitchBot
 
         public string ReadMessage()
         {
-            string message = inputStream.ReadLine();
-            if (message.Contains("PING :tmi.twitch.tv"))
+            try
             {
-                outputStream.WriteLine("PONG :tmi.twitch.tv");
-                outputStream.Flush();
+                string message = inputStream.ReadLine();
+                if (message.Contains("PING :tmi.twitch.tv"))
+                {
+                    outputStream.WriteLine("PONG :tmi.twitch.tv");
+                    outputStream.Flush();
+                }
+                return message;
             }
-            return message;
+            catch(System.Exception e)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Error, e);
+                return string.Empty;
+            }
         }
 
         public void PongMessage()

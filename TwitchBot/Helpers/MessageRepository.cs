@@ -44,7 +44,7 @@ namespace TwitchBot.Helpers
         {
             loadingMessages.Add("Rewinding tape...");
             loadingMessages.Add("Making something up...");
-            //loadingMessages.Add("Asking {0} to help...");
+            //loadingMessages.Add("Asking {1} to help...");
             loadingMessages.Add("{0}, fine, I'm working on it...");
             loadingMessages.Add("Feeding the hamster...");
             loadingMessages.Add("Ok MingLee ™ Kappa");
@@ -57,7 +57,7 @@ namespace TwitchBot.Helpers
             loadingMessages.Add("Increasing FPS to 144...");
             loadingMessages.Add("Loading...");
             loadingMessages.Add("Switching to quantum CPU...");
-            //loadingMessages.Add("Can {0} do that instead?");
+            //loadingMessages.Add("Can {1} do that instead?");
             loadingMessages.Add("Why do you like to torture me, {0}? FeelsBadMan");
             loadingMessages.Add("Upscaling to 4K");
         }

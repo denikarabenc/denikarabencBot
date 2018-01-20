@@ -9,6 +9,7 @@ using Common.Models;
 using WindowsInput;
 using Common.Commands;
 using Common.Helpers;
+using System.Timers;
 
 namespace TwitchBot.BotCommands
 {
@@ -17,6 +18,7 @@ namespace TwitchBot.BotCommands
     {
         private readonly string botCommandPool_PINGCOMMAND = "PING :tmi.twitch.tv";
         private readonly string replayPath;
+        private readonly string clipPath;
 
         private readonly List<string> specialCommands; //special commands need some special command parsing so it can read command and input user typed
 
@@ -26,6 +28,7 @@ namespace TwitchBot.BotCommands
         public BotCommandsRepository(bool isReplayEnabled, string replayPath)
         {
             this.replayPath = (replayPath == null) ? string.Empty : replayPath;
+            this.clipPath = Directory.GetCurrentDirectory() + "/" + "Clips";
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
            // AddPredefinedCommands(commandPool); //This should be tool method
@@ -361,6 +364,74 @@ namespace TwitchBot.BotCommands
                 return replayPath + "/" + myFile.Name;
             }
             
+        }
+
+        public void CreateAndGetClipCommandFileNameAndPath(string clipId)
+        {
+            Directory.CreateDirectory(clipPath);
+            FileCreator fc = new FileCreator();
+            fc.CreateFile(clipPath, "clipHTML", "html");
+
+            //clipId = "EphemeralAntsyChoughDeIlluminati";
+            using (StreamWriter writer = new StreamWriter(clipPath+"/" + "clipHTML.html", false))
+            {
+                writer.Write(@"<!DOCTYPE html><html><head><title> Clip </title></head><body><iframe src=""https://clips.twitch.tv/embed?clip=" + clipId + @"&autoplay=true"" width=""1024"" height=""575"" frameborder=""0"" scrolling=""no"" allowfullscreen=""false"" ></iframe></body></html>");
+            }
+            
+            InputSimulator.SimulateKeyDown(VirtualKeyCode.F14);
+            System.Threading.Thread.Sleep(200);
+            InputSimulator.SimulateKeyUp(VirtualKeyCode.F14);
+            Timer clipTimer = new Timer(31000);
+            clipTimer.AutoReset = false;
+            clipTimer.Enabled = true;
+            clipTimer.Elapsed += ClipTimer_Elapsed;
+            
+            //System.Threading.Thread.Sleep(5000);
+
+            //if (!Directory.Exists(replayPath))
+            //{
+            //    BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> Invalid replay path! Directory does not exist!");
+            //    return String.Empty;
+            //}
+            //var directory = new DirectoryInfo(replayPath);
+            //if (directory.GetFiles().Length == 0)
+            //{
+            //    BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
+            //    return String.Empty;
+            //}
+
+            //FileInfo myFile = directory.GetFiles()
+            // .OrderByDescending(f => f.LastWriteTime)
+            // .First();
+
+            //if (requestedTime > myFile.CreationTime)
+            //{
+            //    BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
+            //    return String.Empty;
+            //}
+
+            //if (myFile.Extension != ".mp4")
+            //{
+            //    BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> Latest file created is not .mp4");
+            //    return String.Empty;
+            //}
+
+            //if (replayPath.EndsWith("/") || replayPath.EndsWith(@"\"))
+            //{
+            //    return replayPath + myFile.Name;
+            //}
+            //else
+            //{
+            //    return replayPath + "/" + myFile.Name;
+            //}
+
+        }
+
+        private void ClipTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            InputSimulator.SimulateKeyDown(VirtualKeyCode.F14);
+            System.Threading.Thread.Sleep(200);
+            InputSimulator.SimulateKeyUp(VirtualKeyCode.F14);
         }
     }
 }

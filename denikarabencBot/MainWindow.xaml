@@ -4,10 +4,46 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:denikarabencBot.Views"
+        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:converters="clr-namespace:denikarabencBot.Converters"
         mc:Ignorable="d"
         Closed="Window_Closed"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <!-- Pulse -->
+        <Storyboard x:Key="Pulse" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="PulseBox">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.85"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="PulseBox">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.85"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+    </Window.Resources>
+    <!--<Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Pulse}"/>
+        </EventTrigger>
+    </Window.Triggers>-->
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="PulseStyleTextBlock" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="35"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Text" Value="You have new reminder!"/>
+            </Style>
+            <Style x:Key="PulseStyleRectangle" TargetType="{x:Type Rectangle}">
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="Width" Value="150"/>
+            </Style>
+        </Grid.Resources>
         <TabControl>
             <TabItem DataContext="{Binding}" Header="General">
                 <Grid>
@@ -52,14 +88,31 @@
                         </Grid>
                     </GroupBox>
 
-                    <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Content="Join" Command="{Binding JoinBotCommand}" IsEnabled="{Binding JoinButtonEnabled}" MinWidth="80"/>
+                    <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Content="Join" Command="{Binding JoinBotCommand}" MinWidth="80"/>
                     <Button x:Name="removeBot" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Content="Remove Bot form channel" Visibility="{Binding RemoveBotButtonVisibility}" Command="{Binding RemoveBotCommand}" MinWidth="80"/>
+
+                    <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Open Reminders" Command="{Binding OpenReminderListCommand}"/>
+
+                    <Border Grid.Column="1" Grid.Row="3" x:Name="PulseBox" Visibility="{Binding HasNewReminder, Converter={StaticResource boolToVisibilityConverter}}"
+                        Background="Red" RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Border.RenderTransform>
+
+                        <TextBlock Style="{StaticResource PulseStyleTextBlock}"/>
+
+                    </Border>
 
                     <Button Grid.Column="0" Grid.Row="5" Content="log process" HorizontalAlignment="Left" MinWidth="80" Click="ProcessLog_Click"/>
                     <Button Grid.Column="1" Grid.Row="5" Content="Exit" HorizontalAlignment="Right" MinWidth="80" Click="ExitBtn_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem DataContext="{Binding CommandsViewModel}" Header="Commands">
+            <TabItem DataContext="{Binding}" Header="Commands">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -117,7 +170,8 @@
                     <StackPanel Grid.Row="2">
                         <Button Content="Remove" Click="YoutubeButtonRemove"/>
                     </StackPanel>
-                    <WebBrowser Grid.Row="3" Name="Test"/>
+                    <!--<cefSharp:ChromiumWebBrowser Grid.Row="3" Name="Test" />-->
+                    <WebBrowser Name="Test" Grid.Row="3"/>
                 </Grid>
             </TabItem>
         </TabControl>

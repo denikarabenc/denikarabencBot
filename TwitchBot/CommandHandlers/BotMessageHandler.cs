@@ -1,6 +1,7 @@
 ﻿using BotLogger;
 using Common.Helpers;
 using Common.Models;
+using Common.Reminders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,29 +21,37 @@ namespace TwitchBot.CommandHandlers
         private readonly string channelName;
         private readonly BotCommandsRepository botCommands;
         private readonly MessageRepository messageRepository;
+        private readonly ReminderService reminderService;
 
         private bool mediaCommandAllowed;
         private TwitchStreamInfoProvider twitchStreamInfoProvider;
         private TwitchStreamUpdater twitchStreamUpdater;
+        private TwitchStreamClipProvider twitchStreamClipProvider;
         private YoutubeBotService youtubeProvider;
         private List<string> modsList;
         private Timer modRefreshTimer;
         private Timer mediaCommandTimer;
         private Random radnomIndex;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName)
+        private Action reminderCallback;
+
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName, Action reminderCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             botCommands.ThrowIfNull(nameof(botCommands));
             twitchStreamInfoProvider.ThrowIfNull(nameof(twitchStreamInfoProvider));
+            reminderService.ThrowIfNull(nameof(reminderService));
             this.twitchStreamInfoProvider = twitchStreamInfoProvider;
+            this.reminderService = reminderService;
             this.irc = irc;
             this.botCommands = botCommands;
             this.channelName = channelName;
+            this.reminderCallback = reminderCallback;
 
             youtubeProvider = new YoutubeBotService();
 
             modsList = new List<string>();
+            twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
             twitchStreamUpdater = new TwitchStreamUpdater(channelName);
             mediaCommandAllowed = true;
 
@@ -119,8 +128,14 @@ namespace TwitchBot.CommandHandlers
                 case CommandType.SongRequestCommand:
                     HandleSongRequestCommand(parsedMessage, userWhoSentMessage);
                     break;
+                case CommandType.CreateClip:
+                    HandleCreateClipCommand(parsedMessage, userWhoSentMessage);
+                    break;
                 case CommandType.CommandList:
                     HandleCommandListCommand();
+                    break;
+                case CommandType.Reminder:
+                    HandleRemindersCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.NotExist:
                     CommandType commandTypeReChecked = botCommands.GetCommandType(message);
@@ -134,9 +149,55 @@ namespace TwitchBot.CommandHandlers
             }
         }
 
+        private void HandleRemindersCommand(string parsedMessage, string userWhoSentMessage)
+        {
+            reminderService.AddReminder(new Reminder(userWhoSentMessage, parsedMessage.Substring(10)));
+            reminderCallback.Invoke();
+            //irc.SendInformationChatMessage("Reminder saved!");
+        }
+
         private void HandlePingCommand()
         {
             irc.PongMessage();
+        }
+
+        private void HandleCreateClipCommand(string parsedMessage, string userWhoSentMessage)
+        {
+            if (!mediaCommandAllowed)
+            {
+                irc.SendChatMessage("Wow, do not spam it FeelsBadMan");
+                return;
+            }
+
+            if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
+            {                
+                string clipId = twitchStreamClipProvider.CreateTwitchClip();
+
+                string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
+                irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
+
+                Timer clipTimer = new Timer(10000);
+                clipTimer.AutoReset = false;
+                clipTimer.Enabled = true;
+                clipTimer.Elapsed += (sender, e) => ClipTimer_Elapsed(sender, e, clipId);              
+            }
+        }
+
+        private void ClipTimer_Elapsed(object sender, ElapsedEventArgs e, string clipId)
+        {
+            if (clipId != "Failed to generate clip FeelsBadMan")
+            {
+                irc.SendInformationChatMessage("Clip url is https://clips.twitch.tv/" + clipId); //TODO Make this in new thread
+                botCommands.CreateAndGetClipCommandFileNameAndPath(clipId);
+
+                mediaCommandAllowed = false;
+                mediaCommandTimer.Enabled = true;
+                mediaCommandTimer.Start();
+            }
+            else
+            {
+                irc.SendInformationChatMessage(clipId);
+            }
         }
 
         private void HandleSongRequestCommand(string parsedMessage, string userWhoSentMessage)
@@ -258,7 +319,24 @@ namespace TwitchBot.CommandHandlers
         {
             if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
             {
-                string param = String.Join(", ", (twitchStreamInfoProvider.GamesPlayed.Select(x => x.GameName)));
+                string param = string.Empty;
+
+                //foreach (TwitchGame tg in twitchStreamInfoProvider.GamesPlayed)
+                //{
+                //    param += tg.GameName + " for " + tg.TimePlayed.Elapsed.ToString("hh\\:mm\\:ss");
+                //}
+
+                for (int i = 0; i < twitchStreamInfoProvider.GamesPlayed.Count; i++)
+                {
+                    param += twitchStreamInfoProvider.GamesPlayed[i].GameName + " for " + twitchStreamInfoProvider.GamesPlayed[i].TimePlayed.Elapsed.ToString("hh\\:mm\\:ss");
+
+                    if (i != twitchStreamInfoProvider.GamesPlayed.Count - 1)
+                    {
+                        param += ", ";
+                    }
+                }
+
+                //string param = String.Join(", ", (twitchStreamInfoProvider.GamesPlayed.Select(x => x.GameName)));
 
                 irc.SendChatMessage(botCommands.GetTwitchStatusCommandMessage(parsedMessage, param));
             }

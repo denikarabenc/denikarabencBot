@@ -31,8 +31,11 @@ namespace TwitchBot.Steam
 
             jsonResult = JsonConvert.DeserializeObject<SteamJsonRootObject>(json);
 
-            PlayerName = jsonResult?.Response?.Players[0]?.PersonaName;
-            GameName = jsonResult?.Response?.Players[0]?.GameExtraInfo;
+            if (jsonResult?.Response?.Players.Count != 0)
+            {
+                PlayerName = jsonResult?.Response?.Players[0]?.PersonaName;
+                GameName = jsonResult?.Response?.Players[0]?.GameExtraInfo;
+            }
 
             //if (GameName == null)
             //{
@@ -84,8 +87,9 @@ namespace TwitchBot.Steam
                 {
                     json = webClient.DownloadString("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=B4139755162C446B3D350BAF8D8B0EDC&steamids=" + steamID);
                 }
-                catch (WebException)
+                catch (WebException ex)
                 {
+                    BotLogger.Logger.Log(Common.Models.LoggingType.Warning, ex);
                     json = string.Empty;
                 }
             }
@@ -103,8 +107,9 @@ namespace TwitchBot.Steam
                     //json = webClient.DownloadString("http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=B4139755162C446B3D350BAF8D8B0EDC&appid=" + gameId);
                     json = webClient.DownloadString("http://store.steampowered.com/api/appdetails?appids=" + gameId);
                 }
-                catch (WebException)
+                catch (WebException ex)
                 {
+                    BotLogger.Logger.Log(Common.Models.LoggingType.Warning, ex);
                     json = string.Empty;
                 }
             }
@@ -125,7 +130,8 @@ namespace TwitchBot.Steam
             Dictionary<string, string> mapper = new Dictionary<string, string>();
 
             mapper.Add("The Binding of Isaac: Rebirth", "The Binding of Isaac: Afterbirth");
-
+            mapper.Add("Tom Clancy's Rainbow Six® Siege", "Tom Clancy's Rainbow Six: Siege");
+            
             return mapper;
         }
     }

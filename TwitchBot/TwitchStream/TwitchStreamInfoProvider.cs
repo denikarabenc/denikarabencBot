@@ -17,6 +17,19 @@ namespace TwitchBot.TwitchStream
         {
             this.channelName = channelName;
             gamesPlayed = new List<TwitchGame>();
+
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/users/" + channelName);
+            //request.Method = "GET";
+            //request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
+            //request.ContentType = "application/json";
+            //request.Accept = $"application/vnd.twitchtv.v3+json";
+
+            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            //using (var reader = new StreamReader(response.GetResponseStream()))
+            //{
+            //    string jsonString = reader.ReadToEnd();
+            //}
         }
 
         public List<TwitchGame> GamesPlayed => gamesPlayed;
@@ -25,9 +38,9 @@ namespace TwitchBot.TwitchStream
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr"); //26213337760
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
                 request.Method = "GET";
-                request.Headers["Authorization"] = $"OAuth vv0yeswj1kpcmyvi381006bl7rxaj4";
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
                 request.ContentType = "application/json";
                 request.Accept = $"application/vnd.twitchtv.v3+json";
 
@@ -48,7 +61,7 @@ namespace TwitchBot.TwitchStream
             }
             catch (WebException ex)
             {
-                Logger.Log(LoggingType.Error, "[TwitchStreamInfoProvider] -> ", ex);
+                Logger.Log(LoggingType.Warning, "[TwitchStreamInfoProvider] -> ", ex);
                 return new TwitchJsonRootObject();
             }
         }

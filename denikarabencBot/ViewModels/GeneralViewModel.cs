@@ -76,6 +76,7 @@ namespace denikarabencBot.ViewModels
 
             joinButtonEnabled = true;
             removeBotButtonVisibility = false;
+            
         }        
 
         private bool RemoveBotCommandCanExecute()
@@ -171,8 +172,8 @@ namespace denikarabencBot.ViewModels
 
         private void StartBot()
         {
-            IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:vv0yeswj1kpcmyvi381006bl7rxaj4", TwitchChannelName);
-            bot = new BotRunner(irc);
+            IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
+            bot = new BotRunner(irc, null);
             bot.ChannelName = TwitchChannelName;
             bot.SteamID = SteamID;
             bot.IsReplayEnabled = IsReplayEnabled;

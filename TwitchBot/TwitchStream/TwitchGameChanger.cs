@@ -1,10 +1,15 @@
 ﻿using Common.Helpers;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Timers;
 using TwitchBot.Helpers;
 using TwitchBot.Interfaces;
 using TwitchBot.LocalGameChecker;
 using TwitchBot.Steam;
 using TwitchBot.TwitchStream;
+using TwitchBot.TwitchStream.Json;
 
 namespace TwitchBot
 {
@@ -17,6 +22,7 @@ namespace TwitchBot
         private readonly TwitchStreamInfoProvider twitchStreamInfoProvider;
         private readonly TwitchStreamUpdater twitchStreamUpdater;
         private readonly SteamInfoProvider steamInfoProvider;
+        private string twitchCurrentGame;
         private Timer gameTimer;
         private Timer gameChangePossibleTimer;
         private bool gameChangePossible;
@@ -37,6 +43,8 @@ namespace TwitchBot
             waitInMinutesBeforeTwitchIsUpdated = 3;
 
             twitchStreamInfoProvider.AddPlayingGame();
+
+            twitchCurrentGame = twitchStreamInfoProvider.GetCurrentTwitchGame();
 
             gameTimer = new Timer(1000 * 10);
             gameTimer.AutoReset = true;
@@ -61,7 +69,7 @@ namespace TwitchBot
                 return;
             }
 
-            string twitchCurrentGame = twitchStreamInfoProvider.GetCurrentTwitchGame();
+            //twitchCurrentGame = twitchStreamInfoProvider.GetCurrentTwitchGame();
 
             if (twitchCurrentGame == null)
             {
@@ -81,7 +89,7 @@ namespace TwitchBot
             string gameCurrentlyRunningOnMachine;
 
             gameCurrentlyRunningOnMachine = GetSteamInfoGame();
-
+            
             if (steamInfoProvider.GetSteamGamesWhichWouldNotBeChangedTo().Contains(gameCurrentlyRunningOnMachine))
             {
                 gameCurrentlyRunningOnMachine = null;
@@ -89,16 +97,40 @@ namespace TwitchBot
 
             if (gameCurrentlyRunningOnMachine != null)
             {
-                gameCurrentlyRunningOnMachine = ParseGameName(gameCurrentlyRunningOnMachine);
+                gameCurrentlyRunningOnMachine = ParseGameName(gameCurrentlyRunningOnMachine);                
             }
 
-            if (gameCurrentlyRunningOnMachine != null && twitchCurrentGame != gameCurrentlyRunningOnMachine)
+            string gameForTwitch = string.Empty;
+            if (gameCurrentlyRunningOnMachine != null)
             {
+                gameForTwitch = GetGameCurrentlyRunningInFormatForTwitch(gameCurrentlyRunningOnMachine);
+                if (string.IsNullOrEmpty(gameForTwitch))
+                {
+                    gameForTwitch = gameCurrentlyRunningOnMachine;
+                }
+            }
+
+            if (gameForTwitch != null && gameForTwitch != string.Empty && twitchCurrentGame != gameForTwitch)
+            {
+                //Ovde nadji koju igri igras sa giant bomb-a, i ne treba da se setuje koja se igra igra na twitch-u
+                //string gameForTwitch = GetGameCurrentlyRunningInFormatForTwitch(gameCurrentlyRunningOnMachine);
+                //if (string.IsNullOrEmpty(gameForTwitch))
+                //{
+                //    gameForTwitch = gameCurrentlyRunningOnMachine;
+                //}
+
                 BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[TwitchGameChanger] -> Game name from steam is: {gameCurrentlyRunningOnMachine}");
-                string reportMessage = twitchStreamUpdater.SetTwitchGameAndReturnWhichGameIsSet(gameCurrentlyRunningOnMachine);
+                string reportMessage = twitchStreamUpdater.SetTwitchGameAndReturnWhichGameIsSet(gameForTwitch);
                 
                 if (reportMessage != "Game change failed FeelsBadMan")
                 {
+                    //var a = GetResultsFromGiantBomb(gameCurrentlyRunningOnMachine);
+                    //twitchCurrentGame = twitchStreamInfoProvider.GetCurrentTwitchGame();                    
+                    //twitchStreamInfoProvider.AddPlayingGame(gameCurrentlyRunningOnMachine);
+                    //gameChangePossible = false;
+                    //gameChangePossibleTimer.Start();
+                    
+                    twitchCurrentGame = gameForTwitch;
                     twitchStreamInfoProvider.AddPlayingGame(gameCurrentlyRunningOnMachine);
                     gameChangePossible = false;
                     gameChangePossibleTimer.Start();
@@ -118,6 +150,7 @@ namespace TwitchBot
                 
                 if (reportMessage != "Game change failed FeelsBadMan")
                 {
+                    twitchCurrentGame = twitchStreamInfoProvider.GetCurrentTwitchGame();
                     twitchStreamInfoProvider.AddPlayingGame(gameCurrentlyRunningOnMachine);
                     gameChangePossible = false;
                     gameChangePossibleTimer.Start();
@@ -129,7 +162,6 @@ namespace TwitchBot
 
         private string GetSteamInfoGame()
         {
-            //SteamInfoProvider sip = new SteamInfoProvider();
             steamInfoProvider.UpdateSteamInfo();
             if (steamInfoProvider.GameName != null)
             {
@@ -148,6 +180,60 @@ namespace TwitchBot
             gameCurrentlyRunningOnMachine = gameCurrentlyRunningOnMachine.Replace("\u2122", "");
 
             return gameCurrentlyRunningOnMachine;
+        }
+
+        private List<string> GetResultsFromGiantBomb(string game)
+        {
+            List<string> results = new List<string>();
+            string json;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.giantbomb.com/api/search/?api_key=4d2b9d82b5a7c34f441f027482d9c3f8525dffae&format=json&query=%27" + game + "%27&resources=game&field_list=name&limit=20");
+            request.Method = "GET";
+            request.UserAgent = "TwitchDenikarabencBot"; //vv0yeswj1kpcmyvi381006bl7rxaj4
+
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    string jsonString = reader.ReadToEnd();
+                    GameBombInfoJsonRootObject jsonGamesResult = JsonConvert.DeserializeObject<GameBombInfoJsonRootObject>(jsonString);
+                    foreach (GameBombInfo gbi in jsonGamesResult.Results)
+                    {
+                        results.Add(gbi.Name);
+                    }
+                }     
+            }
+            catch (WebException e)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Warning, e);
+                json = string.Empty;
+            }
+         
+            return results;
+        }
+
+        private string GetGameCurrentlyRunningInFormatForTwitch(string gameCurrentlyRunningOnMachine)
+        {
+            if (string.IsNullOrEmpty(gameCurrentlyRunningOnMachine))
+            {
+                return string.Empty;
+            }
+
+            string game = string.Empty;
+
+            List<string> giantBombResults = GetResultsFromGiantBomb(gameCurrentlyRunningOnMachine);
+
+            for (int i = 0; i < giantBombResults.Count; i++)
+            {
+                if (giantBombResults[i].ToLower() == gameCurrentlyRunningOnMachine.ToLower())
+                {
+                    game = giantBombResults[i];
+                }
+            }
+
+            return game;
         }
     }
 }

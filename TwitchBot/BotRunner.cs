@@ -7,6 +7,7 @@ using TwitchBot.BotCommands;
 using TwitchBot.CommandHandlers;
 using Common.Models;
 using System;
+using Common.Reminders;
 
 namespace TwitchBot
 {
@@ -16,42 +17,50 @@ namespace TwitchBot
         private bool isCanceled;
         private bool isReplayEnabled;
         private bool isAutoGameChangeEnabled;
+
         private string channelName;
         private string steamID;
         private string replayPath;
 
         private BotCommandsRepository commandPool;
+        private ReminderService reminderService;
 
         private string mediaPlayerFileName;
 
-        public BotRunner(IIrcClient irc)
+        private Action reminderCallback;
+
+        public BotRunner(IIrcClient irc, Action reminderCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             this.irc = irc;
             isCanceled = false;
+            this.reminderCallback = reminderCallback;
         }
 
         public bool IsCanceled { get => isCanceled; set => isCanceled = value; }        
         public bool IsAutoGameChangeEnabled { get => isAutoGameChangeEnabled; set => isAutoGameChangeEnabled = value; }
         public bool IsReplayEnabled { get => isReplayEnabled; set => isReplayEnabled = value; }
+
         public string SteamID { get => steamID; set => steamID = value; }
         public string ChannelName { get => channelName; set => channelName = value; }
         public string MediaPlayerFileName { get => mediaPlayerFileName; set => mediaPlayerFileName = value; }
         public string ReplayPath { get => replayPath; set => replayPath = value; }
+
         public BotCommandsRepository CommandPool => commandPool;
+        public ReminderService ReminderService => reminderService;
 
         public void StartBot()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
+            reminderService = new ReminderService();
             TwitchStreamInfoProvider twitchStreamInfoProvider = new TwitchStreamInfoProvider(ChannelName);
             SteamInfoProvider steamInfoProvider = new SteamInfoProvider(SteamID);
-            //IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:vv0yeswj1kpcmyvi381006bl7rxaj4");            
+            //IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967");            
             irc.JoinRoom();
             //irc.SendChatMessage(".mods");
-
             TimedCommandHandler timedCommandHandler = new TimedCommandHandler(commandPool, irc);
-            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, irc, twitchStreamInfoProvider, channelName);
+            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, irc, twitchStreamInfoProvider, channelName, reminderCallback);
             if (IsAutoGameChangeEnabled)
             {
                 Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
