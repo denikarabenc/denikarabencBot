@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:denikarabencBot.Views"
-        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:converters="clr-namespace:denikarabencBot.Converters"
         mc:Ignorable="d"
         Closed="Window_Closed"
@@ -141,7 +140,7 @@
 
             </TabItem>
 
-            <TabItem DataContext="{Binding YoutubeViewModel}" Header="Youtube">
+            <!--<TabItem DataContext="{Binding YoutubeViewModel}" Header="Youtube">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -170,10 +169,10 @@
                     <StackPanel Grid.Row="2">
                         <Button Content="Remove" Click="YoutubeButtonRemove"/>
                     </StackPanel>
-                    <!--<cefSharp:ChromiumWebBrowser Grid.Row="3" Name="Test" />-->
+                    --><!--<cefSharp:ChromiumWebBrowser Grid.Row="3" Name="Test" />--><!--
                     <WebBrowser Name="Test" Grid.Row="3"/>
                 </Grid>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
     </Grid>
 </Window>

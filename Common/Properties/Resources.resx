@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="COMMANDS_FILENAME" xml:space="preserve">
+  <data name="Common_BUILTINCOMMANDS_FILENAME" xml:space="preserve">
+    <value>builtInCommands</value>
+  </data>
+  <data name="Common_COMMANDS_FILENAME" xml:space="preserve">
     <value>commands</value>
   </data>
-  <data name="REMINDERS_FILENAME" xml:space="preserve">
+  <data name="Common_REMINDERS_FILENAME" xml:space="preserve">
     <value>reminders</value>
+  </data>
+  <data name="Common_SERIALIZABLES_DIRECTORYNAME" xml:space="preserve">
+    <value>Serializables</value>
   </data>
 </root>

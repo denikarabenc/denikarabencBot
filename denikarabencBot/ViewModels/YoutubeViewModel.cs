@@ -19,7 +19,7 @@ namespace denikarabencBot.ViewModels
             YoutubeBotService = new YoutubeBotService();
             YoutubeBotService.SongRequestCallback = Testiranje;
                
-            youtubeSongs = GetSongListFromYoutube();
+           // youtubeSongs = GetSongListFromYoutube();
         }
 
         private ObservableCollection<SongItem> GetSongListFromYoutube()

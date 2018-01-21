@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<commands xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>true</UseAppendedStringsElementName>
+    <CommandElementName>!hello</CommandElementName>
+    <MessageElementName>Hello to you, {0}! &lt;3</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>Kappa</CommandElementName>
+    <MessageElementName>Kappa</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>PogChamp</CommandElementName>
+    <MessageElementName>PogChamp</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>LUL</CommandElementName>
+    <MessageElementName>LUL indeed</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>LuL</CommandElementName>
+    <MessageElementName>LUL &gt; LuL Kappa</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>true</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!dance</CommandElementName>
+    <MessageElementName>PepePls PepePls PepePls</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>true</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!streamer</CommandElementName>
+    <MessageElementName>My name is Deni, I like video games :)</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>true</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!twitter</CommandElementName>
+    <MessageElementName>Follow me on twitter for schedule, updates, everything you want to know! www.twitter.com/denikarabenc</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>true</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!discord</CommandElementName>
+    <MessageElementName>Join our little discord server in the making! discordapp.com/invite/ct6XeDD</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!games</CommandElementName>
+    <MessageElementName>This is variety stream, but our main games are Rocket league, Starcraft, PUBG, Overwatch... Usually Kappa</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!cam</CommandElementName>
+    <MessageElementName>Deni is using experimental feature where you can control if camera is on or off. Use !camON or !camOFF to control it</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!camON</CommandElementName>
+    <MessageElementName>Jebaited</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!camOFF</CommandElementName>
+    <MessageElementName>Ok FeelsBadMan</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!schedule</CommandElementName>
+    <MessageElementName>There is no strong schedule, but I'll try to stream every work day from 18h CET (17h GMT, 12 EST)</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+ 
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>true</UseAppendedStringsElementName>
+    <CommandElementName>!battletag</CommandElementName>
+    <MessageElementName> denikarabenc#2212</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>  
+</commands>

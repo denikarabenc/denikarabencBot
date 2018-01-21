@@ -30,7 +30,7 @@ namespace Common.Creators
             }
         }
 
-        public void CreateFile(string folderPath, string fileName, string extention)
+        public void CreateFileIfNotExist(string folderPath, string fileName, string extention)
         {
             if (!Directory.Exists(folderPath))
             {

@@ -1,5 +1,6 @@
 ﻿using Common.Helpers;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -13,7 +14,7 @@ using TwitchBot.TwitchStream.Json;
 
 namespace TwitchBot
 {
-    public class TwitchGameChanger
+    public class TwitchGameChanger : IDisposable
     {
         private readonly int waitInMinutesBeforeTwitchIsUpdated;
         private readonly IIrcClient irc;
@@ -234,6 +235,14 @@ namespace TwitchBot
             }
 
             return game;
+        }
+
+        public void Dispose()
+        {
+            gameTimer.Stop();
+            gameChangePossibleTimer.Stop();
+            gameTimer.Dispose();
+            gameChangePossibleTimer.Dispose();
         }
     }
 }

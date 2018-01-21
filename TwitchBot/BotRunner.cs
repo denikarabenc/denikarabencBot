@@ -24,17 +24,20 @@ namespace TwitchBot
 
         private BotCommandsRepository commandPool;
         private ReminderService reminderService;
+        private TwitchGameChanger twitchGameChanger;
 
         private string mediaPlayerFileName;
 
         private Action reminderCallback;
+        private Action refreshCommandListCallback;
 
-        public BotRunner(IIrcClient irc, Action reminderCallback)
+        public BotRunner(IIrcClient irc, Action reminderCallback, Action refreshCommandListCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             this.irc = irc;
             isCanceled = false;
             this.reminderCallback = reminderCallback;
+            this.refreshCommandListCallback = refreshCommandListCallback;
         }
 
         public bool IsCanceled { get => isCanceled; set => isCanceled = value; }        
@@ -60,11 +63,11 @@ namespace TwitchBot
             irc.JoinRoom();
             //irc.SendChatMessage(".mods");
             TimedCommandHandler timedCommandHandler = new TimedCommandHandler(commandPool, irc);
-            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, irc, twitchStreamInfoProvider, channelName, reminderCallback);
+            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, irc, twitchStreamInfoProvider, channelName, reminderCallback, refreshCommandListCallback);
             if (IsAutoGameChangeEnabled)
             {
                 Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
-                TwitchGameChanger twitchGameChanger = new TwitchGameChanger(irc, twitchStreamInfoProvider, steamInfoProvider, channelName);
+                twitchGameChanger = new TwitchGameChanger(irc, twitchStreamInfoProvider, steamInfoProvider, channelName);
             }
             else
             {
@@ -81,6 +84,7 @@ namespace TwitchBot
         public void ShutDownBot()
         {            
             irc.LeaveRoom();
+            twitchGameChanger?.Dispose();
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot shutted down");
         }
     }

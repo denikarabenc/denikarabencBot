@@ -173,7 +173,7 @@ namespace denikarabencBot.ViewModels
         private void StartBot()
         {
             IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
-            bot = new BotRunner(irc, null);
+            bot = new BotRunner(irc, null, null);
             bot.ChannelName = TwitchChannelName;
             bot.SteamID = SteamID;
             bot.IsReplayEnabled = IsReplayEnabled;

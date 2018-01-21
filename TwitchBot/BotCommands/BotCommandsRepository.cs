@@ -19,6 +19,7 @@ namespace TwitchBot.BotCommands
         private readonly string botCommandPool_PINGCOMMAND = "PING :tmi.twitch.tv";
         private readonly string replayPath;
         private readonly string clipPath;
+        private readonly CommandSaver commandSaver;
 
         private readonly List<string> specialCommands; //special commands need some special command parsing so it can read command and input user typed
 
@@ -31,8 +32,12 @@ namespace TwitchBot.BotCommands
             this.clipPath = Directory.GetCurrentDirectory() + "/" + "Clips";
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
+            commandSaver = new CommandSaver();
+            AddBuiltInCommands(commandPool);
            // AddPredefinedCommands(commandPool); //This should be tool method
             AddPredefinedCommandsFromXML(isReplayEnabled);
+
+            AddAllCommandsCommand(commandPool);
         }
 
         private void AddPredefinedCommandsFromXML(bool isReplayEnabled)
@@ -54,6 +59,19 @@ namespace TwitchBot.BotCommands
                 botCommands = (List<BotCommand>)serializer.Deserialize(reader);
             }
 
+            filename = "buildInCommands";
+
+            if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                return;
+            }
+
+            using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                botCommands.AddRange((List<BotCommand>)serializer.Deserialize(reader));
+            }
+
+
             foreach (BotCommand bc in botCommands)
             {
                 if (bc.Command == "!replay" && !isReplayEnabled)
@@ -64,7 +82,43 @@ namespace TwitchBot.BotCommands
                 commandPool[bc.Command] = bc;
             }
         }
-        
+
+        private void AddBuiltInCommands(Dictionary<string, BotCommand> commandPools) //Make gamesplayed command which will contain game that has been played and for how long
+        {            
+            commandPool.Add("!replayfeature", new BotCommand("!replayfeature", "You can use '!replay' to get an instant replay PogChamp", UserType.Regular, false, true));
+            commandPool.Add("!follow", new BotCommand("!follow", "Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! <3 ", UserType.Mod, true, false, CommandType.UserInputCommand));
+            commandPool.Add("!gamesplayed", new BotCommand("!gamesplayed", "Games played this stream are: {0}", UserType.Regular, true, false, CommandType.TwitchStatusCommand));
+            commandPool.Add("!addcommand", new BotCommand("!addcommand", "", UserType.Mod, false, false, CommandType.AddCommand));
+            commandPool.Add("!editcommand", new BotCommand("!editcommand", "", UserType.Mod, false, false, CommandType.EditCommand));
+            commandPool.Add("!title", new BotCommand("!title", "{0} changed title to: {1}", UserType.Mod, true, false, CommandType.ChangeTitleCommand));
+            //commandPool.Add("!sr", new BotCommand("!sr", "", UserType.King, false, false, CommandType.SongRequestCommand));
+            commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, CommandType.MediaCommand));
+            commandPool.Add("!clip", new BotCommand("!clip", "", UserType.Regular, false, false, CommandType.CreateClip));
+            commandPool.Add("!remindme", new BotCommand("!remindme", "", UserType.Regular, false, false, CommandType.Reminder));
+
+            string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
+            string filename = "buildInCommands";
+            if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                //File.Delete(serializablesFolderPath + "/" + filename + ".xml");
+                return;
+            }
+
+            Directory.CreateDirectory(serializablesFolderPath);
+
+            FileCreator fileCreator = new FileCreator();
+            fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
+
+            List<BotCommand> listBotCommands = new List<BotCommand>(commandPool.Values);
+
+            var serializer = new XmlSerializer(listBotCommands.GetType(), new XmlRootAttribute("commands"));
+
+            using (StreamWriter writer = File.AppendText(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                serializer.Serialize(writer, listBotCommands);
+            }
+        }
+
         private void AddPredefinedCommands(Dictionary<string, BotCommand> commandPool) //Make gamesplayed command which will contain game that has been played and for how long
         {      
             commandPool.Add("!hello", new BotCommand("!hello", "Hello to you, {0}! <3", UserType.Regular, true));
@@ -80,22 +134,7 @@ namespace TwitchBot.BotCommands
             commandPool.Add("!cam", new BotCommand("!cam", "Deni is using experimental feature where you can control if camera is on or off. Use !camON or !camOFF to control it"));
             commandPool.Add("!camON", new BotCommand("!camON", "Jebaited"));
             commandPool.Add("!camOFF", new BotCommand("!camOFF", "Ok FeelsBadMan"));
-            commandPool.Add("!schedule", new BotCommand("!schedule", "There is no strong schedule, but I'll try to stream every work day from 18h CET (17h GMT, 12 EST)"));
-            commandPool.Add("!replayfeature", new BotCommand("!replayfeature", "You can use '!replay' to get an instant replay PogChamp",UserType.Regular,false, true));
-
-            commandPool.Add("!follow", new BotCommand("!follow", "Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! <3 ", UserType.Mod, true, false, CommandType.UserInputCommand));
-
-            commandPool.Add("!gamesplayed", new BotCommand("!gamesplayed", "Games played this stream are: {0}", UserType.Regular, true, false, CommandType.TwitchStatusCommand));
-
-            commandPool.Add("!addcommand", new BotCommand("!addcommand", "", UserType.Mod, false, false, CommandType.AddCommand));
-
-            commandPool.Add("!editcommand", new BotCommand("!editcommand", "", UserType.Mod, false, false, CommandType.EditCommand));
-
-            commandPool.Add("!title", new BotCommand("!title", "{0} changed title to: {1}", UserType.Mod, true, false, CommandType.ChangeTitleCommand));
-
-            commandPool.Add("!sr", new BotCommand("!sr", "", UserType.King, false, false, CommandType.SongRequestCommand));
-
-            commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, CommandType.MediaCommand));
+            commandPool.Add("!schedule", new BotCommand("!schedule", "There is no strong schedule, but I'll try to stream every work day from 18h CET (17h GMT, 12 EST)"));           
 
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "commands";
@@ -107,7 +146,7 @@ namespace TwitchBot.BotCommands
             Directory.CreateDirectory(serializablesFolderPath);
 
             FileCreator fileCreator = new FileCreator();
-            fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+            fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
 
             List<BotCommand> listBotCommands = new List<BotCommand>(commandPool.Values);
 
@@ -252,7 +291,7 @@ namespace TwitchBot.BotCommands
             return allCommands;
         }
 
-        public string AddCommandAndGetFeedback(string command, string message)
+        public string AddCommandAndGetFeedback(string command, string message, Action callback)
         {
             if (commandPool.ContainsKey(command))
             {
@@ -260,24 +299,26 @@ namespace TwitchBot.BotCommands
                     Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_ALREADY_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_EDITCOMMAND, Properties.Resources.botCommandPool_INSTEAD);
             }
 
-            commandPool.Add(command, new BotCommand(command, message));
-            CommandSaver cs = new CommandSaver();
-            cs.AddCommandToXML(command, message);
+            commandPool.Add(command, new BotCommand(command, message, CommandType.UserInputCommand));
+            commandSaver.AddCommandToXML(command, message);
             StringBuilder sb = new StringBuilder();
+            callback?.Invoke();
             return string.Format("{0} {1} {2}", Properties.Resources.botCommandPool_COMMAND, command, TwitchBot.Properties.Resources.botCommandPool_ADDED);
         }
 
-        public string EditCommandAndGetFeedback(string command, string newMessage)
+        public string EditCommandAndGetFeedback(string command, string newMessage, Action callback)
         {
             if (!commandPool.ContainsKey(command))
             {
                 return string.Format("{0} {1} {2}. {3} {4} {5}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_DOES_NOT_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_ADDCOMMAND, TwitchBot.Properties.Resources.botCommandPool_INSTEAD);
             }
 
-            commandPool[command] = new BotCommand(command, newMessage);
-            CommandSaver cs = new CommandSaver();
-            cs.RemoveCommandFromXML(command);
-            cs.AddCommandToXML(command, newMessage);
+            BotCommand oldCommand = commandPool[command];
+
+            commandPool[command] = new BotCommand(command, newMessage, oldCommand.UserPermission, oldCommand.UseAppendedStrings, oldCommand.IsTimed, oldCommand.Type);
+            commandSaver.RemoveCommandFromXML(command);
+            commandSaver.AddCommandToXML(command, newMessage);
+            callback?.Invoke();
             StringBuilder sb = new StringBuilder();
             return string.Format("{0} {1} {2} {3}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_EDITED_TO, newMessage);
         }
@@ -366,11 +407,11 @@ namespace TwitchBot.BotCommands
             
         }
 
-        public void CreateAndGetClipCommandFileNameAndPath(string clipId)
+        public void CreateClipCommandFileNameAndPath(string clipId)
         {
             Directory.CreateDirectory(clipPath);
             FileCreator fc = new FileCreator();
-            fc.CreateFile(clipPath, "clipHTML", "html");
+            fc.CreateFileIfNotExist(clipPath, "clipHTML", "html");
 
             //clipId = "EphemeralAntsyChoughDeIlluminati";
             using (StreamWriter writer = new StreamWriter(clipPath+"/" + "clipHTML.html", false))

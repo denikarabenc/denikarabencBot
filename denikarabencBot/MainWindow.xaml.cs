@@ -2,10 +2,7 @@
 using Common.Models;
 using denikarabencBot.ViewModels;
 using System;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using CefSharp;
 //using System.Speech.Recognition;
 
 namespace denikarabencBot

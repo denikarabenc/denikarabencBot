@@ -24,5 +24,7 @@ namespace denikarabencBot.Views
         {
             InitializeComponent();
         }
+
+        
     }
 }

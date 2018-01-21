@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<commands xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BotCommand>
+    <IsTimedElementName>true</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!replayfeature</CommandElementName>
+    <MessageElementName>You can use '!replay' to get an instant replay PogChamp</MessageElementName>
+    <TypeElementName>ReadCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>true</UseAppendedStringsElementName>
+    <CommandElementName>!follow</CommandElementName>
+    <MessageElementName>Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! &lt;3 </MessageElementName>
+    <TypeElementName>UserInputCommand</TypeElementName>
+    <UserPermissionElementName>Mod</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>true</UseAppendedStringsElementName>
+    <CommandElementName>!gamesplayed</CommandElementName>
+    <MessageElementName>Games played this stream are: {0}</MessageElementName>
+    <TypeElementName>TwitchStatusCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!addcommand</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>AddCommand</TypeElementName>
+    <UserPermissionElementName>Mod</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!editcommand</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>EditCommand</TypeElementName>
+    <UserPermissionElementName>Mod</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>true</UseAppendedStringsElementName>
+    <CommandElementName>!title</CommandElementName>
+    <MessageElementName>{0} changed title to: {1}</MessageElementName>
+    <TypeElementName>ChangeTitleCommand</TypeElementName>
+    <UserPermissionElementName>Mod</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!sr</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>SongRequestCommand</TypeElementName>
+    <UserPermissionElementName>King</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!replay</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>MediaCommand</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!clip</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>CreateClip</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+  <BotCommand>
+    <IsTimedElementName>false</IsTimedElementName>
+    <UseAppendedStringsElementName>false</UseAppendedStringsElementName>
+    <CommandElementName>!remindme</CommandElementName>
+    <MessageElementName />
+    <TypeElementName>Reminder</TypeElementName>
+    <UserPermissionElementName>Regular</UserPermissionElementName>
+  </BotCommand>
+</commands>

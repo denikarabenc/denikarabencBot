@@ -1,5 +1,6 @@
 ﻿using BotLogger;
 using Common.Commands;
+using Common.Creators;
 using Common.Models;
 using Common.Reminders;
 using Common.WPFCommand;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -39,7 +41,6 @@ namespace denikarabencBot.ViewModels
         private UserType permission;
         private BotCommand selectedCommand;
         private List<BotCommand> commandList;
-        private List<Reminder> reminderList;
         private List<UserType> permissionSource;
         
         private Thread botThread;
@@ -51,6 +52,7 @@ namespace denikarabencBot.ViewModels
         private ICommand openReminderListCommand;
 
         private Action reminderCallback;
+        private Action refreshCommandsCallback;
 
         private BotRunner bot;
 
@@ -61,6 +63,7 @@ namespace denikarabencBot.ViewModels
             //twitchChannelName = "denikarabenc";
             //steamID = "76561197999517010";
             LoadSettings();
+            CreateFiles();
             YoutubeViewModel = new YoutubeViewModel();
             joinButtonEnabled = true;
 
@@ -75,22 +78,32 @@ namespace denikarabencBot.ViewModels
             commandList = new List<BotCommand>();
             RefreshCommandList();
 
-            reminderList = reminderService.GetAllReminders();
-            //hasNewReminder = true;
-
             permissionSource = new List<UserType>();
             permissionSource.Add(UserType.Regular);
             permissionSource.Add(UserType.Follower);
             permissionSource.Add(UserType.Mod);
             permissionSource.Add(UserType.King);
             reminderCallback = ReminderRefresh;
+            refreshCommandsCallback = RefreshCommandList;
+        }
+
+        private void CreateFiles()
+        {
+            string clipPath = Directory.GetCurrentDirectory() + "/" + "Clips";
+            Directory.CreateDirectory(clipPath);
+            FileCreator fc = new FileCreator();
+            fc.CreateFileIfNotExist(clipPath, "clipHTML", "html");
+
+            //clipId = "EphemeralAntsyChoughDeIlluminati";
+            using (StreamWriter writer = new StreamWriter(clipPath + "/" + "clipHTML.html", false))
+            {
+                writer.Write(@"<!DOCTYPE html><html><head><title> Clip </title></head><body><iframe src=""https://clips.twitch.tv/embed?clip=" + "EmpathicViscousSushiYouDontSay" + @"&autoplay=true"" width=""1024"" height=""575"" frameborder=""0"" scrolling=""no"" allowfullscreen=""false"" ></iframe></body></html>");
+            }
         }
 
         private void ReminderRefresh()
         {
             hasNewReminder = true;
-            reminderList = reminderService.GetAllReminders();
-            OnPropertyChanged(nameof(ReminderList));
             OnPropertyChanged(nameof(HasNewReminder));
         }
 
@@ -107,6 +120,16 @@ namespace denikarabencBot.ViewModels
         public ICommand RemoveSelectedCommandCommand
         {
             get => removeSelectedCommandCommand ?? (removeSelectedCommandCommand = new RelayCommand(param => RemoveSelectedCommandCommandExecute(), param => CanRemoveSelectedCommandCommandExecute()));
+        }
+
+        public ICommand JoinBotCommand
+        {
+            get => joinBotCommand ?? (joinBotCommand = new RelayCommand(param => JoinBotCommandExecute(), param => JoinBotCommandCanExecute()));
+        }
+
+        public ICommand RemoveBotCommand
+        {
+            get => removeBotCommand ?? (removeBotCommand = new RelayCommand(param => RemoveBotCommandExecute(), param => RemoveBotCommandCanExecute()));
         }
 
         public string Message { get => message; set => message = value; }
@@ -127,9 +150,9 @@ namespace denikarabencBot.ViewModels
             hasNewReminder = false;
             OnPropertyChanged(nameof(HasNewReminder));
 
-            ReminderWindow rw = new ReminderWindow(new ReminderWindowViewModel(reminderList));
+            ReminderWindow rw = new ReminderWindow(new ReminderWindowViewModel(reminderService));
 
-            rw.Show();
+            rw.ShowDialog();
         }
 
         private bool CanAddCommandCommandExecute()
@@ -214,15 +237,7 @@ namespace denikarabencBot.ViewModels
             replayPath = Properties.Settings.Default.ReplayPath;
         }
 
-        public ICommand JoinBotCommand
-        {
-            get => joinBotCommand ?? (joinBotCommand = new RelayCommand(param => JoinBotCommandExecute(), param => JoinBotCommandCanExecute()));
-        }
-
-        public ICommand RemoveBotCommand
-        {
-            get => removeBotCommand ?? (removeBotCommand = new RelayCommand(param => RemoveBotCommandExecute(), param => RemoveBotCommandCanExecute()));
-        }
+      
 
         private void RemoveBotCommandExecute()
         {
@@ -329,12 +344,11 @@ namespace denikarabencBot.ViewModels
         public bool HasNewReminder => hasNewReminder;
 
         public YoutubeViewModel YoutubeViewModel { get => youtubeViewModel; set => youtubeViewModel = value; }
-        public List<Reminder> ReminderList => reminderList;
 
         private void StartBot()
         {
             IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
-            bot = new BotRunner(irc, reminderCallback);
+            bot = new BotRunner(irc, reminderCallback, refreshCommandsCallback);
             bot.ChannelName = TwitchChannelName;
             bot.SteamID = SteamID;
             bot.IsReplayEnabled = IsReplayEnabled;

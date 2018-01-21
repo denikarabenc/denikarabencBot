@@ -22,6 +22,12 @@ namespace Common.Reminders
             reminders.AddReminderToXML(reminder);
         }
 
+        public void RemoveReminder(Reminder reminder)
+        {
+            //reminders.ReminderPool.Remove(reminder); //TODO
+            reminders.RemoveReminderFromXML(reminder);
+        }
+
         public List<Reminder> GetAllReminders()
         {
             //return reminders.ReminderPool;

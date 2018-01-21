@@ -34,8 +34,9 @@ namespace TwitchBot.CommandHandlers
         private Random radnomIndex;
 
         private Action reminderCallback;
+        private Action refreshCommandListCallback;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName, Action reminderCallback)
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             botCommands.ThrowIfNull(nameof(botCommands));
@@ -47,6 +48,7 @@ namespace TwitchBot.CommandHandlers
             this.botCommands = botCommands;
             this.channelName = channelName;
             this.reminderCallback = reminderCallback;
+            this.refreshCommandListCallback = refreshCommandListCallback;
 
             youtubeProvider = new YoutubeBotService();
 
@@ -152,7 +154,7 @@ namespace TwitchBot.CommandHandlers
         private void HandleRemindersCommand(string parsedMessage, string userWhoSentMessage)
         {
             reminderService.AddReminder(new Reminder(userWhoSentMessage, parsedMessage.Substring(10)));
-            reminderCallback.Invoke();
+            reminderCallback?.Invoke();
             //irc.SendInformationChatMessage("Reminder saved!");
         }
 
@@ -187,8 +189,8 @@ namespace TwitchBot.CommandHandlers
         {
             if (clipId != "Failed to generate clip FeelsBadMan")
             {
-                irc.SendInformationChatMessage("Clip url is https://clips.twitch.tv/" + clipId); //TODO Make this in new thread
-                botCommands.CreateAndGetClipCommandFileNameAndPath(clipId);
+                irc.SendInformationChatMessage("Clip url is https://clips.twitch.tv/" + clipId);
+                botCommands.CreateClipCommandFileNameAndPath(clipId);
 
                 mediaCommandAllowed = false;
                 mediaCommandTimer.Enabled = true;
@@ -266,7 +268,7 @@ namespace TwitchBot.CommandHandlers
 
         private void HandleUserInputCommand(string parsedMessage, string userWhoSentMessage)
         {
-            if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
+            if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage.Split(' ')[0])))
             {
                 int index = parsedMessage.IndexOf(" ");
                 if (index != -1 && parsedMessage.Length > index + 1)
@@ -356,7 +358,7 @@ namespace TwitchBot.CommandHandlers
                     }
                     string newCommandMessage = MessageParser.GetParsedMessage(parsedMessage).Split(':').Last();
 
-                    irc.SendChatMessage(botCommands.AddCommandAndGetFeedback(newCommand, newCommandMessage));
+                    irc.SendChatMessage(botCommands.AddCommandAndGetFeedback(newCommand, newCommandMessage, refreshCommandListCallback));
                 }
                 else
                 {
@@ -374,7 +376,7 @@ namespace TwitchBot.CommandHandlers
                     string commandForEdit = parsedMessage.Split(' ')[1];
                     string newCommandMessage = MessageParser.GetParsedMessage(parsedMessage).Split(':').Last();
 
-                    irc.SendChatMessage(botCommands.EditCommandAndGetFeedback(commandForEdit, newCommandMessage));
+                    irc.SendChatMessage(botCommands.EditCommandAndGetFeedback(commandForEdit, newCommandMessage, refreshCommandListCallback));
                 }
                 else
                 {

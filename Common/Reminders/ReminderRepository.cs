@@ -56,7 +56,7 @@ namespace Common.Reminders
                 Directory.CreateDirectory(serializablesFolderPath);
 
                 FileCreator fileCreator = new FileCreator();
-                fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+                fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
             }
 
             if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
@@ -80,6 +80,55 @@ namespace Common.Reminders
             }
         }
 
+        public void RemoveReminderFromXML(Reminder reminder)
+        {
+            string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
+            string filename = "reminders";
+
+            var currentReminders = GetRemindersFromXML();
+
+            var reminderForRemoval = currentReminders.Where(r => r.Message == reminder.Message && r.User == reminder.User).FirstOrDefault();
+            //var commandsForRemoval = currentCommands.Where(c => c.Command == botCommand.Command);
+            //BotCommand commandForRemoval;
+
+            if (reminderForRemoval == null)
+            {
+                return; //TODO logging in common project
+            }
+            if (!currentReminders.Contains(reminderForRemoval))
+            {
+                return;
+            }
+
+            if (currentReminders.Count == 0)
+            {
+                Directory.CreateDirectory(serializablesFolderPath);
+
+                FileCreator fileCreator = new FileCreator();
+                fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
+            }
+
+            if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                File.WriteAllText(serializablesFolderPath + "/" + filename + ".xml", string.Empty);
+            }
+
+            //FolderCreator folderCreator = new FolderCreator();
+            //folderCreator.CreateFolder(serializablesFolderPath);
+
+            //FileCreator fileCreator = new FileCreator();
+            //fileCreator.CreateFile(serializablesFolderPath, filename, "xml");                       
+
+            currentReminders.Remove(reminderForRemoval);
+
+            var serializer = new XmlSerializer(currentReminders.GetType(), new XmlRootAttribute("reminders"));
+
+            using (StreamWriter writer = File.AppendText(serializablesFolderPath + "/" + filename + ".xml"))
+            {
+                serializer.Serialize(writer, currentReminders);
+            }
+        }
+
         private void InitializeReminderXML()
         {
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
@@ -92,7 +141,7 @@ namespace Common.Reminders
             Directory.CreateDirectory(serializablesFolderPath);
 
             FileCreator fileCreator = new FileCreator();
-            fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+            fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
 
             List<Reminder> reminders = new List<Reminder>();
             var serializer = new XmlSerializer(reminders.GetType(), new XmlRootAttribute("reminders"));

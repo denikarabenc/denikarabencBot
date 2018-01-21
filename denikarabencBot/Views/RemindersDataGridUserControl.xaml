@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" SelectionUnit="Cell" Grid.Row="0" ItemsSource="{Binding ReminderList}" SelectedItem="{Binding SelectedReminder}">
+        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="0" ItemsSource="{Binding ReminderList}" SelectedItem="{Binding SelectedReminder}">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="Copy" />
@@ -22,9 +22,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="User" Width="Auto" Binding="{Binding User}"/>
                 <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Message}"/>
-                <DataGridCheckBoxColumn Header="Completed" Width="Auto" Binding="{Binding Completed}"/>
+                <!--<DataGridCheckBoxColumn Header="Completed" Width="Auto" Binding="{Binding Completed}"/>-->
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Content="Remove Reminder" Command="{Binding RemoveSelectedCommandCommand}"/>
+        <Button Grid.Row="1" HorizontalAlignment="Right" Content="Remove Reminder" Command="{Binding RemoveReminderCommand}"/>
     </Grid>
 </UserControl>

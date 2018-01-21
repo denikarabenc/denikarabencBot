@@ -43,7 +43,7 @@ namespace Common.Commands
                 Directory.CreateDirectory(serializablesFolderPath);
 
                 FileCreator fileCreator = new FileCreator();
-                fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+                fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
             }
 
             if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
@@ -86,7 +86,7 @@ namespace Common.Commands
                 Directory.CreateDirectory(serializablesFolderPath);
 
                 FileCreator fileCreator = new FileCreator();
-                fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+                fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
             }
 
             if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
@@ -135,7 +135,7 @@ namespace Common.Commands
                 Directory.CreateDirectory(serializablesFolderPath);
 
                 FileCreator fileCreator = new FileCreator();
-                fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
+                fileCreator.CreateFileIfNotExist(serializablesFolderPath, filename, "xml");
             }
 
             if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
