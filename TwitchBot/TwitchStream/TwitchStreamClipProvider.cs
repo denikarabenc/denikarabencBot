@@ -13,7 +13,7 @@ using TwitchBot.TwitchStream.Json;
 
 namespace TwitchBot.TwitchStream
 {
-    class TwitchStreamClipProvider
+    public class TwitchStreamClipProvider
     {
         private string channelName;
         private readonly string streamerID;
@@ -24,6 +24,7 @@ namespace TwitchBot.TwitchStream
             streamerID = GetChannelId(channelName);
             if (string.IsNullOrEmpty(streamerID))
             {
+                BotLogger.Logger.Log(LoggingType.Warning, "[TwitchStreamClipProvider] => streamerID is null!");
                 //TODO Sta ako pukne ovde nalazenje, treba ponovo pokusati da pronadje
             }
         }

@@ -7,16 +7,13 @@ using Common.WPFCommand;
 using denikarabencBot.Views;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using TwitchBot;
-using TwitchBot.TwitchStream;
 
 namespace denikarabencBot.ViewModels
 {
@@ -174,7 +171,7 @@ namespace denikarabencBot.ViewModels
 
             RefreshCommandList();
 
-            bot?.CommandPool.UpdatePredefinedCommandsFromXML(true); //TODO
+            Bot?.CommandPool.UpdatePredefinedCommandsFromXML(true); //TODO
         }
 
         private bool CanRemoveSelectedCommandCommandExecute()
@@ -188,7 +185,7 @@ namespace denikarabencBot.ViewModels
             Logger.Log(LoggingType.Info, string.Format("[CommandsViewModel] -> Command {0} removed!", SelectedCommand.Command));
             RefreshCommandList();
 
-            bot?.CommandPool.UpdatePredefinedCommandsFromXML(true);
+            Bot?.CommandPool.UpdatePredefinedCommandsFromXML(true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -235,9 +232,7 @@ namespace denikarabencBot.ViewModels
             twitchChannelName = Properties.Settings.Default.TwitchUserName;
             steamID = Properties.Settings.Default.SteamId;
             replayPath = Properties.Settings.Default.ReplayPath;
-        }
-
-      
+        }     
 
         private void RemoveBotCommandExecute()
         {
@@ -344,6 +339,7 @@ namespace denikarabencBot.ViewModels
         public bool HasNewReminder => hasNewReminder;
 
         public YoutubeViewModel YoutubeViewModel { get => youtubeViewModel; set => youtubeViewModel = value; }
+        public BotRunner Bot => bot;
 
         private void StartBot()
         {

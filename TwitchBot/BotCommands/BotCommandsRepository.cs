@@ -359,7 +359,7 @@ namespace TwitchBot.BotCommands
             }
         }
 
-        public string GetMediaCommandFileNameAndPath(string command)
+        public string GetMediaCommandFileNameAndPath()
         {
             DateTime requestedTime = DateTime.Now;
             InputSimulator.SimulateKeyDown(VirtualKeyCode.F13);

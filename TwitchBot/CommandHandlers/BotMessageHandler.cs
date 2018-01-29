@@ -36,13 +36,15 @@ namespace TwitchBot.CommandHandlers
         private Action reminderCallback;
         private Action refreshCommandListCallback;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback)
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, TwitchStreamClipProvider twitchStreamClipProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             botCommands.ThrowIfNull(nameof(botCommands));
             twitchStreamInfoProvider.ThrowIfNull(nameof(twitchStreamInfoProvider));
+            twitchStreamClipProvider.ThrowIfNull(nameof(twitchStreamClipProvider));
             reminderService.ThrowIfNull(nameof(reminderService));
             this.twitchStreamInfoProvider = twitchStreamInfoProvider;
+            this.twitchStreamClipProvider = twitchStreamClipProvider;
             this.reminderService = reminderService;
             this.irc = irc;
             this.botCommands = botCommands;
@@ -53,7 +55,7 @@ namespace TwitchBot.CommandHandlers
             youtubeProvider = new YoutubeBotService();
 
             modsList = new List<string>();
-            twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
+           // twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
             twitchStreamUpdater = new TwitchStreamUpdater(channelName);
             mediaCommandAllowed = true;
 
@@ -153,9 +155,12 @@ namespace TwitchBot.CommandHandlers
 
         private void HandleRemindersCommand(string parsedMessage, string userWhoSentMessage)
         {
-            reminderService.AddReminder(new Reminder(userWhoSentMessage, parsedMessage.Substring(10)));
-            reminderCallback?.Invoke();
-            //irc.SendInformationChatMessage("Reminder saved!");
+            if (parsedMessage.Length > 10)
+            {
+                reminderService.AddReminder(new Reminder(userWhoSentMessage, parsedMessage.Substring(10)));
+                reminderCallback?.Invoke();
+                irc.SendInformationChatMessage(String.Format("{0} will be reminded!", channelName));
+            }
         }
 
         private void HandlePingCommand()
@@ -243,7 +248,7 @@ namespace TwitchBot.CommandHandlers
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
                 irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
                 
-                string filename = botCommands.GetMediaCommandFileNameAndPath(parsedMessage);
+                string filename = botCommands.GetMediaCommandFileNameAndPath();
 
                 if (filename == string.Empty)
                 {

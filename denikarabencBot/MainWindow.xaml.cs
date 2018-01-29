@@ -3,7 +3,7 @@ using Common.Models;
 using denikarabencBot.ViewModels;
 using System;
 using System.Windows;
-//using System.Speech.Recognition;
+using System.Speech.Recognition;
 
 namespace denikarabencBot
 {
@@ -13,7 +13,7 @@ namespace denikarabencBot
     public partial class MainWindow : Window
     {
         private MainWindowViewModel viewModel;
-        //private SpeechRecognitionEngine speechRecognizer;
+        private SpeechRecognitionEngine speechRecognizer;
 
         public MainWindow(MainWindowViewModel vm)
         {
@@ -21,7 +21,7 @@ namespace denikarabencBot
             DataContext = viewModel;
             InitializeComponent();
 
-            // InitializeSpeechRecognizer();
+            InitializeSpeechRecognizer();
 
             Closing += MainWindow_Closing; //TODO
             Closed += MainWindow_Closed;            
@@ -48,38 +48,40 @@ namespace denikarabencBot
             Logger.Log(LoggingType.Info, "Exit application");
         }
 
-        //private void InitializeSpeechRecognizer()
-        //{
-        //    speechRecognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
-        //    speechRecognizer.SetInputToDefaultAudioDevice();
+        private void InitializeSpeechRecognizer()
+        {
+            speechRecognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
+            speechRecognizer.SetInputToDefaultAudioDevice();
 
-        //    Choices colors = new Choices();
-        //    colors.Add(new string[] { "hello"});
+            Choices commands = new Choices();
+            commands.Add(new string[] { "bot, please be kind and play replay", "bot, please be kind and clip that" });
 
-        //    GrammarBuilder gb = new GrammarBuilder();
-        //    gb.Append(colors);
+            GrammarBuilder gb = new GrammarBuilder();
+            gb.Append(commands);
 
-        //    // Create the Grammar instance.
-        //    Grammar g = new Grammar(gb);
+            // Create the Grammar instance.
+            Grammar g = new Grammar(gb);
 
-        //    speechRecognizer.LoadGrammar(g);
+            speechRecognizer.LoadGrammar(g);
 
-        //    speechRecognizer.SpeechDetected += SpeechRecognizer_SpeechDetected;
+            //speechRecognizer.SpeechDetected += SpeechRecognizer_SpeechDetected;
 
-        //    speechRecognizer.SpeechRecognized += SpeechRecognizer_SpeechRecognized;
-        //    speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
+            speechRecognizer.SpeechRecognized += SpeechRecognizer_SpeechRecognized;
+            speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
 
-        //}
+        }
 
         //private void SpeechRecognizer_SpeechDetected(object sender, SpeechDetectedEventArgs e)
         //{
-        //    throw new NotImplementedException();
+        //    object o = "";
+        //    BotLogger.Logger.Log(LoggingType.Info, "Voice recognized!");
         //}
 
-        //private void SpeechRecognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
-        //{
-        //    MessageBox.Show(e.Result.Text);
-        //}       
+        private void SpeechRecognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            BotLogger.Logger.Log(LoggingType.Info, "Voice command recognized!");
+           // ExecuteVoiceCommand(e.Result.Text);           
+        }
 
         private void ProcessLog_Click(object sender, RoutedEventArgs e)
         {
@@ -126,5 +128,18 @@ namespace denikarabencBot
         //    object o = (sender as WebBrowser).Source;
         //    viewModel.YoutubeViewModel.YoutubeBotService.RemoveFirstSongFromPlaylist();
         //}
+
+        private void ExecuteVoiceCommand(string voiceCommand)
+        {
+            switch (voiceCommand)
+            {
+                case "bot, please be kind and play replay":
+                    viewModel.Bot?.PlayReplay();
+                    break;
+                case "bot, please be kind and clip that":
+                    viewModel.Bot?.CreateAndPlayClip();
+                    break;
+            }           
+        }
     }
 }
