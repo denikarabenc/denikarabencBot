@@ -18,6 +18,7 @@ namespace Common.Models
         CommandList,
         CreateClip,
         Reminder,
+        Vote,
     }
 
     public enum UserType // Last should have all previuos permision. Get status of user form twitch and check if he is one of the roles. Use description to map it to string.

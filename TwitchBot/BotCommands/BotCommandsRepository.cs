@@ -95,6 +95,7 @@ namespace TwitchBot.BotCommands
             commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, CommandType.MediaCommand));
             commandPool.Add("!clip", new BotCommand("!clip", "", UserType.Regular, false, false, CommandType.CreateClip));
             commandPool.Add("!remindme", new BotCommand("!remindme", "", UserType.Regular, false, false, CommandType.Reminder));
+            commandPool.Add("!vote", new BotCommand("!vote", "", UserType.Regular, false, false, CommandType.Vote));
 
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "buildInCommands";

@@ -8,6 +8,7 @@ using TwitchBot.CommandHandlers;
 using Common.Models;
 using System;
 using Common.Reminders;
+using Common.Voting;
 
 namespace TwitchBot
 {
@@ -24,6 +25,7 @@ namespace TwitchBot
 
         private BotCommandsRepository commandPool;
         private ReminderService reminderService;
+        private VotingService voteService;
         private TwitchGameChanger twitchGameChanger;
         private TwitchStreamClipProvider twitchStreamClipProvider;
 
@@ -31,14 +33,19 @@ namespace TwitchBot
 
         private Action reminderCallback;
         private Action refreshCommandListCallback;
+        private Action votingCallback;
 
-        public BotRunner(IIrcClient irc, Action reminderCallback, Action refreshCommandListCallback)
+        public BotRunner(IIrcClient irc, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             this.irc = irc;
             isCanceled = false;
             this.reminderCallback = reminderCallback;
             this.refreshCommandListCallback = refreshCommandListCallback;
+            this.votingCallback = votingCallback;
+
+            reminderService = new ReminderService();
+            voteService = new VotingService();
         }
 
         public bool IsCanceled { get => isCanceled; set => isCanceled = value; }
@@ -52,12 +59,13 @@ namespace TwitchBot
 
         public BotCommandsRepository CommandPool => commandPool;
         public ReminderService ReminderService => reminderService;
+        public VotingService VoteService => voteService;
 
         public void StartBot()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
-            reminderService = new ReminderService();
+            
             TwitchStreamInfoProvider twitchStreamInfoProvider = new TwitchStreamInfoProvider(ChannelName);
             twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
             SteamInfoProvider steamInfoProvider = new SteamInfoProvider(SteamID);
@@ -65,7 +73,7 @@ namespace TwitchBot
             irc.JoinRoom();
             //irc.SendChatMessage(".mods");
             TimedCommandHandler timedCommandHandler = new TimedCommandHandler(commandPool, irc);
-            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, irc, twitchStreamInfoProvider, twitchStreamClipProvider, channelName, reminderCallback, refreshCommandListCallback);
+            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, twitchStreamInfoProvider, twitchStreamClipProvider, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
             if (IsAutoGameChangeEnabled)
             {
                 Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");

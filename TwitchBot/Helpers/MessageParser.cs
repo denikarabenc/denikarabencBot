@@ -1,4 +1,6 @@
-﻿namespace TwitchBot.Helpers
+﻿using System;
+
+namespace TwitchBot.Helpers
 {
     public static class MessageParser
     {
@@ -23,8 +25,15 @@
         /// <returns></returns>
         public static string GetParsedMessage(string message)
         {
-            int intIndexParseSign = message.IndexOf(" :");
-            message = message.Substring(intIndexParseSign + 2);
+            try
+            {
+                int intIndexParseSign = message.IndexOf(" :");
+                message = message.Substring(intIndexParseSign + 2);
+            }
+            catch(Exception e)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Warning, "[MessageParser] -> GetParsedMessage warning!", e);
+            }
 
             return message;
         }

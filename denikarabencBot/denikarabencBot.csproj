@@ -80,6 +80,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.1\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
@@ -107,19 +108,32 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\UserPermissionToStringConverter.cs" />
-    <Compile Include="ViewModels\CommandsViewModel.cs" />
-    <Compile Include="ViewModels\GeneralViewModel.cs" />
+    <Compile Include="Models\Voting\VoteCount.cs" />
+    <Compile Include="Models\Voting\VoteReport.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ReminderWindowViewModel.cs" />
+    <Compile Include="ViewModels\VoteReportViewModel.cs" />
     <Compile Include="ViewModels\YoutubeViewModel.cs" />
-    <Compile Include="Views\CommandsDataGridUserControl.xaml.cs">
+    <Compile Include="Views\DataGrids\CommandsDataGridUserControl.xaml.cs">
       <DependentUpon>CommandsDataGridUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RemindersDataGridUserControl.xaml.cs">
+    <Compile Include="Views\DataGrids\RemindersDataGridUserControl.xaml.cs">
       <DependentUpon>RemindersDataGridUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReminderWindow.xaml.cs">
       <DependentUpon>ReminderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGrids\VoteReportDataGridUserControl.xaml.cs">
+      <DependentUpon>VoteReportDataGridUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\VoteSingleReportUserControl.xaml.cs">
+      <DependentUpon>VoteSingleReportUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VoteReportWindow.xaml.cs">
+      <DependentUpon>VoteReportWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGrids\VotesDataGridUserControl.xaml.cs">
+      <DependentUpon>VotesDataGridUserControl.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -133,15 +147,31 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\CommandsDataGridUserControl.xaml">
+    <Page Include="Views\DataGrids\CommandsDataGridUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RemindersDataGridUserControl.xaml">
+    <Page Include="Views\DataGrids\RemindersDataGridUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ReminderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DataGrids\VoteReportDataGridUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\VoteSingleReportUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VoteReportWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DataGrids\VotesDataGridUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

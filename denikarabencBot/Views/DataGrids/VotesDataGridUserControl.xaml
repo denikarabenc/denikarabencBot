@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="denikarabencBot.Views.VotesDataGridUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:denikarabencBot.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding VoteList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Vote category" Width="*" Binding="{Binding VoteCategory}"/>
+                <DataGridTextColumn Header="Vote choice" Width="*" Binding="{Binding VoteChoice}"/>
+                <DataGridTextColumn Header="User" Width="*" Binding="{Binding User}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

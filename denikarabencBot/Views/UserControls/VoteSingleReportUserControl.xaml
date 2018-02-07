@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="denikarabencBot.Views.UserControls.VoteSingleReportUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:denikarabencBot.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Category: " Margin="2"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=Category}" Margin="2"/>
+        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Category: " Margin="2"/>
+        <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Header="Most Voted">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Most votes: " Margin="2"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=MostVotes}" Margin="2"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Second most: " Margin="2"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=SecondMostVotes}" Margin="2"/>
+                </Grid>
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Third most: " Margin="2"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=ThirdMostVotes}" Margin="2"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Header="Stats">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Earliest vote on: " Margin="2"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=EarliestVoteTime, StringFormat='{}{0:dd/MMM/yyyy HH:mm}'}" Margin="2"/>
+                <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Content=" User with earliest vote: " Margin="2"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Text="{Binding Path=EarliestVoteUser}" Margin="2"/>
+                <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="Latest vote on: " Margin="2"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Path=LatestVoteTime, StringFormat='{}{0:dd/MMM/yyyy HH:mm}'}" Margin="2"/>
+                <Label Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Content=" User with latest vote: " Margin="2"/>
+                <TextBlock Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Text="{Binding Path=LatestVoteUser}" Margin="2"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

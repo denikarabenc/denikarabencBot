@@ -140,6 +140,41 @@
 
             </TabItem>
 
+            <TabItem DataContext="{Binding}" Header="Votes">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <local:VotesDataGridUserControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+                    <Grid Grid.Row="2" Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Content="Last vote reset time: " Margin="2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Grid.ColumnSpan="2" Text="{Binding Path=LastVoteResetTime, StringFormat='{}{0:dd/MMM/yyyy HH:mm}'}" Margin="2"/>
+                        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="Default voting category: " Margin="2"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DefaultVotingCategory, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
+                        <Button Grid.Row="1" Grid.Column="2" Margin="2" Content="Set category" Command="{Binding SetDefaultVotingCategoryCommand}"/>
+                    </Grid>
+                    <Button Grid.Row="3" Margin="2" Content="Clear all votes" Command="{Binding ClearVotesCommand}"/>
+                    <Button Grid.Row="4" Margin="2" Content="Open report" Command="{Binding OpenVoteReportCommand}"/>
+                </Grid>
+
+            </TabItem>
+
             <!--<TabItem DataContext="{Binding YoutubeViewModel}" Header="Youtube">
                 <Grid>
                     <Grid.ColumnDefinitions>

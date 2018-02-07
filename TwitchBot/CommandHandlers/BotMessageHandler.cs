@@ -2,6 +2,7 @@
 using Common.Helpers;
 using Common.Models;
 using Common.Reminders;
+using Common.Voting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace TwitchBot.CommandHandlers
         private readonly BotCommandsRepository botCommands;
         private readonly MessageRepository messageRepository;
         private readonly ReminderService reminderService;
+        private readonly VotingService votingService;
 
         private bool mediaCommandAllowed;
         private TwitchStreamInfoProvider twitchStreamInfoProvider;
@@ -35,22 +37,26 @@ namespace TwitchBot.CommandHandlers
 
         private Action reminderCallback;
         private Action refreshCommandListCallback;
+        private Action votingCallback;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, TwitchStreamClipProvider twitchStreamClipProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback)
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, VotingService votingService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, TwitchStreamClipProvider twitchStreamClipProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             botCommands.ThrowIfNull(nameof(botCommands));
             twitchStreamInfoProvider.ThrowIfNull(nameof(twitchStreamInfoProvider));
             twitchStreamClipProvider.ThrowIfNull(nameof(twitchStreamClipProvider));
             reminderService.ThrowIfNull(nameof(reminderService));
+            votingService.ThrowIfNull(nameof(votingService));
             this.twitchStreamInfoProvider = twitchStreamInfoProvider;
             this.twitchStreamClipProvider = twitchStreamClipProvider;
             this.reminderService = reminderService;
+            this.votingService = votingService;
             this.irc = irc;
             this.botCommands = botCommands;
             this.channelName = channelName;
             this.reminderCallback = reminderCallback;
             this.refreshCommandListCallback = refreshCommandListCallback;
+            this.votingCallback = votingCallback;
 
             youtubeProvider = new YoutubeBotService();
 
@@ -141,6 +147,9 @@ namespace TwitchBot.CommandHandlers
                 case CommandType.Reminder:
                     HandleRemindersCommand(parsedMessage, userWhoSentMessage);
                     break;
+                case CommandType.Vote:
+                    HandleVotesCommand(parsedMessage, userWhoSentMessage);
+                    break;
                 case CommandType.NotExist:
                     CommandType commandTypeReChecked = botCommands.GetCommandType(message);
                     if (commandTypeReChecked == CommandType.ModsRequest)
@@ -151,6 +160,28 @@ namespace TwitchBot.CommandHandlers
                 default:
                     throw new InvalidOperationException();
             }
+        }
+
+        private void HandleVotesCommand(string parsedMessage, string userWhoSentMessage)
+        {
+            string[] parsedVotes = parsedMessage.Split('|');
+            if (parsedVotes[0].Length == 5)
+            {
+                irc.SendInformationChatMessage("Use voting in format '!vote [your choice] | [voting category]'. You can omit voting category, it will vote on default vote poll if it is set");
+                return;
+            }
+            parsedVotes[0] = parsedVotes[0].Substring(6);
+
+            if (parsedVotes.Count() == 1)
+            {
+                votingService.AddVote(new Vote(userWhoSentMessage, parsedVotes[0], votingService.GetDefaultCategory(), DateTime.Now));
+                votingCallback?.Invoke();
+                return;
+            }
+
+            votingService.AddVote(new Vote(userWhoSentMessage, parsedVotes[0], parsedVotes[1], DateTime.Now));
+            votingCallback?.Invoke();
+
         }
 
         private void HandleRemindersCommand(string parsedMessage, string userWhoSentMessage)

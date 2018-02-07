@@ -23,7 +23,7 @@ namespace denikarabencBot
 
             InitializeSpeechRecognizer();
 
-            Closing += MainWindow_Closing; //TODO
+            Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;            
         }
 
@@ -50,24 +50,31 @@ namespace denikarabencBot
 
         private void InitializeSpeechRecognizer()
         {
-            speechRecognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
-            speechRecognizer.SetInputToDefaultAudioDevice();
+            try
+            {
+                speechRecognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
+                speechRecognizer.SetInputToDefaultAudioDevice();
 
-            Choices commands = new Choices();
-            commands.Add(new string[] { "bot, please be kind and play replay", "bot, please be kind and clip that" });
+                Choices commands = new Choices();
+                commands.Add(new string[] { "bot, please be kind and play replay", "bot, please be kind and clip that" });
 
-            GrammarBuilder gb = new GrammarBuilder();
-            gb.Append(commands);
+                GrammarBuilder gb = new GrammarBuilder();
+                gb.Append(commands);
 
-            // Create the Grammar instance.
-            Grammar g = new Grammar(gb);
+                // Create the Grammar instance.
+                Grammar g = new Grammar(gb);
 
-            speechRecognizer.LoadGrammar(g);
+                speechRecognizer.LoadGrammar(g);
 
-            //speechRecognizer.SpeechDetected += SpeechRecognizer_SpeechDetected;
+                //speechRecognizer.SpeechDetected += SpeechRecognizer_SpeechDetected;
 
-            speechRecognizer.SpeechRecognized += SpeechRecognizer_SpeechRecognized;
-            speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
+                speechRecognizer.SpeechRecognized += SpeechRecognizer_SpeechRecognized;
+                speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(LoggingType.Warning, "Error initializing Speech!", ex);
+            }
 
         }
 
