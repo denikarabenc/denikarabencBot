@@ -104,7 +104,7 @@ namespace TwitchBot
             string gameForTwitch = string.Empty;
             if (gameCurrentlyRunningOnMachine != null)
             {
-                gameForTwitch = GetGameCurrentlyRunningInFormatForTwitch(gameCurrentlyRunningOnMachine);
+               // gameForTwitch = GetGameCurrentlyRunningInFormatForTwitch(gameCurrentlyRunningOnMachine); //TODO
                 if (string.IsNullOrEmpty(gameForTwitch))
                 {
                     gameForTwitch = gameCurrentlyRunningOnMachine;

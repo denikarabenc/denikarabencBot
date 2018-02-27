@@ -10,7 +10,7 @@ If you are trying to stream, you probably have much better PC than needed, but h
 
 OS: Windows 7 or above (Not suported on Linux and Mac)
 Processor: Core 2 Duo
-Memory: 1 GB RAM (Well, windows requires 1 on 32 bit or 2 on 64. Bot really needs 50MB)
+Memory: 1 GB RAM (Well, windows requires 1 on 32 bit or 2 on 64. Bot really needs 10MB)
 Graphics: Discreet video card
 Storage: 5 MB available space
 Sound Card: No
@@ -36,6 +36,8 @@ Also, command can be edited or added from chat by using "!addcommand [command] :
 	Played games - Typing !gamesplayed will get which games you played and for how long. This currently only works for games automatically changed. Soon it will work for every game change you make on twitch.
 
 	Reminders - Typing "!remindme [reminder]" will get reminder in bot UI so chat can remind you to do stuff after stream. Example: "!remindme Check this speedrun https://www.youtube.com/watch?v=tcvkaEUbLik"
+
+	Voting - Typing !vote Dark Souls will add Dark Souls to count of default vote category. You can also type !vote [your choice] | [voting category] so it will add your choice to the voting category. There is no limits if category is set or not.
 
 That is it, for now. If you want to disable some of the features above, you should just delete command from configuration xml found in \Serializables\buildInCommands
 

@@ -21,7 +21,7 @@ namespace denikarabencBot
             DataContext = viewModel;
             InitializeComponent();
 
-            InitializeSpeechRecognizer();
+           // InitializeSpeechRecognizer();
 
             Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;            

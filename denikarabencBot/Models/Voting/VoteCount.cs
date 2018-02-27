@@ -25,14 +25,7 @@ namespace denikarabencBot.Models.Voting
         public string EarliestVoteUser { get => earliestVoteUser; set => earliestVoteUser = value; }
         public DateTime EarliestVoteTime { get => earliestVoteTime; set => earliestVoteTime = value; }
         public DateTime LatestVoteTime { get => latestVoteTime; set => latestVoteTime = value; }
-        public Dictionary<string, int> VoteNumbers { get => voteNumbers; set => voteNumbers = value; }
-        //public string VotingInterval
-        //{
-        //    get
-        //    {
-        //        return EarliestVoteTime.ToLongDateString() + " - " + LatestVoteTime.ToLongDateString(); 
-        //    }
-        //}
+        public Dictionary<string, int> VoteNumbers { get => voteNumbers; set => voteNumbers = value; }      
         public string MostVotes
         {
             get
