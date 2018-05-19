@@ -1,5 +1,5 @@
 ﻿using Common.Models;
-using denikarabencBot.ViewModels;
+using denikarabencBotOBSSetup.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace denikarabencBot
+namespace denikarabencBotOBSSetup
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -18,7 +18,7 @@ namespace denikarabencBot
         public App()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            BotLogger.Logger.Log(LoggingType.Info, "Starting Application");
+            BotLogger.Logger.Log(LoggingType.Info, "[Configuration] -> Starting Application");
             MainWindowViewModel vm = new MainWindowViewModel();
             MainWindow mv = new MainWindow(vm);
             mv.Show();
@@ -26,7 +26,7 @@ namespace denikarabencBot
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            BotLogger.Logger.Log(LoggingType.Error, "Application crashed! Unexpected error happened", e.ExceptionObject as Exception);
+            BotLogger.Logger.Log(LoggingType.Error, "[Configuration] -> Application crashed! Unexpected error happened", e.ExceptionObject as Exception);
         }
     }
 }

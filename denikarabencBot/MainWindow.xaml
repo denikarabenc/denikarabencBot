@@ -80,7 +80,7 @@
                             <CheckBox Grid.Column="1" Margin="2" Grid.Row="1" VerticalAlignment="Center" IsChecked="{Binding IsReplayEnabled}"/>
                             <Label Grid.Column="0" Grid.Row="2" Margin="2" HorizontalAlignment="Right" Content="Replay folder path: " ToolTip="Copy path from OBS where replay is going to be saved"/>
                             <TextBox Grid.Column="1" Margin="2" Grid.Row="2" Text="{Binding ReplayPath}"/>
-                            <Label Grid.Column="0" Grid.Row="3" Margin="2" Content="Insert your Twitch.tv channel name where bot should join" HorizontalAlignment="Right"/>
+                            <Label Grid.Column="0" Grid.Row="3" Margin="2" Content="Twitch.tv channel name: " HorizontalAlignment="Right" ToolTip="Insert your Twitch.tv channel name where bot should join"/>
                             <TextBox Grid.Column="1" Grid.Row="3" Margin="2" Text="{Binding Path=TwitchChannelName}"/>
                             <Label Grid.Column="0" Grid.Row="4"  Content="Insert your Steam ID" HorizontalAlignment="Right" ToolTip="SteamID is not your Steam name, but a number. You can find it here: steamidfinder.com"/>
                             <TextBox Grid.Column="1" Grid.Row="4" Margin="2" Text="{Binding Path=SteamID}" IsEnabled="{Binding IsAutoGameChanegeEnabled}"/>

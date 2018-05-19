@@ -131,7 +131,9 @@ namespace TwitchBot.Steam
 
             mapper.Add("The Binding of Isaac: Rebirth", "The Binding of Isaac: Afterbirth");
             mapper.Add("Tom Clancy's Rainbow Six® Siege", "Tom Clancy's Rainbow Six: Siege");
-            
+            mapper.Add("PUBG: Closed Experimental Server", "PLAYERUNKNOWN'S BATTLEGROUNDS");
+
+
             return mapper;
         }
     }

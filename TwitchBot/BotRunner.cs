@@ -28,6 +28,7 @@ namespace TwitchBot
         private VotingService voteService;
         private TwitchGameChanger twitchGameChanger;
         private TwitchStreamClipProvider twitchStreamClipProvider;
+        private TimedCommandHandler timedCommandHandler;
 
         private string mediaPlayerFileName;
 
@@ -72,7 +73,7 @@ namespace TwitchBot
             //IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967");            
             irc.JoinRoom();
             //irc.SendChatMessage(".mods");
-            TimedCommandHandler timedCommandHandler = new TimedCommandHandler(commandPool, irc);
+            timedCommandHandler = new TimedCommandHandler(commandPool, irc);
             BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, twitchStreamInfoProvider, twitchStreamClipProvider, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
             if (IsAutoGameChangeEnabled)
             {
@@ -94,10 +95,10 @@ namespace TwitchBot
         public void ShutDownBot()
         {
             irc.LeaveRoom();
+            timedCommandHandler?.Dispose();
             twitchGameChanger?.Dispose();
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot shutted down");
         }
-
 
         public void PlayReplay()
         {

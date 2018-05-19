@@ -1,0 +1,45 @@
+﻿<Window x:Class="denikarabencBotOBSSetup.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:denikarabencBotOBSSetup.Views.UserControls"
+        mc:Ignorable="d"
+        IsEnabled="{Binding IsFormEnabled}"
+        Title="denikarabencBot OBS Configurator" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Header="Settings">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0" Margin="2" HorizontalAlignment="Right" Content="OBS profile name: " ToolTip="Name of your profile in OBS where scenes are defined. If you never added name, use Untitled"/>
+                <TextBox Grid.Column="1" Margin="2" Grid.Row="0" Text="{Binding OBSProfileName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <local:ScenesConfigurator Grid.Column="0" Grid.ColumnSpan="2" Margin="1" Grid.Row="1"/>
+
+            </Grid>
+        </GroupBox>
+        
+        <Button x:Name="removeBot" Grid.Column="1" Margin="1" Grid.Row="3" HorizontalAlignment="Right" Content="Execute configuration" Command="{Binding ExecuteConfiguration}" MinWidth="80"/>
+
+        <!--<Button Grid.Column="1" Grid.Row="5" Content="Exit" HorizontalAlignment="Right" MinWidth="80" Click="ExitBtn_Click"/>-->
+    </Grid>
+</Window>

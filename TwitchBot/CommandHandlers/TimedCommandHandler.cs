@@ -1,5 +1,7 @@
-﻿using Common.Helpers;
+﻿using Common.Commands;
+using Common.Helpers;
 using Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Timers;
 using TwitchBot.BotCommands;
@@ -7,7 +9,7 @@ using TwitchBot.Interfaces;
 
 namespace TwitchBot
 {
-    public class TimedCommandHandler
+    public class TimedCommandHandler : IDisposable
     {
         private double intervalCommandIsSent; //in minutes
         private int commandCounter;
@@ -43,6 +45,10 @@ namespace TwitchBot
                     if (commandCounter == botCommands.Count)
                         commandCounter = 0;
                 }
+                else
+                {
+                    commandCounter = 0;
+                }
             }
         }
 
@@ -55,6 +61,7 @@ namespace TwitchBot
             set
             {
                 intervalCommandIsSent = value * 1000 * 60;
+                timer.Stop();                
                 if (intervalCommandIsSent == 0)
                 {
                     timer.AutoReset = false;
@@ -67,6 +74,12 @@ namespace TwitchBot
                     timer.Enabled = true;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            timer.Stop();
+            timer.Dispose();
         }
     }
 }

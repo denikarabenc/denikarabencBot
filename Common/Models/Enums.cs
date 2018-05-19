@@ -32,6 +32,12 @@ namespace Common.Models
         Invalid
     }
 
+    public enum ConfigurationErrorType: int
+    {
+        Succeed,
+        Error,
+    }
+
     public enum LoggingType
     {
         [Description("Log Type: Info!")]

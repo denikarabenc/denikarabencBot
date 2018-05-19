@@ -167,7 +167,7 @@ namespace TwitchBot.CommandHandlers
             string[] parsedVotes = parsedMessage.Split('|');
             if (parsedVotes[0].Length == 5)
             {
-                irc.SendInformationChatMessage("Use voting in format '!vote [your choice] | [voting category]'. You can omit voting category, it will vote on default vote poll if it is set");
+                irc.SendChatMessage("Use voting in format '!vote [your choice] | [voting category]'. You can omit voting category, it will vote on default vote poll if it is set");
                 return;
             }
             parsedVotes[0] = parsedVotes[0].Substring(6);
@@ -190,7 +190,7 @@ namespace TwitchBot.CommandHandlers
             {
                 reminderService.AddReminder(new Reminder(userWhoSentMessage, parsedMessage.Substring(10)));
                 reminderCallback?.Invoke();
-                irc.SendInformationChatMessage(String.Format("{0} will be reminded!", channelName));
+                irc.SendChatMessage(String.Format("{0} will be reminded!", channelName));
             }
         }
 
@@ -212,7 +212,7 @@ namespace TwitchBot.CommandHandlers
                 string clipId = twitchStreamClipProvider.CreateTwitchClip();
 
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
-                irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
+                irc.SendChatMessage(String.Format(loadingMessage, userWhoSentMessage));
 
                 Timer clipTimer = new Timer(10000);
                 clipTimer.AutoReset = false;
@@ -225,7 +225,7 @@ namespace TwitchBot.CommandHandlers
         {
             if (clipId != "Failed to generate clip FeelsBadMan")
             {
-                irc.SendInformationChatMessage("Clip url is https://clips.twitch.tv/" + clipId);
+                irc.SendChatMessage("Clip url is https://clips.twitch.tv/" + clipId);
                 botCommands.CreateClipCommandFileNameAndPath(clipId);
 
                 mediaCommandAllowed = false;
@@ -234,7 +234,7 @@ namespace TwitchBot.CommandHandlers
             }
             else
             {
-                irc.SendInformationChatMessage(clipId);
+                irc.SendChatMessage(clipId);
             }
         }
 
@@ -250,7 +250,7 @@ namespace TwitchBot.CommandHandlers
                     }
                     else
                     {
-                        irc.SendInformationChatMessage("For now only full link to the song works FeelsBadMan");
+                        irc.SendChatMessage("For now only full link to the song works FeelsBadMan");
                     }
                 }
                 else
@@ -277,14 +277,14 @@ namespace TwitchBot.CommandHandlers
                 }
 
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
-                irc.SendInformationChatMessage(String.Format(loadingMessage, userWhoSentMessage));
+                irc.SendChatMessage(String.Format(loadingMessage, userWhoSentMessage));
                 
                 string filename = botCommands.GetMediaCommandFileNameAndPath();
 
                 if (filename == string.Empty)
                 {
                     string error = SelectRandomItem(messageRepository.ErrorMessages);
-                    irc.SendInformationChatMessage(String.Format(error, userWhoSentMessage));
+                    irc.SendChatMessage(String.Format(error, userWhoSentMessage));
                     //irc.SendChatMessage($"/w {channelName} Check the OBS replay");
                     return;
                 }
@@ -294,7 +294,7 @@ namespace TwitchBot.CommandHandlers
                 mediaCommandTimer.Enabled = true;
                 mediaCommandTimer.Start();
 
-                irc.SendInformationChatMessage("Here it goes! FeelsGoodMan");
+                irc.SendChatMessage("Here it goes! FeelsGoodMan");
 
                 VideoWindow vw = new VideoWindow();
                 vw.mediaPlayer.Source = new Uri(filename);
