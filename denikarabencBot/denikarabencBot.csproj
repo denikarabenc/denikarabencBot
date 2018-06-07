@@ -219,6 +219,10 @@
       <Project>{ff332dee-3904-4638-8972-f6758e7410f1}</Project>
       <Name>BotLogger</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SimpleWebServer\SimpleWebServer.csproj">
+      <Project>{f6f92f93-ddd9-44c3-aa28-278c732d532e}</Project>
+      <Name>SimpleWebServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TwitchBot\TwitchBot.csproj">
       <Project>{44f148dd-390d-4416-a780-c37a86d274dc}</Project>
       <Name>TwitchBot</Name>

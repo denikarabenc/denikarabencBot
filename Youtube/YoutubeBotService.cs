@@ -29,7 +29,7 @@ namespace Youtube
             try
             {
                 UserCredential credential;
-                using (var stream = new FileStream(@"C:\Users\denik\Documents\Visual Studio 2017\Projects\denikarabencBot\client_secret_885348159968-suq96qe1o2qr89r7asrihff3chehje4b.apps.googleusercontent.com.json", FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(@"C:\Users\denik\Documents\Visual Studio 2017\Projects\denikarabencBot\client_id.json", FileMode.Open, FileAccess.Read))
                 {
                     credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -85,6 +85,54 @@ namespace Youtube
             catch
             {
                 callback(String.Format("Error, check url and try again later"));
+            }
+
+            //return new SongItem(newPlaylistItem.Snippet.Title, userRequested, "www.youtube.com/watch?v=" + newPlaylistItem.Snippet.ResourceId.VideoId);
+        }
+
+        public async void RemoveSong(string songVideoId)
+        {
+            try
+            {
+                UserCredential credential;
+                using (var stream = new FileStream(@"C:\Users\denik\Documents\Visual Studio 2017\Projects\denikarabencBot\client_id.json", FileMode.Open, FileAccess.Read))
+                {
+                    credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    // This OAuth 2.0 access scope allows for full read/write access to the
+                    // authenticated user's account.
+                    new[] { YouTubeService.Scope.Youtube, YouTubeService.Scope.YoutubeForceSsl },
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(this.GetType().ToString())
+                );
+                }
+
+                var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "denikarabencBot"
+                });
+
+                Playlist playlist = new Playlist();
+                var playlistListRequest = youtubeService.Playlists.List("snippet");
+                playlistListRequest.Mine = true;
+                var playlistListResponse = await playlistListRequest.ExecuteAsync();
+
+                var songRequestPlaylist = playlistListResponse.Items.FirstOrDefault(x => x.Snippet.Title == "Song Requests");
+
+                ObservableCollection<SongItem> songList = new ObservableCollection<SongItem>();
+                if (songRequestPlaylist == null)
+                {
+                    return;
+                }
+
+                await youtubeService.PlaylistItems.Delete(songVideoId).ExecuteAsync();
+            }
+
+            catch(Exception e)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Warning, e);
             }
 
             //return new SongItem(newPlaylistItem.Snippet.Title, userRequested, "www.youtube.com/watch?v=" + newPlaylistItem.Snippet.ResourceId.VideoId);
@@ -168,13 +216,13 @@ namespace Youtube
         public async Task<ObservableCollection<SongItem>> UpdateSongRequestList()
         {
             UserCredential credential;
-            using (var stream = new FileStream(@"C:\Users\denik\Documents\Visual Studio 2017\Projects\denikarabencBot\client_secret_885348159968-suq96qe1o2qr89r7asrihff3chehje4b.apps.googleusercontent.com.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(@"C:\Users\denik\Documents\Visual Studio 2017\Projects\denikarabencBot\client_id.json", FileMode.Open, FileAccess.Read))
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.Load(stream).Secrets,
                 // This OAuth 2.0 access scope allows for full read/write access to the
                 // authenticated user's account.
-                new[] { YouTubeService.Scope.Youtube, YouTubeService.Scope.YoutubeForceSsl },
+                new[] { YouTubeService.Scope.Youtube},
                 "user",
                 CancellationToken.None,
                 new FileDataStore(this.GetType().ToString())
@@ -215,7 +263,7 @@ namespace Youtube
                 foreach (var playlistItem in playlistItemsListResponse.Items)
                 {
                     // Print information about each video.
-                    songList.Add(new SongItem(playlistItem.Snippet.Title, "www.youtube.com/watch?v=" + playlistItem.Snippet.ResourceId.VideoId));                    
+                    songList.Add(new SongItem(playlistItem.Snippet.Title, "www.youtube.com/watch?v=" + playlistItem.Snippet.ResourceId.VideoId, playlistItem.Id));                    
                 }
 
                 nextPageToken = playlistItemsListResponse.NextPageToken;

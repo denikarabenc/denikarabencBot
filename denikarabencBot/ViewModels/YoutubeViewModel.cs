@@ -1,7 +1,11 @@
-﻿using Common.Youtube;
+﻿using Common.WPFCommand;
+using Common.Youtube;
+using SimpleWebServer;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Youtube;
 
 namespace denikarabencBot.ViewModels
@@ -10,6 +14,9 @@ namespace denikarabencBot.ViewModels
     {
         private ObservableCollection<SongItem> youtubeSongs;
         private SongItem selectedSong;
+        private ICommand startServer;
+        private ICommand stopServer;
+        private WebServer ws;
         YoutubeBotService youtubeBotService;
 
         public YoutubeViewModel()
@@ -17,9 +24,11 @@ namespace denikarabencBot.ViewModels
             youtubeSongs = new ObservableCollection<SongItem>();
 
             YoutubeBotService = new YoutubeBotService();
-            YoutubeBotService.SongRequestCallback = Testiranje;
+            YoutubeBotService.SongRequestCallback = RefreshSongList;
                
-           // youtubeSongs = GetSongListFromYoutube();
+            youtubeSongs = GetSongListFromYoutube();
+
+            ws = new WebServer(SendResponse, "http://localhost:8080/test/");
         }
 
         private ObservableCollection<SongItem> GetSongListFromYoutube()
@@ -39,7 +48,33 @@ namespace denikarabencBot.ViewModels
         public SongItem SelectedSong { get => selectedSong; set => selectedSong = value; }
         public YoutubeBotService YoutubeBotService { get => youtubeBotService; set => youtubeBotService = value; }
 
-        private void Testiranje()
+        public ICommand StartServer
+        {
+            get => startServer ?? (startServer = new RelayCommand(param => StartServerCommandExecute()));
+        }
+
+        public ICommand StopServer
+        {
+            get => stopServer ?? (stopServer = new RelayCommand(param => StopServerCommandExecute()));
+        }
+
+        private void StartServerCommandExecute()
+        {
+            ws.Run();
+            System.Diagnostics.Process.Start(@"http://localhost:8080/test/");
+        }
+
+        private void StopServerCommandExecute()
+        {
+            ws.Stop();
+        }
+
+        private string SendResponse(HttpListenerRequest request)
+        {
+            return System.IO.File.ReadAllText(@"C:\Users\denik\Documents\htmltest.html");
+        }
+
+        private void RefreshSongList()
         {
             youtubeSongs = GetSongListFromYoutube();
             OnPropertyChanged(nameof(YoutubeSongs));

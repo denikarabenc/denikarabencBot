@@ -137,6 +137,8 @@ namespace TwitchBot
                     gameChangePossibleTimer.Start();
                 }
 
+                gameChangePossible = false;
+                gameChangePossibleTimer.Start();
                 irc.SendChatMessage(reportMessage);
 
                 return;
@@ -157,6 +159,8 @@ namespace TwitchBot
                     gameChangePossibleTimer.Start();
                 }
 
+                gameChangePossible = false;
+                gameChangePossibleTimer.Start();
                 irc.SendChatMessage(reportMessage);
             }
         }

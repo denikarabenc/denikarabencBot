@@ -8,8 +8,10 @@ namespace TwitchBot
     public class IrcClient : IIrcClient
     {
         private readonly int timeBeetweenMessagesCanBeSent = 2 * 1000; //miliseconds
+        private readonly int reconnectTime = 60 * 1000; //miliseconds
 
         private string username;
+        private string password;
         private string channel;
 
         private TcpClient tcpClient;
@@ -17,11 +19,13 @@ namespace TwitchBot
         private StreamWriter outputStream;
 
         private Timer timer;
+        //private Timer reconnectTimer;
         private bool messageCanBeSent;
 
         public IrcClient(string ip, int port, string username, string password, string channel)
         {
             this.username = username;
+            this.password = password;
             this.channel = channel;
             tcpClient = new TcpClient(ip, port);
             inputStream = new StreamReader(tcpClient.GetStream());
@@ -30,11 +34,20 @@ namespace TwitchBot
             RegisterTwitchIRC(username, password);
 
             messageCanBeSent = true;
+            //reconnectTimer = new Timer(reconnectTime);
+            //reconnectTimer.AutoReset = false;
+            //reconnectTimer.Enabled = false;
+            //reconnectTimer.Elapsed += ReconnectTimer_Elapsed;
             timer = new Timer(timeBeetweenMessagesCanBeSent);
             timer.AutoReset = true;
             timer.Enabled = true;
             timer.Elapsed += Timer_Elapsed;
         }
+
+        //private void ReconnectTimer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    Reconnect();          
+        //}
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -88,6 +101,21 @@ namespace TwitchBot
             messageCanBeSent = false;
         }
 
+        protected virtual void Reconnect()
+        {
+            //tcpClient = new TcpClient(ip, port);
+            //inputStream = new StreamReader(tcpClient.GetStream());
+            //outputStream = new StreamWriter(tcpClient.GetStream());
+            try
+            {
+                RegisterTwitchIRC(username, password);
+            }
+            catch (System.Exception e)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Error, e);
+            }
+        }
+
         public void LeaveRoom()
         {
             outputStream.WriteLine("PART #" + channel);
@@ -124,7 +152,15 @@ namespace TwitchBot
                 }
                 return message;
             }
-            catch(System.Exception e)
+            catch (SocketException se)
+            {
+                BotLogger.Logger.Log(Common.Models.LoggingType.Error, se);
+                System.Threading.Thread.Sleep(reconnectTime);
+                Reconnect();
+                return string.Empty;
+
+            }
+            catch (System.Exception e)
             {
                 BotLogger.Logger.Log(Common.Models.LoggingType.Error, e);
                 return string.Empty;

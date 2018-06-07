@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "denikarabencbot-205022",
+  "private_key_id": "8c1c4a3fbbca86492a17c8fe036da4f1b2d358c2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDz23UceKATzrEn\n6wq8yYm27ZKub1KeB5gfFWI7xPp1ImIz331R2QSDB9EqcGJ9P0VGXKZlc+pGqJ9S\nbtpkJZu6coQH9R/b6A0vgHy+K+qKO6dn6LJ42DIMMAd3V5R7IptaOoOoqh9yfdpp\nSQ5dkTNqtlO8p1PwgQ3NTQRPdkLqq4XhoM73PpldFZAOtWA5nLiPtDHGm/DJgqZi\nXPKRu5LCebz4QugCYrsKsGGnLiNDqbOWsH6SUwdSfhhKyjecXeSL7uy6IiY+XNPY\nCexoxcZ91mJlJuNVRfHFe3jS/sB3xugQ36mpfusX7+up7dY2snSTu0+vhFjoUqUZ\nAdHVNeX/AgMBAAECggEARG7gSRqi1ZwqBAlGTJ+EOaUnBjOwbC+2ZXazSBGptahu\nBZ+gxBDSXtEZRj8erIZOcwX6Hjtu0eBtQY1hVTxmnOaZHcCQ7b4LwTpeB2I8oglG\nm/bl6trFBL2PwtJ9lSarkSEdpH4FcDRYUDaTxPdEBhzfl/AfMr2MuYH1BTWrZr4q\ngr/fJzS0L/WDszMqp5CttRa8zFCNrcxbOAMxYYQMfMDdIgqwSPLr2NyugpRQJh0k\n/L0Wz5msZLqFf/lf+mjbIuYcb9zv3aa85BVIQg4k7ECJPvc2kheOqsz7i3hTVQpZ\nClid5Te2pgOoNkLBqw6VnKl5EM6PStnu4BHGTWLPGQKBgQD/H4vyigJmPXbQEiVN\n+SIMyh1g71+zLBPqdPneTKzTUCxysBh2xJLF9z2cMju23Jn0luGlnOQmX6ppCb5f\n3ewtenCFi6BE79MeQGEaD7TIWjwhEz8KohTxVXha7vBgNWOvNR7E3YlWs6HaRcdr\nSXki/tuPXhESxQT1ZwHH4cz6dwKBgQD0sf/Jzu5UJSvSVFdBCDDvjIp6TXu6PPMA\n71ZEjbKGOe4cQitCUSaL1z8HBx/xpAusWUnMKgHXMT41BvnYdPHZpdD0bEUR179o\n+2zEsC7JpKocBc73BPBOrk6DhIAyw/DJ+urA0TLOaz8bukGhmRWJTDokIX0u6hy2\n5gsAkuXKuQKBgQCuRP9Uwr8W1b92LB79X0PKFrnwwDLP8jj8e8E+/4NCqU5jXTSo\n1GgqAFQ+gPXXWGN19ybV+RDDwa9nJre7Rp2RB0UbhCALVwMQdAugQMBN542RTlNO\n0R6bJ7YZ74OVRIL+aLvG4ElzRys1LVsmRz8PD6YtDaV9+8UCWMWXov9gywKBgAEv\n8+vIw0NJQuMsYZgBMCuZZPqe8aC/tvYkMyj1/w3DrjIY6BjUR/mZu8aO9Eq53wyh\nCkihU4z1wjWDqSaxupKxyUfGVrd1copR3f8+U5vK3sBwDscIERpwohTlSbH1XW+9\ndfIlkbeKsa2yw6rDEWWvJwER4Iefvy/sAdWo4NCRAoGAdNINqrKjSrDWnbAOYufz\nIY4W9OH8sU/6rXfxUCUJExquz2ePTEFMiHbLBRD5YtwkIT5rU1F0iNa3qiBZZMAu\n5u0VUEBawrHpBymsOwhXVuBALhBJatZh6CPeEyLyYHxZkIiyTWLmg77N92BCrPVk\nHJzALrnbjk8h9LpPiE6EioQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "denikarabencbot@denikarabencbot-205022.iam.gserviceaccount.com",
+  "client_id": "111283516162502076630",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/denikarabencbot%40denikarabencbot-205022.iam.gserviceaccount.com"
+}

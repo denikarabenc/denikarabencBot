@@ -250,7 +250,7 @@ namespace TwitchBot.CommandHandlers
                     }
                     else
                     {
-                        irc.SendChatMessage("For now only full link to the song works FeelsBadMan");
+                        irc.SendChatMessage("Only full link to the song works for now FeelsBadMan");
                     }
                 }
                 else

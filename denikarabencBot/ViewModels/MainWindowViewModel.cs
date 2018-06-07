@@ -382,7 +382,7 @@ namespace denikarabencBot.ViewModels
             if (botThread.IsAlive)
             {
                 StopBot();
-                botThread.Abort();
+                //botThread.Abort();
             }
 
             joinButtonEnabled = true;
@@ -442,12 +442,12 @@ namespace denikarabencBot.ViewModels
 
         public void StopBot()
         {
-            if (botThread != null && botThread.IsAlive && bot != null)
+            if (botThread != null && botThread.IsAlive && bot != null && !bot.IsCanceled)
             {
                 bot.ShutDownBot();
                 bot.IsCanceled = true;
                 bot = null;
-                botThread.Abort();
+                //botThread.Abort();
             }
         }
     }

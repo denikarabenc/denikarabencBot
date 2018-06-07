@@ -102,6 +102,7 @@ namespace denikarabencBot
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
+            Properties.Settings.Default.Save();
             this.Close();
         }
 
@@ -113,12 +114,17 @@ namespace denikarabencBot
 
         private void YoutubeButtonRemove(object sender, RoutedEventArgs e)
         {
-            //viewModel.YoutubeViewModel.YoutubeSongs.Remove(viewModel.YoutubeViewModel.SelectedSong);           
+            viewModel.YoutubeViewModel.YoutubeBotService.RemoveSong(viewModel.YoutubeViewModel.SelectedSong.Id);
+            viewModel.YoutubeViewModel.YoutubeSongs.Remove(viewModel.YoutubeViewModel.SelectedSong);
+
+
             // Test.NavigateToString(@"<html><body><iframe width=""854"" height=""480"" src=""https://www.youtube.com/embed/BfUQWIEHTG4?list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV"" frameborder=""0"" gesture=""media"" allow=""encrypted-media"" allowfullscreen></iframe></body></html>");
         }
 
         private void DG_Hyperlink_Click(object sender, RoutedEventArgs e)
         {
+            //System.Diagnostics.Process.Start(viewModel.YoutubeViewModel.SelectedSong.Link);
+
             //System.Windows.Documents.Hyperlink link = (System.Windows.Documents.Hyperlink)e.OriginalSource;
             //System.Diagnostics.Process.Start(link.NavigateUri.OriginalString);
             //Test.Navigate("https://www.twitch.tv/lirik");
@@ -126,7 +132,7 @@ namespace denikarabencBot
             //Test.Address = "https://www.twitch.tv/lirik";            
             //Test.Navigate("https://www.youtube.com/watch?v=BfUQWIEHTG4&list=PL91KghZsDTB7dd194d0ZFOwwTTw94JRuV");
             //Test.Navigating += Test_Navigating;
-            //Test.Navigated += Test_Navigated;
+            //Test.Navigated += Test_Navigated;           
         }
 
         //private void Test_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)

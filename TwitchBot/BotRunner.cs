@@ -90,6 +90,8 @@ namespace TwitchBot
                 string message = irc.ReadMessage();
                 botCommandHandler.HadleMessage(message);
             }
+
+            ShutDownBot();
         }
 
         public void ShutDownBot()
