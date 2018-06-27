@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace TwitchBot.TwitchStream
 {
-    public class TwitchGame
+    public class StreamGame
     {
         private string gameName;
         private Stopwatch timePlayed;
 
-        public TwitchGame()
+        public StreamGame()
         {
             timePlayed = new Stopwatch();
         }

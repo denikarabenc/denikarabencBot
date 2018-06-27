@@ -31,7 +31,7 @@ namespace TwitchBot.Helpers
             errorMessages.Add("Well, this is embarrassing...");
             errorMessages.Add("PC is just not powerful enough to complete that action");
             errorMessages.Add("Need more APM for that");
-            errorMessages.Add("My goose is cooked!");
+            errorMessages.Add("My goose is getting cooked!");
             errorMessages.Add("Let's pretend that didn't happen");
             errorMessages.Add("Accidently pressed alt + F4, try again");
             errorMessages.Add("Focus on good things, not bad like this one");

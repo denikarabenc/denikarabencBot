@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Common.Interfaces;
+using System;
 
 namespace TwitchBot.Helpers
 {
-    public static class MessageParser
+    public class TwitchMessageParser : IMessageParser
     {
-        public static string GetMessageSenderUserName(string message)
+        public string GetMessageSenderUserName(string message)
         {
             string userName = string.Empty;
             if (message.Contains("PRIVMSG"))
@@ -23,7 +24,7 @@ namespace TwitchBot.Helpers
         /// </summary>
         /// <param name="message">original message got via irc</param>
         /// <returns></returns>
-        public static string GetParsedMessage(string message)
+        public string GetParsedMessage(string message)
         {
             try
             {
@@ -43,7 +44,7 @@ namespace TwitchBot.Helpers
         /// </summary>
         /// <param name="message">original message got via irc</param>
         /// <returns></returns>
-        public static string GetParsedModsMessage(string message)
+        public string GetParsedModsMessage(string message)
         {
             int intIndexParseSign = message.IndexOf(": ");
             message = message.Substring(intIndexParseSign + 2);

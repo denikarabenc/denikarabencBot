@@ -1,19 +1,16 @@
 ﻿using BotLogger;
 using Common.Helpers;
+using Common.Interfaces;
 using Common.Models;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TwitchBot.TwitchStream.Json;
+using Newtonsoft.Json;
 
 namespace TwitchBot.TwitchStream
 {
-    public class TwitchStreamClipProvider
+    public class TwitchStreamClipProvider : IStreamClipProvider
     {
         private string channelName;
         private readonly string streamerID;
@@ -29,7 +26,7 @@ namespace TwitchBot.TwitchStream
             }
         }
 
-        public string CreateTwitchClip()
+        public string CreateClip()
         {
             try
             {
@@ -60,24 +57,24 @@ namespace TwitchBot.TwitchStream
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/users/" + channelName);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/users?login=" + channelName);
                 request.Method = "GET";
-                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
-                request.ContentType = "application/json";
-                request.Accept = $"application/vnd.twitchtv.v3+json";
+                request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+                //request.ContentType = "application/json";
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-                TwitchChannelInfo jsonResult;
+                TwitchChannelInfoRoot jsonResult;
                 using (var reader = new StreamReader(response.GetResponseStream()))
                 {
                     string jsonString = reader.ReadToEnd();
-                    jsonResult = JsonConvert.DeserializeObject<TwitchChannelInfo>(jsonString);
+                    jsonResult = JsonConvert.DeserializeObject<TwitchChannelInfoRoot>(jsonString);
 
-                    return jsonResult.ID;
+                    return jsonResult.Data[0].ID;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(LoggingType.Error, "[TwtichStreamClipProvider] -> Failed to get channel ID!", ex);
                 return String.Empty;

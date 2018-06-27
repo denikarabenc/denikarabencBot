@@ -1,11 +1,11 @@
 ﻿using Common.Commands;
 using Common.Helpers;
+using Common.Interfaces;
 using Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Timers;
 using TwitchBot.BotCommands;
-using TwitchBot.Interfaces;
 
 namespace TwitchBot
 {

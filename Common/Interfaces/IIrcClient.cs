@@ -1,4 +1,4 @@
-﻿namespace TwitchBot.Interfaces
+﻿namespace Common.Interfaces
 {
     public interface IIrcClient
     {

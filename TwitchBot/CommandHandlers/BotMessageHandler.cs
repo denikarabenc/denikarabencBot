@@ -1,5 +1,6 @@
 ﻿using BotLogger;
 using Common.Helpers;
+using Common.Interfaces;
 using Common.Models;
 using Common.Reminders;
 using Common.Voting;
@@ -7,11 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using System.Windows;
 using TwitchBot.BotCommands;
 using TwitchBot.Helpers;
-using TwitchBot.Interfaces;
-using TwitchBot.TwitchStream;
 using Youtube;
 
 namespace TwitchBot.CommandHandlers
@@ -24,11 +22,12 @@ namespace TwitchBot.CommandHandlers
         private readonly MessageRepository messageRepository;
         private readonly ReminderService reminderService;
         private readonly VotingService votingService;
+        private readonly IMessageParser messageParser;
 
         private bool mediaCommandAllowed;
-        private TwitchStreamInfoProvider twitchStreamInfoProvider;
-        private TwitchStreamUpdater twitchStreamUpdater;
-        private TwitchStreamClipProvider twitchStreamClipProvider;
+        private IStreamInfoProvider streamInfoProvider;
+        private IStreamUpdater streamUpdater;
+        private IStreamClipProvider streamClipProvider;
         private YoutubeBotService youtubeProvider;
         private List<string> modsList;
         private Timer modRefreshTimer;
@@ -39,19 +38,21 @@ namespace TwitchBot.CommandHandlers
         private Action refreshCommandListCallback;
         private Action votingCallback;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, VotingService votingService, IIrcClient irc, TwitchStreamInfoProvider twitchStreamInfoProvider, TwitchStreamClipProvider twitchStreamClipProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, VotingService votingService, IIrcClient irc, IStreamInfoProvider streamInfoProvider, IStreamClipProvider streamClipProvider, IStreamUpdater streamUpdater, IMessageParser messageParser, string channelName, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
         {
             irc.ThrowIfNull(nameof(irc));
+            messageParser.ThrowIfNull(nameof(messageParser));
             botCommands.ThrowIfNull(nameof(botCommands));
-            twitchStreamInfoProvider.ThrowIfNull(nameof(twitchStreamInfoProvider));
-            twitchStreamClipProvider.ThrowIfNull(nameof(twitchStreamClipProvider));
+            streamInfoProvider.ThrowIfNull(nameof(streamInfoProvider));
+            streamClipProvider.ThrowIfNull(nameof(streamClipProvider));
             reminderService.ThrowIfNull(nameof(reminderService));
             votingService.ThrowIfNull(nameof(votingService));
-            this.twitchStreamInfoProvider = twitchStreamInfoProvider;
-            this.twitchStreamClipProvider = twitchStreamClipProvider;
+            this.streamInfoProvider = streamInfoProvider;
+            this.streamClipProvider = streamClipProvider;
             this.reminderService = reminderService;
             this.votingService = votingService;
             this.irc = irc;
+            this.messageParser = messageParser;
             this.botCommands = botCommands;
             this.channelName = channelName;
             this.reminderCallback = reminderCallback;
@@ -61,8 +62,8 @@ namespace TwitchBot.CommandHandlers
             youtubeProvider = new YoutubeBotService();
 
             modsList = new List<string>();
-           // twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
-            twitchStreamUpdater = new TwitchStreamUpdater(channelName);
+            // twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
+            this.streamUpdater = streamUpdater;
             mediaCommandAllowed = true;
 
             messageRepository = new MessageRepository();
@@ -103,8 +104,8 @@ namespace TwitchBot.CommandHandlers
 
         public void HadleMessage(string message)
         {
-            string parsedMessage = MessageParser.GetParsedMessage(message);
-            string userWhoSentMessage = MessageParser.GetMessageSenderUserName(message);
+            string parsedMessage = messageParser.GetParsedMessage(message);
+            string userWhoSentMessage = messageParser.GetMessageSenderUserName(message);
             CommandType commandType = botCommands.GetCommandType(parsedMessage.Split(' ')[0]);
             switch (commandType)
             {
@@ -209,7 +210,7 @@ namespace TwitchBot.CommandHandlers
 
             if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
             {                
-                string clipId = twitchStreamClipProvider.CreateTwitchClip();
+                string clipId = streamClipProvider.CreateClip();
 
                 string loadingMessage = SelectRandomItem(messageRepository.LoadingMessages);
                 irc.SendChatMessage(String.Format(loadingMessage, userWhoSentMessage));
@@ -320,13 +321,13 @@ namespace TwitchBot.CommandHandlers
             {
                 if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
                 {
-                    string report = twitchStreamUpdater.SetTwitchStatiusAndReturnWhichStatusIsSet(parsedMessage.Substring(parsedMessage.IndexOf(" ") + 1));
+                    string report = streamUpdater.SetStreamStatusAndReturnWhichStatusIsSet(parsedMessage.Substring(parsedMessage.IndexOf(" ") + 1));
                     irc.SendChatMessage(botCommands.GetUserInputCommandMessage(parsedMessage.Split(' ')[0], userWhoSentMessage, report));
                 }
             }
             else
             {
-                string title = twitchStreamInfoProvider.GetTitle();
+                string title = streamInfoProvider.GetTitle();
                 if (title != null)
                 {
                     irc.SendChatMessage("Current title is: " + title);
@@ -340,7 +341,7 @@ namespace TwitchBot.CommandHandlers
 
         private void HandleModsRequestCommand(string parsedMessage)
         {
-            string parsedMods = MessageParser.GetParsedModsMessage(parsedMessage);
+            string parsedMods = messageParser.GetParsedModsMessage(parsedMessage);
             modsList = parsedMods.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             modsList.Add(channelName);
         }
@@ -364,11 +365,11 @@ namespace TwitchBot.CommandHandlers
                 //    param += tg.GameName + " for " + tg.TimePlayed.Elapsed.ToString("hh\\:mm\\:ss");
                 //}
 
-                for (int i = 0; i < twitchStreamInfoProvider.GamesPlayed.Count; i++)
+                for (int i = 0; i < streamInfoProvider.GamesPlayed.Count; i++)
                 {
-                    param += twitchStreamInfoProvider.GamesPlayed[i].GameName + " for " + twitchStreamInfoProvider.GamesPlayed[i].TimePlayed.Elapsed.ToString("hh\\:mm\\:ss");
+                    param += streamInfoProvider.GamesPlayed[i].GameName + " for " + streamInfoProvider.GamesPlayed[i].TimePlayed.Elapsed.ToString("hh\\:mm\\:ss");
 
-                    if (i != twitchStreamInfoProvider.GamesPlayed.Count - 1)
+                    if (i != streamInfoProvider.GamesPlayed.Count - 1)
                     {
                         param += ", ";
                     }
@@ -392,7 +393,7 @@ namespace TwitchBot.CommandHandlers
                         irc.SendChatMessage("Invalid format. Use !addcommand [command] : [command message]");
                         return;
                     }
-                    string newCommandMessage = MessageParser.GetParsedMessage(parsedMessage).Split(':').Last();
+                    string newCommandMessage = messageParser.GetParsedMessage(parsedMessage).Split(':').Last();
 
                     irc.SendChatMessage(botCommands.AddCommandAndGetFeedback(newCommand, newCommandMessage, refreshCommandListCallback));
                 }
@@ -410,7 +411,7 @@ namespace TwitchBot.CommandHandlers
                 if (parsedMessage.Split(' ').Length > 1)
                 {
                     string commandForEdit = parsedMessage.Split(' ')[1];
-                    string newCommandMessage = MessageParser.GetParsedMessage(parsedMessage).Split(':').Last();
+                    string newCommandMessage = messageParser.GetParsedMessage(parsedMessage).Split(':').Last();
 
                     irc.SendChatMessage(botCommands.EditCommandAndGetFeedback(commandForEdit, newCommandMessage, refreshCommandListCallback));
                 }

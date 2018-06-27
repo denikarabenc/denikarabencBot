@@ -182,11 +182,11 @@ namespace TwitchBot.BotCommands
         {
             List<string> specialCommandNamesList = new List<string>(5);
 
-            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_ADDCOMMAND);
-            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_EDITCOMMAND);
-            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_TITLE);
-            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_FOLLOW);
-            specialCommandNamesList.Add(TwitchBot.Properties.Resources.botCommandPool_SONGREQUESTCOMMAND);
+            specialCommandNamesList.Add(BotCore.Properties.Resources.botCommandPool_ADDCOMMAND);
+            specialCommandNamesList.Add(BotCore.Properties.Resources.botCommandPool_EDITCOMMAND);
+            specialCommandNamesList.Add(BotCore.Properties.Resources.botCommandPool_TITLE);
+            specialCommandNamesList.Add(BotCore.Properties.Resources.botCommandPool_FOLLOW);
+            specialCommandNamesList.Add(BotCore.Properties.Resources.botCommandPool_SONGREQUESTCOMMAND);
 
             return specialCommandNamesList;
         }
@@ -297,21 +297,21 @@ namespace TwitchBot.BotCommands
             if (commandPool.ContainsKey(command))
             {
                 return string.Format("{0} {1} {2}. {3} {4} {5}",
-                    Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_ALREADY_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_EDITCOMMAND, Properties.Resources.botCommandPool_INSTEAD);
+                    BotCore.Properties.Resources.botCommandPool_COMMAND, command, BotCore.Properties.Resources.botCommandPool_ALREADY_EXIST, BotCore.Properties.Resources.botCommandPool_USE, BotCore.Properties.Resources.botCommandPool_EDITCOMMAND, BotCore.Properties.Resources.botCommandPool_INSTEAD);
             }
 
             commandPool.Add(command, new BotCommand(command, message, CommandType.UserInputCommand));
             commandSaver.AddCommandToXML(command, message);
             StringBuilder sb = new StringBuilder();
             callback?.Invoke();
-            return string.Format("{0} {1} {2}", Properties.Resources.botCommandPool_COMMAND, command, TwitchBot.Properties.Resources.botCommandPool_ADDED);
+            return string.Format("{0} {1} {2}", BotCore.Properties.Resources.botCommandPool_COMMAND, command, BotCore.Properties.Resources.botCommandPool_ADDED);
         }
 
         public string EditCommandAndGetFeedback(string command, string newMessage, Action callback)
         {
             if (!commandPool.ContainsKey(command))
             {
-                return string.Format("{0} {1} {2}. {3} {4} {5}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_DOES_NOT_EXIST, Properties.Resources.botCommandPool_USE, Properties.Resources.botCommandPool_ADDCOMMAND, TwitchBot.Properties.Resources.botCommandPool_INSTEAD);
+                return string.Format("{0} {1} {2}. {3} {4} {5}", BotCore.Properties.Resources.botCommandPool_COMMAND, command, BotCore.Properties.Resources.botCommandPool_DOES_NOT_EXIST, BotCore.Properties.Resources.botCommandPool_USE, BotCore.Properties.Resources.botCommandPool_ADDCOMMAND, BotCore.Properties.Resources.botCommandPool_INSTEAD);
             }
 
             BotCommand oldCommand = commandPool[command];
@@ -321,7 +321,7 @@ namespace TwitchBot.BotCommands
             commandSaver.AddCommandToXML(command, newMessage);
             callback?.Invoke();
             StringBuilder sb = new StringBuilder();
-            return string.Format("{0} {1} {2} {3}", Properties.Resources.botCommandPool_COMMAND, command, Properties.Resources.botCommandPool_EDITED_TO, newMessage);
+            return string.Format("{0} {1} {2} {3}", BotCore.Properties.Resources.botCommandPool_COMMAND, command, BotCore.Properties.Resources.botCommandPool_EDITED_TO, newMessage);
         }
 
         public string GetReadCommandMessage(string command, string userWhoSentTheCommand) //Make string[] params

@@ -15,6 +15,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using TwitchBot;
+using TwitchBot.Helpers;
+using TwitchBot.TwitchStream;
 
 namespace denikarabencBot.ViewModels
 {
@@ -425,8 +427,12 @@ namespace denikarabencBot.ViewModels
 
         private void StartBot()
         {
-            IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
-            bot = new BotRunner(irc, reminderCallback, refreshCommandsCallback, votingCallback);
+            TwitchIrcClient irc = new TwitchIrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
+            TwitchStreamClipProvider clipProvider = new TwitchStreamClipProvider(TwitchChannelName);
+            TwitchStreamInfoProvider streamInfoProvider = new TwitchStreamInfoProvider(TwitchChannelName);
+            TwitchStreamUpdater streamUpdater = new TwitchStreamUpdater(TwitchChannelName);
+            TwitchMessageParser messageParser = new TwitchMessageParser();
+            bot = new BotRunner(irc, clipProvider, streamInfoProvider, streamUpdater, messageParser, reminderCallback, refreshCommandsCallback, votingCallback);
             bot.ChannelName = TwitchChannelName;
             bot.SteamID = SteamID;
             bot.IsReplayEnabled = IsReplayEnabled;

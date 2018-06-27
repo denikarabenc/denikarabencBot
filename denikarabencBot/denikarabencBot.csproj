@@ -74,8 +74,8 @@
     <Reference Include="InputSimulator">
       <HintPath>..\..\..\Input\InputSimulator.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -211,6 +211,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BotCore\TwitchIntegration.csproj">
+      <Project>{1067de82-4d61-4090-a691-8be75ba2a474}</Project>
+      <Name>TwitchIntegration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{a16f8529-9a77-41f7-80be-41bb4b8b9348}</Project>
       <Name>Common</Name>
@@ -223,9 +227,9 @@
       <Project>{f6f92f93-ddd9-44c3-aa28-278c732d532e}</Project>
       <Name>SimpleWebServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TwitchBot\TwitchBot.csproj">
+    <ProjectReference Include="..\TwitchBot\BotCore.csproj">
       <Project>{44f148dd-390d-4416-a780-c37a86d274dc}</Project>
-      <Name>TwitchBot</Name>
+      <Name>BotCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\Youtube\Youtube.csproj">
       <Project>{14c24eda-a43a-495e-b436-6e1b30535c77}</Project>

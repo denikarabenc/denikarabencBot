@@ -1,4 +1,5 @@
 ﻿using BotLogger;
+using Common.Interfaces;
 using Common.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ using TwitchBot.TwitchStream.Json;
 
 namespace TwitchBot.TwitchStream
 {
-    public class TwitchStreamInfoProvider
+    public class TwitchStreamInfoProvider : IStreamInfoProvider
     {
-        private List<TwitchGame> gamesPlayed;
+        private List<StreamGame> gamesPlayed;
         private string channelName;
 
         public TwitchStreamInfoProvider(string channelName)
         {
             this.channelName = channelName;
-            gamesPlayed = new List<TwitchGame>();
+            gamesPlayed = new List<StreamGame>();
 
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/users/" + channelName);
             //request.Method = "GET";
@@ -32,9 +33,9 @@ namespace TwitchBot.TwitchStream
             //}
         }
 
-        public List<TwitchGame> GamesPlayed => gamesPlayed;
+        public List<StreamGame> GamesPlayed => gamesPlayed;
 
-        private TwitchJsonRootObject GetTwitchStatus()
+        private TwitchJsonRootObject GetStreamStatus()
         {
             try
             {
@@ -64,6 +65,35 @@ namespace TwitchBot.TwitchStream
                 Logger.Log(LoggingType.Warning, "[TwitchStreamInfoProvider] -> ", ex);
                 return new TwitchJsonRootObject();
             }
+
+            //This works only if online. And json needs to be adjusted
+        //    try
+        //    {
+        //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/streams?user_id=31999722");
+        //        request.Method = "GET";
+        //        request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
+        //        request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+
+        //        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+        //        TwitchJsonRootObject jsonResult;
+        //        using (var reader = new StreamReader(response.GetResponseStream()))
+        //        {
+        //            string jsonString = reader.ReadToEnd();
+        //            jsonResult = JsonConvert.DeserializeObject<TwitchJsonRootObject>(jsonString);
+        //            if (jsonResult.Stream == null)
+        //            {
+        //                jsonResult.Stream = JsonConvert.DeserializeObject<TwitchStreamInfo>(jsonString);
+        //            }
+        //        }
+
+        //        return jsonResult;
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        Logger.Log(LoggingType.Warning, "[TwitchStreamInfoProvider] -> ", ex);
+        //        return new TwitchJsonRootObject();
+        //    }
         }
 
         public void AddPlayingGame(string game = null)
@@ -76,7 +106,7 @@ namespace TwitchBot.TwitchStream
 
             if (currentGame != null)
             {
-                TwitchGame tg = new TwitchGame();
+                StreamGame tg = new StreamGame();
 
                 if (gamesPlayed.Count == 0)
                 {
@@ -97,9 +127,9 @@ namespace TwitchBot.TwitchStream
             }
         }
 
-        public string GetCurrentTwitchGame()
+        public string GetCurrentStreamGame()
         {
-            TwitchJsonRootObject twitchJsonRootObject = GetTwitchStatus();
+            TwitchJsonRootObject twitchJsonRootObject = GetStreamStatus();
             if (twitchJsonRootObject.Stream != null)
             {
                 return twitchJsonRootObject.Stream.Game;
@@ -109,7 +139,7 @@ namespace TwitchBot.TwitchStream
 
         public string GetTitle()
         {
-            TwitchJsonRootObject twitchJsonRootObject = GetTwitchStatus();
+            TwitchJsonRootObject twitchJsonRootObject = GetStreamStatus();
             if (twitchJsonRootObject.Stream != null)
             {
                 return twitchJsonRootObject.Stream.Status;
@@ -117,7 +147,7 @@ namespace TwitchBot.TwitchStream
             return null;
         }  
 
-        public List<string> GetTwitchGamesWhichWouldNotBeChanged()
+        public IList<string> GetStreamGamesWhichWouldNotBeChanged()
         {
             List<string> list = new List<string>();
             list.Add("Music");

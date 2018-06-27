@@ -9,7 +9,13 @@ namespace TwitchBot.TwitchStream.Json
 {
     public class TwitchChannelInfo
     {
-        [JsonProperty("_id")]
+        [JsonProperty("id")]
         public string ID { get; set; }
-    }    
+    }
+
+    public class TwitchChannelInfoRoot
+    {
+        [JsonProperty("data")]
+        public List<TwitchChannelInfo> Data { get; set; }
+    }
 }

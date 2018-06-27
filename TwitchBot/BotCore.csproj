@@ -7,8 +7,8 @@
     <ProjectGuid>{44F148DD-390D-4416-A780-C37A86D274DC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TwitchBot</RootNamespace>
-    <AssemblyName>TwitchBot</AssemblyName>
+    <RootNamespace>BotCore</RootNamespace>
+    <AssemblyName>BotCore</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -54,8 +54,8 @@
     <Reference Include="InputSimulator">
       <HintPath>..\..\..\Input\InputSimulator.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -82,10 +82,6 @@
     <Compile Include="BotRunner.cs" />
     <Compile Include="CommandHandlers\BotMessageHandler.cs" />
     <Compile Include="CommandHandlers\TimedCommandHandler.cs" />
-    <Compile Include="Helpers\MessageParser.cs" />
-    <Compile Include="Helpers\MessageRepository.cs" />
-    <Compile Include="Interfaces\IIrcClient.cs" />
-    <Compile Include="IrcClient.cs" />
     <Compile Include="LocalGameChecker\LocalGameMapper.cs" />
     <Compile Include="LocalGameChecker\LocalRunningGameChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,17 +93,7 @@
     <Compile Include="Steam\Json\SteamGameInfo.cs" />
     <Compile Include="Steam\Json\SteamPlayerInfo.cs" />
     <Compile Include="Steam\SteamInfoProvider.cs" />
-    <Compile Include="TwitchStream\Json\GameBombInfo.cs" />
-    <Compile Include="TwitchStream\Json\TwitchChannelInfo.cs" />
-    <Compile Include="TwitchStream\Json\TwitchClipInfo.cs" />
-    <Compile Include="TwitchStream\Json\TwitchGamesInfo.cs" />
-    <Compile Include="TwitchStream\Json\TwitchStreamInfo.cs" />
-    <Compile Include="TwitchStream\TwitchGame.cs" />
-    <Compile Include="TwitchStream\TwitchGameChanger.cs" />
-    <Compile Include="TwitchStream\TwitchStreamCommonHelper.cs" />
-    <Compile Include="TwitchStream\TwitchStreamInfoProvider.cs" />
-    <Compile Include="TwitchStream\TwitchStreamUpdater.cs" />
-    <Compile Include="TwitchStream\TwitchStreamClipProvider.cs" />
+    <Compile Include="AutoStreamGameChanger.cs" />
     <Compile Include="VideoWindow.xaml.cs" />
   </ItemGroup>
   <ItemGroup>

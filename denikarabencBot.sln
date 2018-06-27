@@ -9,13 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotLogger", "Logger\BotLogg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A16F8529-9A77-41F7-80BE-41BB4B8B9348}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchBot", "TwitchBot\TwitchBot.csproj", "{44F148DD-390D-4416-A780-C37A86D274DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotCore", "TwitchBot\BotCore.csproj", "{44F148DD-390D-4416-A780-C37A86D274DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube", "Youtube\Youtube.csproj", "{14C24EDA-A43A-495E-B436-6E1B30535C77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "denikarabencBotOBSSetup", "denikarabencBotOBSSetup\denikarabencBotOBSSetup.csproj", "{7A1A226D-A502-4600-B927-DAB6260220F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebServer", "SimpleWebServer\SimpleWebServer.csproj", "{F6F92F93-DDD9-44C3-AA28-278C732D532E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchIntegration", "BotCore\TwitchIntegration.csproj", "{1067DE82-4D61-4090-A691-8BE75BA2A474}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,14 @@ Global
 		{F6F92F93-DDD9-44C3-AA28-278C732D532E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6F92F93-DDD9-44C3-AA28-278C732D532E}.Release|x64.ActiveCfg = Release|x64
 		{F6F92F93-DDD9-44C3-AA28-278C732D532E}.Release|x64.Build.0 = Release|x64
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Debug|x64.ActiveCfg = Debug|x64
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Debug|x64.Build.0 = Debug|x64
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Release|x64.ActiveCfg = Release|x64
+		{1067DE82-4D61-4090-A691-8BE75BA2A474}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
