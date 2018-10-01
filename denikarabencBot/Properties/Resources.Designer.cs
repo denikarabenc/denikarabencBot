@@ -176,5 +176,50 @@ namespace denikarabencBot.Properties {
                 return ResourceManager.GetString("botCommandPool_USE", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove all votes?.
+        /// </summary>
+        internal static string denikarabencBot_ARE_YOU_SURE_YOU_WANT_TO_REMOVE_ALL_VOTES {
+            get {
+                return ResourceManager.GetString("denikarabencBot_ARE_YOU_SURE_YOU_WANT_TO_REMOVE_ALL_VOTES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conformation.
+        /// </summary>
+        internal static string denikarabencBot_CONFORMATION {
+            get {
+                return ResourceManager.GetString("denikarabencBot_CONFORMATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start bot..
+        /// </summary>
+        internal static string denikarabencBot_COULD_NOT_START_BOT {
+            get {
+                return ResourceManager.GetString("denikarabencBot_COULD_NOT_START_BOT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error!.
+        /// </summary>
+        internal static string denikarabencBot_ERROR {
+            get {
+                return ResourceManager.GetString("denikarabencBot_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please try again later..
+        /// </summary>
+        internal static string denikarabencBot_PLEASE_TRY_AGAIN_LATER {
+            get {
+                return ResourceManager.GetString("denikarabencBot_PLEASE_TRY_AGAIN_LATER", resourceCulture);
+            }
+        }
     }
 }

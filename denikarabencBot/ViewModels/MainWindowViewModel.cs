@@ -263,7 +263,7 @@ namespace denikarabencBot.ViewModels
 
         private void ClearVotesCommandExecite()
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to clear all the votes?","Conformation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show(Properties.Resources.denikarabencBot_ARE_YOU_SURE_YOU_WANT_TO_REMOVE_ALL_VOTES, Properties.Resources.denikarabencBot_CONFORMATION, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
             {
                 return;
@@ -461,6 +461,7 @@ namespace denikarabencBot.ViewModels
             catch(Exception e)
             {
                 Logger.Log(LoggingType.Error, "Could not start bot", e);
+                MessageBox.Show(string.Format("{0} {1}", Properties.Resources.denikarabencBot_COULD_NOT_START_BOT, Properties.Resources.denikarabencBot_PLEASE_TRY_AGAIN_LATER), Properties.Resources.denikarabencBot_ERROR, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

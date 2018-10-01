@@ -156,4 +156,19 @@
   <data name="botCommandPool_USE" xml:space="preserve">
     <value>Use</value>
   </data>
+  <data name="denikarabencBot_ARE_YOU_SURE_YOU_WANT_TO_REMOVE_ALL_VOTES" xml:space="preserve">
+    <value>Are you sure you want to remove all votes?</value>
+  </data>
+  <data name="denikarabencBot_CONFORMATION" xml:space="preserve">
+    <value>Conformation</value>
+  </data>
+  <data name="denikarabencBot_COULD_NOT_START_BOT" xml:space="preserve">
+    <value>Could not start bot.</value>
+  </data>
+  <data name="denikarabencBot_ERROR" xml:space="preserve">
+    <value>Error!</value>
+  </data>
+  <data name="denikarabencBot_PLEASE_TRY_AGAIN_LATER" xml:space="preserve">
+    <value>Please try again later.</value>
+  </data>
 </root>
