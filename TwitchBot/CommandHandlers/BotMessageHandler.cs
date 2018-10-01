@@ -168,9 +168,14 @@ namespace TwitchBot.CommandHandlers
                     break;
                 case CommandType.NotExist:
                     CommandType commandTypeReChecked = botCommands.GetCommandType(message);
-                    if (commandTypeReChecked == CommandType.ModsRequest)
+                    switch (commandTypeReChecked)
                     {
-                        HandleModsRequestCommand(parsedMessage);
+                        case CommandType.ModsRequest:
+                            HandleModsRequestCommand(parsedMessage);
+                            break;
+                        case CommandType.Ping:
+                            HandlePingCommand();
+                            break;
                     }
                     return;
                 default:

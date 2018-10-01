@@ -234,7 +234,7 @@ namespace TwitchBot.BotCommands
 
         public CommandType GetCommandType(string message)
         {
-            if (message.Contains(botCommandPool_PINGCOMMAND))
+            if (message == botCommandPool_PINGCOMMAND)
             {
                 return CommandType.Ping;
             }

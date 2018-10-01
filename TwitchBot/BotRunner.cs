@@ -85,7 +85,7 @@ namespace TwitchBot
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
             
-            irc.JoinRoom("/ me Joins the channel! FeelsGoodMan");           
+            irc.JoinRoom("/me Joins the channel! FeelsGoodMan");           
             timedCommandHandler = new TimedCommandHandler(commandPool, irc);
             BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, streamInfoProvider, streamClipProvider, streamUpdater, messageParser, tweeterProvider, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
 

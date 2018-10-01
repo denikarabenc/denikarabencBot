@@ -152,7 +152,8 @@ namespace TwitchBot
                 string message = inputStream.ReadLine();
                 if (message == null)
                 {
-                    BotLogger.Logger.Log(Common.Models.LoggingType.Error, "IRC received message is null");
+                    BotLogger.Logger.Log(Common.Models.LoggingType.Error, "[TwitchIrcClient] -> IRC received message is null");
+                    BotLogger.Logger.Log(Common.Models.LoggingType.Error, string.Format("[TwitchIrcClient] -> Trying to reconnect in {0} seconds", (reconnectTime / 1000)));
                     System.Threading.Thread.Sleep(reconnectTime);
                     Reconnect();
                     return string.Empty;
@@ -162,6 +163,7 @@ namespace TwitchBot
             catch (SocketException se)
             {
                 BotLogger.Logger.Log(Common.Models.LoggingType.Error, se);
+                BotLogger.Logger.Log(Common.Models.LoggingType.Error, string.Format("[TwitchIrcClient] -> Trying to reconnect in {0} seconds", (reconnectTime / 1000)));
                 System.Threading.Thread.Sleep(reconnectTime);
                 Reconnect();
                 return string.Empty;
@@ -170,6 +172,7 @@ namespace TwitchBot
             catch (System.Exception e)
             {
                 BotLogger.Logger.Log(Common.Models.LoggingType.Error, e);
+                BotLogger.Logger.Log(Common.Models.LoggingType.Error, string.Format("[TwitchIrcClient] -> Trying to reconnect in {0} seconds", (reconnectTime / 1000)));
                 System.Threading.Thread.Sleep(reconnectTime);
                 Reconnect();
                 return string.Empty;
@@ -180,11 +183,6 @@ namespace TwitchBot
         {
             outputStream.WriteLine("PONG :tmi.twitch.tv");
             outputStream.Flush();
-        }
-
-        public void JoinedMessage()
-        {
-            SendChatMessage("/me Joins the channel!");           
         }
     }
 }
