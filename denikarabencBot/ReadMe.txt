@@ -4,6 +4,11 @@ I will try to send you the updates when I have them. I cannot promise regular up
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Privacy statement:
+denikarabencbot do not use any of the data you entered for anything besides joing the bot to the twitch and getting game information from steam. No information will be used for anything else. Bot will not send any information to me (the developer) or any other 3rd party.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 SYSTEM REQUIREMENTS:
 
 If you are trying to stream, you probably have much better PC than needed, but here it goes:

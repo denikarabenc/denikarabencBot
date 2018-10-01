@@ -54,6 +54,11 @@ namespace TwitchBot.Steam
 
             if (GameName == null)
             {
+                if (jsonResult?.Response?.Players?.Count < 0)
+                {
+                    return;
+                }
+
                 gameID = jsonResult?.Response?.Players[0]?.GameID;
                 if (gameID == null)
                 {
@@ -69,12 +74,20 @@ namespace TwitchBot.Steam
 
                 if (gameToTwitchMapper.ContainsKey(jsonGameResult?.GameData?.GameName))
                 {
-                    GameName = gameToTwitchMapper[jsonGameResult.GameData.GameName];              
+                    GameName = gameToTwitchMapper[jsonGameResult.GameData.GameName];
                 }
                 else
                 {
-                    GameName = jsonGameResult?.GameData?.GameName;                    
+                    GameName = jsonGameResult?.GameData?.GameName;
                 }
+            }
+            else
+            {
+                if (gameToTwitchMapper.ContainsKey(GameName))
+                {
+                    GameName = gameToTwitchMapper[GameName];
+                }
+
             }
         }
 

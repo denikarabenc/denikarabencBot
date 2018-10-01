@@ -21,7 +21,7 @@ namespace BotLogger
         {
             string filePath = logPreparer.GetLogFilePath();
 
-            if (filePath == String.Empty)
+            if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
                 filePath = logPreparer.GetLogFilePath();
@@ -39,7 +39,7 @@ namespace BotLogger
         {
             string filePath = logPreparer.GetLogFilePath();
 
-            if (filePath == String.Empty)
+            if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
                 filePath = logPreparer.GetLogFilePath();
@@ -51,7 +51,7 @@ namespace BotLogger
                 //writter.Write("\r\nLog Entry : ");
                 writer.Write("[{0} {1}] {2}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString(), loggingType.ToDescriptionString());
                 writer.WriteLine(" : {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException?.Message))
+                if (string.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }
@@ -65,7 +65,7 @@ namespace BotLogger
 
             string filePath = logPreparer.GetLogFilePath();
 
-            if (filePath == String.Empty)
+            if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
                 filePath = logPreparer.GetLogFilePath();
@@ -78,7 +78,7 @@ namespace BotLogger
                 writer.Write("[{0} {1}] {2}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString(), loggingType.ToDescriptionString());
                 writer.WriteLine(" : {0}", logMessage);
                 writer.WriteLine("\t\t {0}", ex.Message);
-                if (String.IsNullOrEmpty(ex.InnerException?.Message))
+                if (string.IsNullOrEmpty(ex.InnerException?.Message))
                 {
                     writer.WriteLine("\t\t {0}", ex.InnerException);
                 }
@@ -93,7 +93,7 @@ namespace BotLogger
 
             string filePath = logPreparer.GetLogProcessFilePath();
 
-            if (filePath == String.Empty)
+            if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
                 filePath = logPreparer.GetLogFilePath();
@@ -109,7 +109,7 @@ namespace BotLogger
                 List<string> currentRunningApplications = new List<string>();
                 foreach (System.Diagnostics.Process p in processes)
                 {
-                    if (!String.IsNullOrEmpty(p.MainWindowTitle))
+                    if (!string.IsNullOrEmpty(p.MainWindowTitle))
                     {
                         writer.WriteLine("\t\t" + p.MainWindowTitle);
                     }

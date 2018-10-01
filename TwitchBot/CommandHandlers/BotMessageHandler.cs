@@ -28,6 +28,7 @@ namespace TwitchBot.CommandHandlers
         private IStreamInfoProvider streamInfoProvider;
         private IStreamUpdater streamUpdater;
         private IStreamClipProvider streamClipProvider;
+        private ITweeterProvider tweeterProvider;
         private YoutubeBotService youtubeProvider;
         private List<string> modsList;
         private Timer modRefreshTimer;
@@ -38,17 +39,16 @@ namespace TwitchBot.CommandHandlers
         private Action refreshCommandListCallback;
         private Action votingCallback;
 
-        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, VotingService votingService, IIrcClient irc, IStreamInfoProvider streamInfoProvider, IStreamClipProvider streamClipProvider, IStreamUpdater streamUpdater, IMessageParser messageParser, string channelName, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
+        public BotMessageHandler(BotCommandsRepository botCommands, ReminderService reminderService, VotingService votingService, IIrcClient irc, IStreamInfoProvider streamInfoProvider, IStreamClipProvider streamClipProvider, IStreamUpdater streamUpdater, IMessageParser messageParser, ITweeterProvider tweeterProvider, string channelName, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             messageParser.ThrowIfNull(nameof(messageParser));
             botCommands.ThrowIfNull(nameof(botCommands));
-            streamInfoProvider.ThrowIfNull(nameof(streamInfoProvider));
-            streamClipProvider.ThrowIfNull(nameof(streamClipProvider));
             reminderService.ThrowIfNull(nameof(reminderService));
             votingService.ThrowIfNull(nameof(votingService));
             this.streamInfoProvider = streamInfoProvider;
             this.streamClipProvider = streamClipProvider;
+            this.tweeterProvider = tweeterProvider;
             this.reminderService = reminderService;
             this.votingService = votingService;
             this.irc = irc;
@@ -125,10 +125,16 @@ namespace TwitchBot.CommandHandlers
                     HandleReadCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.TwitchStatusCommand:
-                    HandleTwitchStatusCommand(parsedMessage, userWhoSentMessage);
+                    if (streamInfoProvider != null)
+                    {
+                        HandleTwitchStatusCommand(parsedMessage, userWhoSentMessage);
+                    }
                     break;
                 case CommandType.ChangeTitleCommand:
-                    HandleChangeTitleCommand(parsedMessage, userWhoSentMessage);
+                    if (streamInfoProvider != null)
+                    {
+                        HandleChangeTitleCommand(parsedMessage, userWhoSentMessage);
+                    }
                     break;
                 case CommandType.UserInputCommand:
                     HandleUserInputCommand(parsedMessage, userWhoSentMessage);
@@ -140,7 +146,10 @@ namespace TwitchBot.CommandHandlers
                     HandleSongRequestCommand(parsedMessage, userWhoSentMessage);
                     break;
                 case CommandType.CreateClip:
-                    HandleCreateClipCommand(parsedMessage, userWhoSentMessage);
+                    if (streamClipProvider != null)
+                    {
+                        HandleCreateClipCommand(parsedMessage, userWhoSentMessage);
+                    }
                     break;
                 case CommandType.CommandList:
                     HandleCommandListCommand();
@@ -151,6 +160,12 @@ namespace TwitchBot.CommandHandlers
                 case CommandType.Vote:
                     HandleVotesCommand(parsedMessage, userWhoSentMessage);
                     break;
+                case CommandType.LastTweetCommand:
+                    if (tweeterProvider != null)
+                    {
+                        HandleLastTweetCommand(parsedMessage, userWhoSentMessage);
+                    }
+                    break;
                 case CommandType.NotExist:
                     CommandType commandTypeReChecked = botCommands.GetCommandType(message);
                     if (commandTypeReChecked == CommandType.ModsRequest)
@@ -160,6 +175,14 @@ namespace TwitchBot.CommandHandlers
                     return;
                 default:
                     throw new InvalidOperationException();
+            }
+        }
+
+        private void HandleLastTweetCommand(string parsedMessage, string userWhoSentMessage)
+        {
+            if (ContainsPermissions(userWhoSentMessage, botCommands.GetCommandPermissions(parsedMessage)))
+            {
+                tweeterProvider.GetLatestStatus();
             }
         }
 

@@ -227,6 +227,10 @@
       <Project>{f6f92f93-ddd9-44c3-aa28-278c732d532e}</Project>
       <Name>SimpleWebServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TweeterProvider\TweeterProvider.csproj">
+      <Project>{DC914FF3-C656-4E22-9A7B-5AE62DFE4980}</Project>
+      <Name>TweeterProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TwitchBot\BotCore.csproj">
       <Project>{44f148dd-390d-4416-a780-c37a86d274dc}</Project>
       <Name>BotCore</Name>

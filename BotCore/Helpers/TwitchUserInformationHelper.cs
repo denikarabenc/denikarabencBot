@@ -12,11 +12,9 @@ using TwitchBot.TwitchStream.Json;
 
 namespace TwitchIntegration.Helpers
 {
-    public class TwitchUserInformationHelper
+    public static class TwitchUserInformationHelper
     {
-        private string userId;
-
-        private string GetChannelId(string channelName) //TODO prebaci u TwitchCommonHelper
+        public static string GetChannelId(string channelName) //TODO prebaci u TwitchCommonHelper
         {
             try
             {
@@ -39,11 +37,9 @@ namespace TwitchIntegration.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Log(LoggingType.Error, "[TwtichStreamClipProvider] -> Failed to get channel ID!", ex);
-                return String.Empty;
+                Logger.Log(LoggingType.Error, "[TwitchUserInformationHelper] -> Failed to get channel ID!");
+                throw ex;
             }
         }
-
-        public string UserId { get => userId; set => userId = value; }
     }
 }

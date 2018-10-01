@@ -115,8 +115,7 @@ namespace TwitchBot
                 //{
                 //    gameForTwitch = gameCurrentlyRunningOnMachine;
                 //}
-
-                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[TwitchGameChanger] -> Game name from steam is: {gameCurrentlyRunningOnMachine}");
+                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[AutoStreamGameChanger] -> Game name for twitch is: {gameForStream}");
                 string reportMessage = streamUpdater.SetStreamGameAndReturnWhichGameIsSet(gameForStream);
                 
                // if (reportMessage != "Game change failed FeelsBadMan")
@@ -130,7 +129,7 @@ namespace TwitchBot
                 //This should be uncommented with the if clause. It is set like this only because of twitch internal error
                 //gameChangePossible = false;
                 //gameChangePossibleTimer.Start();
-                //irc.SendChatMessage(reportMessage);
+                irc.SendChatMessage(reportMessage);
 
                 return;
             }
@@ -139,7 +138,7 @@ namespace TwitchBot
 
             if (gameCurrentlyRunningOnMachine != null && gameCurrentlyRunningOnMachine != streamCurrentGame)
             {
-                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[TwitchGameChanger] -> Game name from PC is: {gameCurrentlyRunningOnMachine}");
+                BotLogger.Logger.Log(Common.Models.LoggingType.Info, $"[AutoStreamGameChanger] -> Game name from PC is: {gameCurrentlyRunningOnMachine}");
                 string reportMessage = streamUpdater.SetStreamGameAndReturnWhichGameIsSet(gameCurrentlyRunningOnMachine);
                 
                 if (reportMessage != "Game change failed FeelsBadMan")
@@ -189,6 +188,12 @@ namespace TwitchBot
             gameChangePossibleTimer.AutoReset = false;
             gameChangePossibleTimer.Enabled = true;
             gameChangePossibleTimer.Elapsed += GameChangePossibleTimer_Elapsed;
+        }
+
+        public void Stop()
+        {
+            gameTimer?.Stop();
+            gameChangePossibleTimer?.Stop();
         }
 
         //private List<string> GetResultsFromGiantBomb(string game)
@@ -247,8 +252,7 @@ namespace TwitchBot
 
         public void Dispose()
         {
-            gameTimer?.Stop();
-            gameChangePossibleTimer?.Stop();
+            Stop();
             gameTimer?.Dispose();
             gameChangePossibleTimer?.Dispose();
         }

@@ -52,6 +52,23 @@ namespace TwitchBot
             }
         }
 
+        public void UpdateSettings()
+        {
+            BotLogger.Logger.Log(LoggingType.Info, string.Format("[TimedCommandHandler] -> Updating settings. New interval is {0} minutes", IntervalCommandIsSent));
+            timer.Stop();
+            if (IntervalCommandIsSent == 0)
+            {
+                timer.AutoReset = false;
+                timer.Enabled = false;
+            }
+            else
+            {
+                timer.Interval = IntervalCommandIsSent;
+                timer.AutoReset = true;
+                timer.Enabled = true;
+            }
+        }
+
         public double IntervalCommandIsSent
         {
             get
@@ -61,18 +78,18 @@ namespace TwitchBot
             set
             {
                 intervalCommandIsSent = value * 1000 * 60;
-                timer.Stop();                
-                if (intervalCommandIsSent == 0)
-                {
-                    timer.AutoReset = false;
-                    timer.Enabled = false;
-                }
-                else
-                {
-                    timer.Interval = intervalCommandIsSent;
-                    timer.AutoReset = true;
-                    timer.Enabled = true;
-                }
+                //timer.Stop();                
+                //if (intervalCommandIsSent == 0)
+                //{
+                //    timer.AutoReset = false;
+                //    timer.Enabled = false;
+                //}
+                //else
+                //{
+                //    timer.Interval = intervalCommandIsSent;
+                //    timer.AutoReset = true;
+                //    timer.Enabled = true;
+                //}
             }
         }
 

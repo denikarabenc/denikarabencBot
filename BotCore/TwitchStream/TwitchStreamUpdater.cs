@@ -11,56 +11,33 @@ namespace TwitchBot.TwitchStream
 {
     public class TwitchStreamUpdater : IStreamUpdater
     {
-        private string channelName;        
-        public TwitchStreamUpdater(string channelName)
+        private string channelId;        
+        public TwitchStreamUpdater(string channelId)
         {
-            this.channelName = channelName;
+            channelId.ThrowIfNull(nameof(channelId));
+            this.channelId = channelId;
         }
 
         public string SetStreamGameAndReturnWhichGameIsSet(string game) //TODO -> switch to V5
         {
             game.ThrowIfNull(nameof(game));
-            List<KeyValuePair<string, string>> datas = new List<KeyValuePair<string, string>>();
-            if (!string.IsNullOrEmpty(game))
-                datas.Add(new KeyValuePair<string, string>("game", "\"" + game + "\""));
 
-            string payload = "";
-            if (datas.Count == 1)
-            {
-                payload = $"\"{datas[0].Key}\": {datas[0].Value}";
-            }
-            else
-            {
-                for (int i = 0; i < datas.Count; i++)
-                {
-                    if ((datas.Count - i) > 1)
-                        payload = $"{payload}\"{datas[i].Key}\": {datas[i].Value},";
-                    else
-                        payload = $"{payload}\"{datas[i].Key}\": {datas[i].Value}";
-                }
-            }
-
-            payload = "{ \"channel\": {" + payload + "} }";
+            string jsonData = "{\"channel\":{\"game\":\"" + game + "\"}}";
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelId);
                 request.Method = "PUT";
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
                 request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
                 request.ContentType = "application/json";
-                request.Accept = $"application/vnd.twitchtv.v3+json";
+                request.Accept = $"application/vnd.twitchtv.v5+json";
 
-                //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/channels/" + channelName);
-                //request.Method = "PUT";
-                //request.Headers["Authorization"] = $"Bearer agjzfjjarinmxy46lc9zzae9r4e967";
-                ////request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
-                //request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
-
-                if (payload != null)
+                if (jsonData != null)
                 {
                     using (var writer = new StreamWriter(request.GetRequestStream()))
                     {
-                        writer.Write(payload);
+                        writer.Write(jsonData);
                     }
                 }
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -83,7 +60,7 @@ namespace TwitchBot.TwitchStream
 
                 if (ex.Message == "The remote server returned an error: (500) Internal Server Error.")
                 {
-                    return "Twitch API is having some issues, game may change in a minute";
+                    return string.Format("Twitch API is having some issues, game may change to a {0} in a minute", game);
                 }
 
                 return "Game change failed FeelsBadMan";
@@ -93,32 +70,24 @@ namespace TwitchBot.TwitchStream
         public string SetStreamStatusAndReturnWhichStatusIsSet(string status) //TODO -> switch to V5
         {
             status.ThrowIfNull(nameof(status));
-            List<KeyValuePair<string, string>> datas = new List<KeyValuePair<string, string>>();
-            if (!string.IsNullOrEmpty(status))
-                datas.Add(new KeyValuePair<string, string>("status", "\"" + status + "\""));
 
-            string payload = "";
-
-            if (datas.Count == 1)
-            {
-                payload = $"\"{datas[0].Key}\": {datas[0].Value}";
-            }
-
-            payload = "{ \"channel\": {" + payload + "} }";
+            string jsonData = "{\"channel\":{\"status\":\"" + status + "\"}}";
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelId);
                 request.Method = "PUT";
-                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967"; //vv0yeswj1kpcmyvi381006bl7rxaj4
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
                 request.ContentType = "application/json";
-                request.Accept = $"application/vnd.twitchtv.v3+json";
+                request.Accept = $"application/vnd.twitchtv.v5+json";
 
-                if (payload != null)
+
+                if (jsonData != null)
                 {
                     using (var writer = new StreamWriter(request.GetRequestStream()))
                     {
-                        writer.Write(payload);
+                        writer.Write(jsonData);
                     }
                 }
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -151,6 +120,3 @@ namespace TwitchBot.TwitchStream
         }
     }
 }
-
-
-//client secret 8k2yh6aaj86t39guooqc2uiz695xz9

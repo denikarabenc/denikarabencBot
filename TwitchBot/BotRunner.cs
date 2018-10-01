@@ -18,10 +18,13 @@ namespace TwitchBot
         private readonly IStreamClipProvider streamClipProvider;
         private readonly IStreamInfoProvider streamInfoProvider;
         private readonly IMessageParser messageParser;
+        private readonly ITweeterProvider tweeterProvider;
 
         private bool isCanceled;
         private bool isReplayEnabled;
         private bool isAutoGameChangeEnabled;
+
+        private int timedCommandInterval;
 
         private string channelName;
         private string steamID;
@@ -41,13 +44,14 @@ namespace TwitchBot
         private Action refreshCommandListCallback;
         private Action votingCallback;
 
-        public BotRunner(IIrcClient irc, IStreamClipProvider streamClipProvider, IStreamInfoProvider streamInfoProvider, IStreamUpdater streamUpdater, IMessageParser messageParser, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
+        public BotRunner(IIrcClient irc, IStreamClipProvider streamClipProvider, IStreamInfoProvider streamInfoProvider, IStreamUpdater streamUpdater, IMessageParser messageParser, ITweeterProvider tweeterProvider, Action reminderCallback, Action refreshCommandListCallback, Action votingCallback)
         {
             irc.ThrowIfNull(nameof(irc));
             messageParser.ThrowIfNull(nameof(messageParser));
             this.streamUpdater = streamUpdater;
             this.streamClipProvider = streamClipProvider;
             this.streamInfoProvider = streamInfoProvider;
+            this.tweeterProvider = tweeterProvider;
             this.irc = irc;
             this.messageParser = messageParser;
 
@@ -65,6 +69,8 @@ namespace TwitchBot
         public bool IsAutoGameChangeEnabled { get => isAutoGameChangeEnabled; set => isAutoGameChangeEnabled = value; }
         public bool IsReplayEnabled { get => isReplayEnabled; set => isReplayEnabled = value; }
 
+        public int TimedCommandInterval { get => timedCommandInterval; set => timedCommandInterval = value; }
+
         public string SteamID { get => steamID; set => steamID = value; }
         public string ChannelName { get => channelName; set => channelName = value; }
         public string MediaPlayerFileName { get => mediaPlayerFileName; set => mediaPlayerFileName = value; }
@@ -78,25 +84,23 @@ namespace TwitchBot
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
-
-            autoStreamGameChanger = new AutoStreamGameChanger(irc, streamInfoProvider, streamUpdater, new SteamInfoProvider(SteamID));
-           // IStreamInfoProvider twitchStreamInfoProvider = new StreamInfoProvider(ChannelName);
-           //  twitchStreamClipProvider = new TwitchStreamClipProvider(channelName);
-           //SteamInfoProvider steamInfoProvider = new SteamInfoProvider(SteamID);
-           //IrcClient irc = new IrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967");            
-            irc.JoinRoom();
-            //irc.SendChatMessage(".mods");
+            
+            irc.JoinRoom();           
             timedCommandHandler = new TimedCommandHandler(commandPool, irc);
-            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, streamInfoProvider, streamClipProvider, streamUpdater, messageParser, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
-            if (IsAutoGameChangeEnabled)
+            BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, streamInfoProvider, streamClipProvider, streamUpdater, messageParser, tweeterProvider, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
+
+            if (streamInfoProvider != null || streamUpdater != null)
             {
-                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
-                //twitchGameChanger = new TwitchGameChanger(irc, twitchStreamInfoProvider, steamInfoProvider, channelName);
-                autoStreamGameChanger.Start();
-            }
-            else
-            {
-                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is disabled");
+                autoStreamGameChanger = new AutoStreamGameChanger(irc, streamInfoProvider, streamUpdater, new SteamInfoProvider(SteamID));
+                if (IsAutoGameChangeEnabled)
+                {
+                    Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
+                    autoStreamGameChanger.Start();
+                }
+                else
+                {
+                    Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is disabled");
+                }
             }
 
             while (!isCanceled)
@@ -106,6 +110,26 @@ namespace TwitchBot
             }
 
             ShutDownBot();
+        }
+
+        public void ApplySettings()
+        {
+            Logger.Log(LoggingType.Info, "[BotRunner] -> Started applying new settings are applyed");
+            timedCommandHandler.IntervalCommandIsSent = TimedCommandInterval;
+            timedCommandHandler.UpdateSettings();
+            autoStreamGameChanger.Stop();
+            if (IsAutoGameChangeEnabled)
+            {
+                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
+                autoStreamGameChanger.Start();
+            }
+            else
+            {
+                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is disabled");
+            }
+
+            //Is replay enabled, 
+            Logger.Log(LoggingType.Info, "[BotRunner] -> New settings are applied");
         }
 
         public void ShutDownBot()
@@ -145,6 +169,11 @@ namespace TwitchBot
         public void CreateAndPlayClip()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> CreateAndPlayClip");
+
+            if (streamClipProvider == null)
+            {
+                return;
+            }
 
             string clipId = streamClipProvider.CreateClip();
 

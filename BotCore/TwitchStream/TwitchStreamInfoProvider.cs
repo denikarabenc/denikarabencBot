@@ -1,4 +1,5 @@
 ﻿using BotLogger;
+using Common.Helpers;
 using Common.Interfaces;
 using Common.Models;
 using Newtonsoft.Json;
@@ -12,11 +13,12 @@ namespace TwitchBot.TwitchStream
     public class TwitchStreamInfoProvider : IStreamInfoProvider
     {
         private List<StreamGame> gamesPlayed;
-        private string channelName;
+        private string channelId;
 
-        public TwitchStreamInfoProvider(string channelName)
+        public TwitchStreamInfoProvider(string channelId)
         {
-            this.channelName = channelName;
+            channelId.ThrowIfNull(nameof(channelId));
+            this.channelId = channelId;
             gamesPlayed = new List<StreamGame>();
 
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/users/" + channelName);
@@ -39,11 +41,12 @@ namespace TwitchBot.TwitchStream
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelName + "?client_id=fdl7tng741x3oys8g5ohh5s6z1zsrr");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelId);
                 request.Method = "GET";
                 request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
                 request.ContentType = "application/json";
-                request.Accept = $"application/vnd.twitchtv.v3+json";
+                request.Accept = $"application/vnd.twitchtv.v5+json";
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
@@ -66,34 +69,34 @@ namespace TwitchBot.TwitchStream
                 return new TwitchJsonRootObject();
             }
 
-            //This works only if online. And json needs to be adjusted
-        //    try
-        //    {
-        //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/streams?user_id=31999722");
-        //        request.Method = "GET";
-        //        request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
-        //        request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+            //This works only if online.And json needs to be adjusted
+            //try
+            //{
+            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/streams?user_id=31999722"); //This is Deni's Id
+            //    request.Method = "GET";
+            //    request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
+            //    request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
 
-        //        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-        //        TwitchJsonRootObject jsonResult;
-        //        using (var reader = new StreamReader(response.GetResponseStream()))
-        //        {
-        //            string jsonString = reader.ReadToEnd();
-        //            jsonResult = JsonConvert.DeserializeObject<TwitchJsonRootObject>(jsonString);
-        //            if (jsonResult.Stream == null)
-        //            {
-        //                jsonResult.Stream = JsonConvert.DeserializeObject<TwitchStreamInfo>(jsonString);
-        //            }
-        //        }
+            //    TwitchJsonRootObject jsonResult;
+            //    using (var reader = new StreamReader(response.GetResponseStream()))
+            //    {
+            //        string jsonString = reader.ReadToEnd();
+            //        jsonResult = JsonConvert.DeserializeObject<TwitchJsonRootObject>(jsonString);
+            //        if (jsonResult.Stream == null)
+            //        {
+            //            jsonResult.Stream = JsonConvert.DeserializeObject<TwitchStreamInfo>(jsonString);
+            //        }
+            //    }
 
-        //        return jsonResult;
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        Logger.Log(LoggingType.Warning, "[TwitchStreamInfoProvider] -> ", ex);
-        //        return new TwitchJsonRootObject();
-        //    }
+            //    return jsonResult;
+            //}
+            //catch (WebException ex)
+            //{
+            //    Logger.Log(LoggingType.Warning, "[TwitchStreamInfoProvider] -> ", ex);
+            //    return new TwitchJsonRootObject();
+            //}
         }
 
         public void AddPlayingGame(string game = null)
