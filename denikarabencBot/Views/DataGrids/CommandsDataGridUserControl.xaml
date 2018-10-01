@@ -18,7 +18,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding CommandList}" SelectedItem="{Binding SelectedCommand}">
+        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding CommandList}" SelectedItem="{Binding SelectedCommand}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Command" Width="*" Binding="{Binding Command}"/>
                 <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Message}"/>

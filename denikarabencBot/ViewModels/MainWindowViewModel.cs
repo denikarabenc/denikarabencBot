@@ -263,6 +263,12 @@ namespace denikarabencBot.ViewModels
 
         private void ClearVotesCommandExecite()
         {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to clear all the votes?","Conformation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+
             votingService.ClearVotes();
             VoteList = votingService.GetAllVotes();
             lastVoteResetTime = DateTime.Now;

@@ -13,7 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding VoteReportList}" SelectedItem="{Binding SelectedVoteReport}">
+        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding VoteReportList}" SelectedItem="{Binding SelectedVoteReport}" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Vote category" Width="*" Binding="{Binding Category}"/>
                 <DataGridTextColumn Header="Most votes" Width="*" Binding="{Binding MostVotes}"/>
