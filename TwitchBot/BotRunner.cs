@@ -85,7 +85,7 @@ namespace TwitchBot
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
             commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
             
-            irc.JoinRoom();           
+            irc.JoinRoom("/ me Joins the channel! FeelsGoodMan");           
             timedCommandHandler = new TimedCommandHandler(commandPool, irc);
             BotMessageHandler botCommandHandler = new BotMessageHandler(commandPool, reminderService, voteService, irc, streamInfoProvider, streamClipProvider, streamUpdater, messageParser, tweeterProvider, channelName, reminderCallback, refreshCommandListCallback, votingCallback);
 
@@ -134,7 +134,7 @@ namespace TwitchBot
 
         public void ShutDownBot()
         {
-            irc.LeaveRoom();
+            irc.LeaveRoom("/me Leaves the channel! FeelsBadMan");
             timedCommandHandler?.Dispose();
             autoStreamGameChanger?.Dispose();
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot shutted down");

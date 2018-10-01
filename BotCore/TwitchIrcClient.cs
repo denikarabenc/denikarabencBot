@@ -9,10 +9,12 @@ namespace TwitchBot
     {
         private readonly int timeBeetweenMessagesCanBeSent = 2 * 1000; //miliseconds
         private readonly int reconnectTime = 60 * 1000; //miliseconds
+        private readonly int port;
 
-        private string username;
-        private string password;
-        private string channel;
+        private readonly string username;
+        private readonly string password;
+        private readonly string channel;
+        private readonly string ip;
 
         private TcpClient tcpClient;
         private StreamReader inputStream;
@@ -27,6 +29,8 @@ namespace TwitchBot
             this.username = username;
             this.password = password;
             this.channel = channel;
+            this.ip = ip;
+            this.port = port;
             tcpClient = new TcpClient(ip, port);
             inputStream = new StreamReader(tcpClient.GetStream());
             outputStream = new StreamWriter(tcpClient.GetStream());
@@ -103,12 +107,13 @@ namespace TwitchBot
 
         protected virtual void Reconnect()
         {
-            //tcpClient = new TcpClient(ip, port);
-            //inputStream = new StreamReader(tcpClient.GetStream());
-            //outputStream = new StreamWriter(tcpClient.GetStream());
+            tcpClient = new TcpClient(ip, port);
+            inputStream = new StreamReader(tcpClient.GetStream());
+            outputStream = new StreamWriter(tcpClient.GetStream());
             try
             {
                 RegisterTwitchIRC(username, password);
+                JoinRoom("There were some issues, but I'm back!");
             }
             catch (System.Exception e)
             {
@@ -116,18 +121,18 @@ namespace TwitchBot
             }
         }
 
-        public void LeaveRoom()
+        public void LeaveRoom(string leaveMessage)
         {
             outputStream.WriteLine("PART #" + channel);
             outputStream.Flush();
-            SendChatMessage("/me Leaves the channel! FeelsBadMan");
+            SendChatMessage(leaveMessage);
         }
 
-        public void JoinRoom()
+        public void JoinRoom(string joinMesssage)
         {
             outputStream.WriteLine("JOIN #" + channel);            
             outputStream.Flush();
-            SendChatMessage("/me Joins the channel! FeelsGoodMan");            
+            SendChatMessage(joinMesssage);            
         }
 
         public void SendInformationChatMessage(string message)
@@ -145,10 +150,12 @@ namespace TwitchBot
             try
             {
                 string message = inputStream.ReadLine();
-                if (message.Contains("PING :tmi.twitch.tv"))
+                if (message == null)
                 {
-                    outputStream.WriteLine("PONG :tmi.twitch.tv");
-                    outputStream.Flush();
+                    BotLogger.Logger.Log(Common.Models.LoggingType.Error, "IRC received message is null");
+                    System.Threading.Thread.Sleep(reconnectTime);
+                    Reconnect();
+                    return string.Empty;
                 }
                 return message;
             }
@@ -163,6 +170,8 @@ namespace TwitchBot
             catch (System.Exception e)
             {
                 BotLogger.Logger.Log(Common.Models.LoggingType.Error, e);
+                System.Threading.Thread.Sleep(reconnectTime);
+                Reconnect();
                 return string.Empty;
             }
         }

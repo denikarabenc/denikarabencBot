@@ -33,7 +33,8 @@ namespace TwitchBot.Helpers
             }
             catch(Exception e)
             {
-                BotLogger.Logger.Log(Common.Models.LoggingType.Warning, "[MessageParser] -> GetParsedMessage warning!", e);
+                string messageForLog = message ?? "null";
+                BotLogger.Logger.Log(Common.Models.LoggingType.Warning, string.Format("[MessageParser] -> GetParsedMessage warning! Message was: {0}", messageForLog), e);
             }
 
             return message;

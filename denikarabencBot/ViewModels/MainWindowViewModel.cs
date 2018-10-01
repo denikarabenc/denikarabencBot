@@ -409,14 +409,24 @@ namespace denikarabencBot.ViewModels
         private void JoinBotCommandExecute()
         {
             Logger.Log(LoggingType.Info, "[MainWindowViewModel] -> Join clicked");
-            removeBotButtonVisibility = true;
-            botThread = new Thread(() =>
+
+            try
             {
-                StartBot();
-            });
-            botThread.Start();
-            joinButtonEnabled = false;
-            OnPropertyChanged(nameof(JoinButtonEnabled));
+                botThread = new Thread(() =>
+                {
+                    StartBot();
+                });
+            
+                removeBotButtonVisibility = true;
+                botThread.Start();
+                joinButtonEnabled = false;
+                OnPropertyChanged(nameof(JoinButtonEnabled));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LoggingType.Error, "Could not start bot", e);
+                MessageBox.Show(string.Format("{0} {1}", Properties.Resources.denikarabencBot_COULD_NOT_START_BOT, Properties.Resources.denikarabencBot_PLEASE_TRY_AGAIN_LATER), Properties.Resources.denikarabencBot_ERROR, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private bool JoinBotCommandCanExecute()
@@ -436,33 +446,25 @@ namespace denikarabencBot.ViewModels
 
         private void StartBot()
         {
-            try
-            {
-                string channelId = TwitchIntegration.Helpers.TwitchUserInformationHelper.GetChannelId(TwitchChannelName); //TODO make IStreamChannelInfoProvider
-                IIrcClient irc = new TwitchIrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
-                IStreamClipProvider clipProvider = new TwitchStreamClipProvider(TwitchChannelName);
-                IStreamInfoProvider streamInfoProvider = new TwitchStreamInfoProvider(channelId);
-                IStreamUpdater streamUpdater = new TwitchStreamUpdater(channelId);
-                IMessageParser messageParser = new TwitchMessageParser();
-                ITweeterProvider tweeterProvider = new TweeterProvider.TweeterProvider();
-                bot = new BotRunner(irc, clipProvider, streamInfoProvider, streamUpdater, messageParser, tweeterProvider, reminderCallback, refreshCommandsCallback, votingCallback);
-                bot.ChannelName = TwitchChannelName;
-                bot.SteamID = SteamID;
-                bot.IsReplayEnabled = IsReplayEnabled;
-                bot.ReplayPath = ReplayPath;
-                bot.IsAutoGameChangeEnabled = IsAutoGameChanegeEnabled;
-                bot.VoteService.SetDefaultVoteCategory(votingService.GetDefaultCategory()); //Budz da bi moglo da se dodaje i kad nije bot aktiviran
-                                                                                            //for Deni
-                                                                                            //bot.ChannelName = "denikarabenc";
-                                                                                            //bot.SteamID = "76561197999517010";
-                bot.IsCanceled = false;
-                bot.StartBot();
-            }
-            catch(Exception e)
-            {
-                Logger.Log(LoggingType.Error, "Could not start bot", e);
-                MessageBox.Show(string.Format("{0} {1}", Properties.Resources.denikarabencBot_COULD_NOT_START_BOT, Properties.Resources.denikarabencBot_PLEASE_TRY_AGAIN_LATER), Properties.Resources.denikarabencBot_ERROR, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            string channelId = TwitchIntegration.Helpers.TwitchUserInformationHelper.GetChannelId(TwitchChannelName); //TODO make IStreamChannelInfoProvider
+            IIrcClient irc = new TwitchIrcClient("irc.twitch.tv", 6667, "denikarabencbot", "oauth:agjzfjjarinmxy46lc9zzae9r4e967", TwitchChannelName);
+            IStreamClipProvider clipProvider = new TwitchStreamClipProvider(TwitchChannelName);
+            IStreamInfoProvider streamInfoProvider = new TwitchStreamInfoProvider(channelId);
+            IStreamUpdater streamUpdater = new TwitchStreamUpdater(channelId);
+            IMessageParser messageParser = new TwitchMessageParser();
+            ITweeterProvider tweeterProvider = new TweeterProvider.TweeterProvider();
+            bot = new BotRunner(irc, clipProvider, streamInfoProvider, streamUpdater, messageParser, tweeterProvider, reminderCallback, refreshCommandsCallback, votingCallback);
+            bot.ChannelName = TwitchChannelName;
+            bot.SteamID = SteamID;
+            bot.IsReplayEnabled = IsReplayEnabled;
+            bot.ReplayPath = ReplayPath;
+            bot.IsAutoGameChangeEnabled = IsAutoGameChanegeEnabled;
+            bot.VoteService.SetDefaultVoteCategory(votingService.GetDefaultCategory()); //Budz da bi moglo da se dodaje i kad nije bot aktiviran
+                                                                                        //for Deni
+                                                                                        //bot.ChannelName = "denikarabenc";
+                                                                                        //bot.SteamID = "76561197999517010";
+            bot.IsCanceled = false;
+            bot.StartBot();
         }
 
         public void StopBot()

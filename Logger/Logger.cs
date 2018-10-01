@@ -19,12 +19,12 @@ namespace BotLogger
 
         public static void Log(LoggingType loggingType, string logMessage)
         {
-            string filePath = logPreparer.GetLogFilePath();
+            string filePath = logPreparer.GetLogFilePathForLogging();
 
             if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
-                filePath = logPreparer.GetLogFilePath();
+                filePath = logPreparer.GetLogFilePathForLogging();
             }
 
             
@@ -37,12 +37,12 @@ namespace BotLogger
 
         public static void Log(LoggingType loggingType, Exception ex)
         {
-            string filePath = logPreparer.GetLogFilePath();
+            string filePath = logPreparer.GetLogFilePathForLogging();
 
             if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
-                filePath = logPreparer.GetLogFilePath();
+                filePath = logPreparer.GetLogFilePathForLogging();
             }
 
 
@@ -63,12 +63,12 @@ namespace BotLogger
         {
             logPreparer.PrepareLogs();
 
-            string filePath = logPreparer.GetLogFilePath();
+            string filePath = logPreparer.GetLogFilePathForLogging();
 
             if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
-                filePath = logPreparer.GetLogFilePath();
+                filePath = logPreparer.GetLogFilePathForLogging();
             }
 
 
@@ -96,7 +96,7 @@ namespace BotLogger
             if (filePath == string.Empty)
             {
                 logPreparer.PrepareLogs();
-                filePath = logPreparer.GetLogFilePath();
+                filePath = logPreparer.GetLogFilePathForLogging();
             }
 
             using (StreamWriter writer = File.AppendText(filePath))

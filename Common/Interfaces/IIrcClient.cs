@@ -9,11 +9,11 @@
         /// <summary>
         /// Join the chat room
         /// </summary>
-        void JoinRoom();
+        void JoinRoom(string joinMessage);
         /// <summary>
         /// Leave the chat room
         /// </summary>
-        void LeaveRoom();
+        void LeaveRoom(string leaveMessage);
         /// <summary>
         /// Sends message to chat with checking the message limit
         /// </summary>

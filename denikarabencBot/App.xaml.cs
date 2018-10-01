@@ -26,7 +26,7 @@ namespace denikarabencBot
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            BotLogger.Logger.Log(LoggingType.Error, "Application crashed! Unexpected error happened", e.ExceptionObject as Exception);
+            BotLogger.Logger.Log(LoggingType.Error, "Unexpected error happened", e.ExceptionObject as Exception);
         }
     }
 }
