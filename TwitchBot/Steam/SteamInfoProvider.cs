@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
-using TwitchBot.Steam.Json;
+using BotCore.Steam.Json;
 
-namespace TwitchBot.Steam
+namespace BotCore.Steam
 {
     public class SteamInfoProvider
     {

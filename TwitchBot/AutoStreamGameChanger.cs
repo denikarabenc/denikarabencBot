@@ -1,13 +1,11 @@
-﻿using Common.Helpers;
+﻿using BotCore.LocalGameChecker;
+using BotCore.Steam;
+using Common.Helpers;
 using Common.Interfaces;
-using Newtonsoft.Json;
 using System;
 using System.Timers;
-using TwitchBot.LocalGameChecker;
-using TwitchBot.Steam;
-using TwitchBot.TwitchStream;
 
-namespace TwitchBot
+namespace BotCore
 {
     public class AutoStreamGameChanger : IDisposable
     {

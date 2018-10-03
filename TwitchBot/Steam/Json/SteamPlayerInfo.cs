@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace TwitchBot.Steam.Json
+namespace BotCore.Steam.Json
 {
     internal class SteamPlayerInfo
     {

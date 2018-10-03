@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchIntegration", "BotCor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TweeterProvider", "TweeterProvider\TweeterProvider.csproj", "{DC914FF3-C656-4E22-9A7B-5AE62DFE4980}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D41BC601-0887-4381-9E11-D399777945A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotCoreUnitTest", "BotCoreUnitTest\BotCoreUnitTest.csproj", "{2997B211-9C64-4117-A5F4-A210F832A477}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,9 +105,19 @@ Global
 		{DC914FF3-C656-4E22-9A7B-5AE62DFE4980}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC914FF3-C656-4E22-9A7B-5AE62DFE4980}.Release|x64.ActiveCfg = Release|x64
 		{DC914FF3-C656-4E22-9A7B-5AE62DFE4980}.Release|x64.Build.0 = Release|x64
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Debug|x64.ActiveCfg = Debug|x64
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Debug|x64.Build.0 = Debug|x64
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2997B211-9C64-4117-A5F4-A210F832A477}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2997B211-9C64-4117-A5F4-A210F832A477} = {D41BC601-0887-4381-9E11-D399777945A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7BA0E45C-3BE2-4543-9597-32A8C43C8469}

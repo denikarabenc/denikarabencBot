@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TwitchBot.TwitchStream;
+using Common.Models;
 
 namespace Common.Interfaces
 {

@@ -5,9 +5,9 @@ using Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Timers;
-using TwitchBot.BotCommands;
+using BotCore.BotCommands;
 
-namespace TwitchBot
+namespace BotCore
 {
     public class TimedCommandHandler : IDisposable
     {

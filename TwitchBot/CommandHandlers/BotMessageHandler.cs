@@ -8,11 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using TwitchBot.BotCommands;
+using BotCore.BotCommands;
 using TwitchBot.Helpers;
 using Youtube;
 
-namespace TwitchBot.CommandHandlers
+namespace BotCore.CommandHandlers
 {
     public class BotMessageHandler
     {

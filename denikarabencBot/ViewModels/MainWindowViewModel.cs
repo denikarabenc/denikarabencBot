@@ -1,4 +1,5 @@
-﻿using BotLogger;
+﻿using BotCore;
+using BotLogger;
 using Common.Commands;
 using Common.Creators;
 using Common.Helpers;

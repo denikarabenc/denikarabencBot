@@ -71,7 +71,7 @@ namespace denikarabencBot.ViewModels
 
         private string SendResponse(HttpListenerRequest request)
         {
-            return System.IO.File.ReadAllText(@"C:\Users\denik\Documents\htmltest.html");
+            return System.IO.File.ReadAllText(@"C:\Users\denik\Documents\htmltest.html.txt");
         }
 
         private void RefreshSongList()

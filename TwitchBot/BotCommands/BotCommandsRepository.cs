@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.Xml.Serialization; //TODO ovo treba skinuti odavde i napraviti tool za prebacivanje komandi
+﻿using Common.Commands;
 using Common.Creators;
 using Common.Models;
-using WindowsInput;
-using Common.Commands;
-using Common.Helpers;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Timers;
+using System.Xml.Serialization; //TODO ovo treba skinuti odavde i napraviti tool za prebacivanje komandi
+using WindowsInput;
 
-namespace TwitchBot.BotCommands
+namespace BotCore.BotCommands
 {
     [Serializable]
     public class BotCommandsRepository

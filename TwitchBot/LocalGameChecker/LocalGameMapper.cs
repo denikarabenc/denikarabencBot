@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TwitchBot.LocalGameChecker
+namespace BotCore.LocalGameChecker
 {
     public class LocalGameMapper
     {

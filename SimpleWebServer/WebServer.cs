@@ -43,6 +43,10 @@ namespace SimpleWebServer
                 BotLogger.Logger.Log(Common.Models.LoggingType.Info, "Webserver running...");
                 try
                 {
+                    if (!listener.IsListening)
+                    {
+                        //TODO restart the web server
+                    }
                     if (!isConnectionOpen)
                     {
                         return;

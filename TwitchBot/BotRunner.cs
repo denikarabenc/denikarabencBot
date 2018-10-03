@@ -1,15 +1,15 @@
-﻿using TwitchBot.Steam;
+﻿using BotCore.BotCommands;
+using BotCore.CommandHandlers;
+using BotCore.Steam;
 using BotLogger;
 using Common.Helpers;
-using TwitchBot.BotCommands;
-using TwitchBot.CommandHandlers;
+using Common.Interfaces;
 using Common.Models;
-using System;
 using Common.Reminders;
 using Common.Voting;
-using Common.Interfaces;
+using System;
 
-namespace TwitchBot
+namespace BotCore
 {
     public class BotRunner
     {
