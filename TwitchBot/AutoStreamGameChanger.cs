@@ -175,8 +175,18 @@ namespace BotCore
             return gameCurrentlyRunningOnMachine;
         }
 
+        public bool IsActive()
+        {
+            if (gameTimer?.Enabled == true && gameChangePossibleTimer.Enabled == true)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void Start()
         {
+            BotLogger.Logger.Log(Common.Models.LoggingType.Info, "AutoStreamGameChanger started");
             gameTimer = new Timer(1000 * 10);
             gameTimer.AutoReset = true;
             gameTimer.Enabled = true;
@@ -190,8 +200,11 @@ namespace BotCore
 
         public void Stop()
         {
-            gameTimer?.Stop();
-            gameChangePossibleTimer?.Stop();
+            gameTimer.ThrowIfNull("AutoStreamGameChanger already stopped");
+            gameChangePossibleTimer.ThrowIfNull("AutoStreamGameChanger already stopped");
+            gameTimer.Stop();
+            gameChangePossibleTimer.Stop();
+            BotLogger.Logger.Log(Common.Models.LoggingType.Info, "AutoStreamGameChanger stopped");
         }
 
         //private List<string> GetResultsFromGiantBomb(string game)
@@ -250,7 +263,10 @@ namespace BotCore
 
         public void Dispose()
         {
-            Stop();
+            if (IsActive())
+            {
+                Stop();
+            }
             gameTimer?.Dispose();
             gameChangePossibleTimer?.Dispose();
         }

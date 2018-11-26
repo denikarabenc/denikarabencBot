@@ -15,7 +15,7 @@ namespace Common.Commands
             commandReader = new CommandReader();
         }
         
-        private BotCommand CreateCurrentCommand(string command, string message, UserType permission, bool isTimed)
+        private BotCommand CreateCurrentCommand(string command, string message, UserType permission, bool isTimed, bool isActive)
         {
             CommandType ct = CommandType.ReadCommand;
             //bool useAppendedString = false;
@@ -24,15 +24,26 @@ namespace Common.Commands
                 ct = CommandType.UserInputCommand;
 
             }
-            return new BotCommand(command, message, permission, true, isTimed, ct);
+            return new BotCommand(command, message, permission, command.Contains("{0}"), isTimed, isActive, ct);
+        }
+
+        public void EditCommand(BotCommand oldCommand, BotCommand newCommand)
+        {
+            RemoveCommandFromXML(oldCommand);
+            AddCommandToXML(newCommand.Command, newCommand.Message, newCommand.UserPermission, newCommand.IsTimed, newCommand.IsActive);
         }
 
         public void AddCommandToXML(string command, string message)
         {
-            AddCommandToXML(command, message, UserType.Regular, false);
+            AddCommandToXML(command, message, UserType.Regular, false, true);
         }
 
-        public void AddCommandToXML(string command, string message, UserType permission, bool isTimed)
+        public void AddCommandToXML(string command, string message, bool isTimed, bool isActive)
+        {
+            AddCommandToXML(command, message, UserType.Regular, isTimed, isActive);
+        }
+
+        public void AddCommandToXML(string command, string message, UserType permission, bool isTimed, bool isActive)
         {          
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "commands";
@@ -57,7 +68,7 @@ namespace Common.Commands
             //FileCreator fileCreator = new FileCreator();
             //fileCreator.CreateFile(serializablesFolderPath, filename, "xml");
 
-            currentCommands.Add(CreateCurrentCommand(command, message, permission, isTimed));
+            currentCommands.Add(CreateCurrentCommand(command, message, permission, isTimed, isActive));
 
             var serializer = new XmlSerializer(currentCommands.GetType(), new XmlRootAttribute("commands"));
 

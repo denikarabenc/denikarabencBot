@@ -3,19 +3,19 @@ using BotCore.BotCommands;
 
 namespace BotCoreUnitTest
 {
-    //[TestClass]
-    //public class BotCommandsRepositoryUnitTest
-    //{
-    //    [TestInitialize]
-    //    public void Initialize()
-    //    {
-    //        BotCommandsRepository 
-    //    }
+    [TestClass]
+    public class BotCommandsRepositoryUnitTest
+    {
+        [TestInitialize]
+        public void Initialize()
+        {
+            BotCommandsRepository repository = new BotCommandsRepository("somePath");
+        }
 
-    //    [TestMethod]
-    //    public void TestMethod1()
-    //    {
-    //        Assert.
-    //    }
-    //}
+        [TestMethod]
+        public void TestMethod1()
+        {
+            Assert.IsTrue(true);
+        }
+    }
 }

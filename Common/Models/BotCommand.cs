@@ -8,8 +8,9 @@ namespace Common.Models
     public class BotCommand
     {
         private bool isTimed;
-        private string command;
         private bool useAppendedStrings;
+        private bool isActive;
+        private string command;        
         private string message;
         private CommandType type;
         private UserType userPermission;
@@ -20,11 +21,11 @@ namespace Common.Models
         public BotCommand(string command, string message) : this(command, message, UserType.Regular)
         {
         }
-        public BotCommand(string command, string message, CommandType type) : this(command, message, UserType.Regular, false, false, type)
+        public BotCommand(string command, string message, CommandType type) : this(command, message, UserType.Regular, command.Contains("{0}"), false, true, type)
         {
         }
 
-        public BotCommand(string command, string message, UserType userPermission) : this(command, message, userPermission, false)
+        public BotCommand(string command, string message, UserType userPermission) : this(command, message, userPermission, command.Contains("{0}"))
         {
         }
 
@@ -32,11 +33,15 @@ namespace Common.Models
         {
         }
 
-        public BotCommand(string command, string message, UserType userPermission, bool useAppendedStrings, bool isTimed) : this(command, message, userPermission, useAppendedStrings, isTimed, CommandType.ReadCommand)
+        public BotCommand(string command, string message, UserType userPermission, bool useAppendedStrings, bool isTimed) : this(command, message, userPermission, useAppendedStrings, isTimed, true, CommandType.ReadCommand)
         {
         }
 
-        public BotCommand(string command, string message, UserType userPermission, bool useAppendedStrings, bool isTimed, CommandType type)
+        public BotCommand(string command, string message, UserType userPermission, bool useAppendedStrings, bool isTimed, bool isActive) : this(command, message, userPermission, useAppendedStrings, isTimed, isActive, CommandType.ReadCommand)
+        {
+        }
+
+        public BotCommand(string command, string message, UserType userPermission, bool useAppendedStrings, bool isTimed, bool isActive, CommandType type)
         {
             command.ThrowIfNull(nameof(command));
             message.ThrowIfNull(nameof(message));
@@ -46,6 +51,7 @@ namespace Common.Models
             this.isTimed = isTimed;
             this.useAppendedStrings = useAppendedStrings;
             this.userPermission = userPermission;
+            this.isActive = isActive;
         }
 
         [XmlElement("IsTimedElementName")]
@@ -61,5 +67,6 @@ namespace Common.Models
         public CommandType Type { get => type; set => type = value; }
         [XmlElement("UserPermissionElementName")]
         public UserType UserPermission { get => userPermission; set => userPermission = value; }
+        public bool IsActive { get => isActive; set => isActive = value; }
     }
 }

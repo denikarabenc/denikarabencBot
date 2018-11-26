@@ -83,7 +83,7 @@ namespace BotCore
         public void StartBot()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Bot started");
-            commandPool = new BotCommandsRepository(IsReplayEnabled, replayPath);
+            commandPool = new BotCommandsRepository(replayPath);
             
             irc.JoinRoom("/me Joins the channel! FeelsGoodMan");           
             timedCommandHandler = new TimedCommandHandler(commandPool, irc);
@@ -115,20 +115,26 @@ namespace BotCore
         public void ApplySettings()
         {
             Logger.Log(LoggingType.Info, "[BotRunner] -> Started applying new settings are applyed");
-            timedCommandHandler.IntervalCommandIsSent = TimedCommandInterval;
-            timedCommandHandler.UpdateSettings();
-            autoStreamGameChanger.Stop();
+            timedCommandHandler.UpdateSettings(TimedCommandInterval);
+            
             if (IsAutoGameChangeEnabled)
             {
-                Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
-                autoStreamGameChanger.Start();
+                if (!autoStreamGameChanger.IsActive())
+                {
+                    autoStreamGameChanger.Start();
+                    Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is enabled");
+                }
             }
             else
             {
+                autoStreamGameChanger.Stop();
                 Logger.Log(LoggingType.Info, "[BotRunner] -> Auto game change is disabled");
             }
+            if (IsReplayEnabled)
+            {
+                //TODO
+            }
 
-            //Is replay enabled, 
             Logger.Log(LoggingType.Info, "[BotRunner] -> New settings are applied");
         }
 
@@ -178,7 +184,7 @@ namespace BotCore
             string clipId = streamClipProvider.CreateClip();
 
             string loadingMessage = "Will try, {0}";
-            irc.SendInformationChatMessage(String.Format(loadingMessage, channelName));
+            irc.SendInformationChatMessage(string.Format(loadingMessage, channelName));
 
             System.Timers.Timer clipTimer = new System.Timers.Timer(10000);
             clipTimer.AutoReset = false;

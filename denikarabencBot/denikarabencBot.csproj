@@ -110,10 +110,14 @@
     <Compile Include="Converters\UserPermissionToStringConverter.cs" />
     <Compile Include="Models\Voting\VoteCount.cs" />
     <Compile Include="Models\Voting\VoteReport.cs" />
+    <Compile Include="ViewModels\CommandWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ReminderWindowViewModel.cs" />
     <Compile Include="ViewModels\VoteReportViewModel.cs" />
     <Compile Include="ViewModels\YoutubeViewModel.cs" />
+    <Compile Include="Views\CommandWindow.xaml.cs">
+      <DependentUpon>CommandWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DataGrids\CommandsDataGridUserControl.xaml.cs">
       <DependentUpon>CommandsDataGridUserControl.xaml</DependentUpon>
     </Compile>
@@ -147,6 +151,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CommandWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DataGrids\CommandsDataGridUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

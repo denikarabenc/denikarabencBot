@@ -32,29 +32,25 @@ namespace denikarabencBot.ViewModels
         private readonly ReminderService reminderService;
         private readonly VotingService votingService;
 
-        private bool isTimed;
         private bool removeBotButtonVisibility;
         private bool joinButtonEnabled;
         private bool isAutoGameChanegeEnabled;
         private bool isReplayEnabled;
         private bool hasNewReminder;
-        private string message;
-        private string command;
         private string steamID;
         private string replayPath;
         private string twitchChannelName;
         private string defaultVotingCategory;
         private DateTime lastVoteResetTime;
-        private UserType permission;
         private BotCommand selectedCommand;
 
         private List<BotCommand> commandList;
         private List<Vote> voteList;
-        private List<UserType> permissionSource;
         
         private Thread botThread;
 
         private ICommand addCommandCommand;
+        private ICommand editCommandCommand;
         private ICommand removeSelectedCommandCommand;
         private ICommand joinBotCommand;
         private ICommand removeBotCommand;
@@ -88,16 +84,10 @@ namespace denikarabencBot.ViewModels
             reminderService = new ReminderService();
             votingService = new VotingService();
 
-            IsTimed = false;
             commandList = new List<BotCommand>();
             RefreshCommandList();
             FillVoteList();
 
-            permissionSource = new List<UserType>();
-            permissionSource.Add(UserType.Regular);
-            permissionSource.Add(UserType.Follower);
-            permissionSource.Add(UserType.Mod);
-            permissionSource.Add(UserType.King);
             reminderCallback = ReminderRefresh;
             refreshCommandsCallback = RefreshCommandList;
             votingCallback = FillVoteList;
@@ -131,7 +121,12 @@ namespace denikarabencBot.ViewModels
 
         public ICommand AddCommandCommand
         {
-            get => addCommandCommand ?? (addCommandCommand = new RelayCommand(param => SaveCommand(), param => CanAddCommandCommandExecute()));
+            get => addCommandCommand ?? (addCommandCommand = new RelayCommand(param => AddCommand(), param => CanAddCommandCommandExecute()));
+        }
+
+        public ICommand EditCommandCommand
+        {
+            get => editCommandCommand ?? (editCommandCommand = new RelayCommand(param => EditCommand(), param => CanEditCommandCommandExecute()));
         }
 
         public ICommand RemoveSelectedCommandCommand
@@ -164,11 +159,7 @@ namespace denikarabencBot.ViewModels
             get => setDefaultVotingCategoryCommand ?? (setDefaultVotingCategoryCommand = new RelayCommand(param => SetDefaultVotingCategoryCommandExecute()));
         }
 
-        public bool IsTimed { get => isTimed; set => isTimed = value; }
         public bool HasNewReminder => hasNewReminder;
-
-        public string Message { get => message; set => message = value; }
-        public string Command { get => command; set => command = value; }
         public string DefaultVotingCategory { get => defaultVotingCategory; set => defaultVotingCategory = value; }
 
         public string TwitchChannelName
@@ -201,6 +192,11 @@ namespace denikarabencBot.ViewModels
                 isAutoGameChanegeEnabled = value;
                 Properties.Settings.Default.IsAutoGameChanegeEnabled = isAutoGameChanegeEnabled;
                 OnPropertyChanged(nameof(IsAutoGameChanegeEnabled));
+                if (Bot != null)
+                {
+                    Bot.IsAutoGameChangeEnabled = isAutoGameChanegeEnabled;
+                    Bot.ApplySettings();
+                }
             }
         }
 
@@ -212,6 +208,11 @@ namespace denikarabencBot.ViewModels
                 isReplayEnabled = value;
                 Properties.Settings.Default.IsReplayEnabled = isReplayEnabled;
                 OnPropertyChanged(nameof(IsReplayEnabled));
+                if (Bot != null)
+                {
+                    Bot.IsReplayEnabled = isReplayEnabled;
+                    Bot.ApplySettings();
+                }
             }
         }
 
@@ -228,13 +229,9 @@ namespace denikarabencBot.ViewModels
 
         public DateTime LastVoteResetTime => lastVoteResetTime;
 
-        public UserType Permission { get => permission; set => permission = value; }
-
         public BotRunner Bot => bot;
         public YoutubeViewModel YoutubeViewModel { get => youtubeViewModel; set => youtubeViewModel = value; }
         public BotCommand SelectedCommand { get => selectedCommand; set => selectedCommand = value; }
-
-        public List<UserType> PermissionSource { get => permissionSource; set => permissionSource = value; }        
         public List<BotCommand> CommandList { get => commandList; }
         public List<Vote> VoteList
         {
@@ -300,24 +297,32 @@ namespace denikarabencBot.ViewModels
 
         private bool CanAddCommandCommandExecute()
         {
-            return commandConditioner.CanSave(Command, Message);
+            return true;
         }
 
-        private void SaveCommand()
+        private void AddCommand()
         {
-            Logger.Log(LoggingType.Info, $"Command {Command} added");
+            CommandWindowViewModel cwvm = new CommandWindowViewModel(SelectedCommand, commandConditioner, RefreshCommandList , false);
+            CommandWindow cw = new CommandWindow(cwvm);
 
-            if (!commandConditioner.CanSave(command, message))
-            {
-                MessageBox.Show("Command has to have field command and message populated!");
-                return;
-            }
+            cw.ShowDialog();
 
-            commandSaver.AddCommandToXML(Command, Message, Permission, IsTimed);
+            Bot?.CommandPool.UpdateCommandsFromXML(); //TODO
+        }
 
-            RefreshCommandList();
+        private bool CanEditCommandCommandExecute()
+        {
+            return commandConditioner.CanEdit(SelectedCommand);
+        }
 
-            Bot?.CommandPool.UpdatePredefinedCommandsFromXML(true); //TODO
+        private void EditCommand()
+        {
+            CommandWindowViewModel cwvm = new CommandWindowViewModel(SelectedCommand, commandConditioner, RefreshCommandList, true);
+            CommandWindow cw = new CommandWindow(cwvm);
+
+            cw.ShowDialog();
+
+            Bot?.CommandPool.UpdateCommandsFromXML(); //TODO
         }
 
         private bool CanRemoveSelectedCommandCommandExecute()
@@ -331,7 +336,7 @@ namespace denikarabencBot.ViewModels
             Logger.Log(LoggingType.Info, string.Format("[MainWindowViewModel] -> Command {0} removed!", SelectedCommand.Command));
             RefreshCommandList();
 
-            Bot?.CommandPool.UpdatePredefinedCommandsFromXML(true);
+            Bot?.CommandPool.UpdateCommandsFromXML();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -366,7 +371,7 @@ namespace denikarabencBot.ViewModels
 
         private void RefreshCommandList()
         {
-            commandList = commandReader.GetAllCommandsFromXML();
+            commandList = commandReader.GetAllCommandsFromXML(); //TODO perserve order in list on refresh for edit
             commandList = FilterCommandsList(commandList);
             OnPropertyChanged(nameof(CommandList));
         }

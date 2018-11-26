@@ -25,55 +25,49 @@ namespace BotCore.BotCommands
         private Dictionary<string, BotCommand> commandPool;
 
 
-        public BotCommandsRepository(bool isReplayEnabled, string replayPath)
+        public BotCommandsRepository(string replayPath)
         {
             this.replayPath = (replayPath == null) ? string.Empty : replayPath;
             this.clipPath = Directory.GetCurrentDirectory() + "/" + "Clips";
             specialCommands = GetSpecialCommandNames();
             commandPool = new Dictionary<string, BotCommand>();
             commandSaver = new CommandSaver();
-            AddBuiltInCommands(commandPool);
-           // AddPredefinedCommands(commandPool); //This should be tool method
-            AddPredefinedCommandsFromXML(isReplayEnabled);
+            DefineBuiltInCommands(commandPool);
+           // DefinePredefinedCommands(commandPool); //This should be tool method
+            AddAllCommandsFromXML();
 
             AddAllCommandsCommand(commandPool);
         }
 
-        private void AddPredefinedCommandsFromXML(bool isReplayEnabled)
+        private void AddAllCommandsFromXML()
         {
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "commands";
-            
-            if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
-            {
-                return;
-            }
 
             List<BotCommand> botCommands = new List<BotCommand>();
-
             var serializer = new XmlSerializer(botCommands.GetType(), new XmlRootAttribute("commands"));
-
-            using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
+            if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
             {
-                botCommands = (List<BotCommand>)serializer.Deserialize(reader);
+                using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
+                {
+                    botCommands = (List<BotCommand>)serializer.Deserialize(reader);
+                }
             }
 
             filename = "buildInCommands";
 
             if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
             {
-                return;
-            }
-
-            using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
-            {
-                botCommands.AddRange((List<BotCommand>)serializer.Deserialize(reader));
+                using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
+                {
+                    botCommands.AddRange((List<BotCommand>)serializer.Deserialize(reader));
+                }
             }
 
 
             foreach (BotCommand bc in botCommands)
             {
-                if (bc.Command == "!replay" && !isReplayEnabled)
+                if (!bc.IsActive)
                 {
                     continue;
                 }
@@ -82,20 +76,20 @@ namespace BotCore.BotCommands
             }
         }
 
-        private void AddBuiltInCommands(Dictionary<string, BotCommand> commandPools) //Make gamesplayed command which will contain game that has been played and for how long
+        private void DefineBuiltInCommands(Dictionary<string, BotCommand> commandPools) //Make gamesplayed command which will contain game that has been played and for how long
         {            
             commandPool.Add("!replayfeature", new BotCommand("!replayfeature", "You can use '!replay' to get an instant replay PogChamp", UserType.Regular, false, true));
-            commandPool.Add("!follow", new BotCommand("!follow", "Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! <3 ", UserType.Mod, true, false, CommandType.UserInputCommand));
-            commandPool.Add("!gamesplayed", new BotCommand("!gamesplayed", "Games played this stream are: {0}", UserType.Regular, true, false, CommandType.TwitchStatusCommand));
-            commandPool.Add("!addcommand", new BotCommand("!addcommand", "", UserType.Mod, false, false, CommandType.AddCommand));
-            commandPool.Add("!editcommand", new BotCommand("!editcommand", "", UserType.Mod, false, false, CommandType.EditCommand));
-            commandPool.Add("!title", new BotCommand("!title", "{0} changed title to: {1}", UserType.Mod, true, false, CommandType.ChangeTitleCommand));
+            commandPool.Add("!follow", new BotCommand("!follow", "Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! <3 ", UserType.Mod, true, false, true, CommandType.UserInputCommand));
+            commandPool.Add("!gamesplayed", new BotCommand("!gamesplayed", "Games played this stream are: {0}", UserType.Regular, true, false, true, CommandType.TwitchStatusCommand));
+            commandPool.Add("!addcommand", new BotCommand("!addcommand", "", UserType.Mod, false, false, true, CommandType.AddCommand));
+            commandPool.Add("!editcommand", new BotCommand("!editcommand", "", UserType.Mod, false, false, true, CommandType.EditCommand));
+            commandPool.Add("!title", new BotCommand("!title", "{0} changed title to: {1}", UserType.Mod, true, false, true, CommandType.ChangeTitleCommand));
             //commandPool.Add("!sr", new BotCommand("!sr", "", UserType.King, false, false, CommandType.SongRequestCommand));
-            commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, CommandType.MediaCommand));
-            commandPool.Add("!clip", new BotCommand("!clip", "", UserType.Regular, false, false, CommandType.CreateClip));
-            commandPool.Add("!remindme", new BotCommand("!remindme", "", UserType.Regular, false, false, CommandType.Reminder));
-            commandPool.Add("!vote", new BotCommand("!vote", "", UserType.Regular, false, false, CommandType.Vote));
-            commandPool.Add("!lasttweet", new BotCommand("!lasttweet", "", UserType.Regular, false, false, CommandType.LastTweetCommand));
+            commandPool.Add("!replay", new BotCommand("!replay", "", UserType.Regular, false, false, true, CommandType.MediaCommand));
+            commandPool.Add("!clip", new BotCommand("!clip", "", UserType.Regular, false, false, true, CommandType.CreateClip));
+            commandPool.Add("!remindme", new BotCommand("!remindme", "", UserType.Regular, false, false, true, CommandType.Reminder));
+            commandPool.Add("!vote", new BotCommand("!vote", "", UserType.Regular, false, false, true, CommandType.Vote));
+            commandPool.Add("!lasttweet", new BotCommand("!lasttweet", "", UserType.Regular, false, false, true, CommandType.LastTweetCommand));
 
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "buildInCommands";
@@ -120,7 +114,7 @@ namespace BotCore.BotCommands
             }
         }
 
-        private void AddPredefinedCommands(Dictionary<string, BotCommand> commandPool) //Make gamesplayed command which will contain game that has been played and for how long
+        private void DefinePredefinedCommands(Dictionary<string, BotCommand> commandPool) //Make gamesplayed command which will contain game that has been played and for how long
         {      
             commandPool.Add("!hello", new BotCommand("!hello", "Hello to you, {0}! <3", UserType.Regular, true));
             commandPool.Add("Kappa", new BotCommand("Kappa", "Kappa"));
@@ -210,11 +204,11 @@ namespace BotCore.BotCommands
             return commandPool[command];
         }
 
-        public void UpdatePredefinedCommandsFromXML(bool isReplayEnabled)
+        public void UpdateCommandsFromXML()
         {
             BotLogger.Logger.Log(LoggingType.Info, "[BotCommandRepository] -> Updating commands from XML");
             commandPool = new Dictionary<string, BotCommand>();
-            AddPredefinedCommandsFromXML(isReplayEnabled);
+            AddAllCommandsFromXML();
         }
 
         public List<BotCommand> GetTimedCommands()
@@ -316,7 +310,7 @@ namespace BotCore.BotCommands
 
             BotCommand oldCommand = commandPool[command];
 
-            commandPool[command] = new BotCommand(command, newMessage, oldCommand.UserPermission, oldCommand.UseAppendedStrings, oldCommand.IsTimed, oldCommand.Type);
+            commandPool[command] = new BotCommand(command, newMessage, oldCommand.UserPermission, oldCommand.UseAppendedStrings, oldCommand.IsTimed, oldCommand.IsActive, oldCommand.Type);
             commandSaver.RemoveCommandFromXML(command);
             commandSaver.AddCommandToXML(command, newMessage);
             callback?.Invoke();

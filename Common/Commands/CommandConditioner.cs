@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Common.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Common.Commands
 {
     public class CommandConditioner
     {
-        public bool CanSave(string command, string message)
+        public bool CanAdd(string command, string message)
         {
-            return !((String.IsNullOrEmpty(message) || String.IsNullOrWhiteSpace(message) || String.IsNullOrWhiteSpace(command) || String.IsNullOrWhiteSpace(command)));            
+            return !((string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(command) || string.IsNullOrWhiteSpace(command)));            
         }
 
         public bool CanRemove(string command)
@@ -23,6 +25,16 @@ namespace Common.Commands
             }
 
             return true;
+        }
+
+        //public bool CanEdit(string command, string message, List<BotCommand> commandList)
+        //{
+        //    return (!(string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(message)) && commandList.Any(x => x.Command == command));
+        //}
+
+        public bool CanEdit(BotCommand selectedCommand)
+        {
+            return selectedCommand != null;
         }
     }
 }

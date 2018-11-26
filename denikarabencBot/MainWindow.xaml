@@ -58,7 +58,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Header="Settings" IsEnabled="{Binding JoinButtonEnabled}">
+                    <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Header="Settings">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -79,11 +79,11 @@
                             <Label Grid.Column="0" Grid.Row="1" Margin="2" HorizontalAlignment="Right" Content="Use replay: "/>
                             <CheckBox Grid.Column="1" Margin="2" Grid.Row="1" VerticalAlignment="Center" IsChecked="{Binding IsReplayEnabled}"/>
                             <Label Grid.Column="0" Grid.Row="2" Margin="2" HorizontalAlignment="Right" Content="Replay folder path: " ToolTip="Copy path from OBS where replay is going to be saved"/>
-                            <TextBox Grid.Column="1" Margin="2" Grid.Row="2" Text="{Binding ReplayPath}"/>
+							<TextBox Grid.Column="1" Margin="2" Grid.Row="2" Text="{Binding ReplayPath}" IsEnabled="{Binding JoinButtonEnabled}"/>
                             <Label Grid.Column="0" Grid.Row="3" Margin="2" Content="Twitch.tv channel name: " HorizontalAlignment="Right" ToolTip="Insert your Twitch.tv channel name where bot should join"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" Margin="2" Text="{Binding Path=TwitchChannelName}"/>
+							<TextBox Grid.Column="1" Grid.Row="3" Margin="2" Text="{Binding Path=TwitchChannelName}" IsEnabled="{Binding JoinButtonEnabled}"/>
                             <Label Grid.Column="0" Grid.Row="4"  Content="Insert your Steam ID" HorizontalAlignment="Right" ToolTip="SteamID is not your Steam name, but a number. You can find it here: steamidfinder.com"/>
-                            <TextBox Grid.Column="1" Grid.Row="4" Margin="2" Text="{Binding Path=SteamID}" IsEnabled="{Binding IsAutoGameChanegeEnabled}"/>
+							<TextBox Grid.Column="1" Grid.Row="4" Margin="2" Text="{Binding Path=SteamID}" IsEnabled="{Binding JoinButtonEnabled}" />
                         </Grid>
                     </GroupBox>
 
@@ -114,28 +114,16 @@
             <TabItem DataContext="{Binding}" Header="Commands">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"  Content="Command: " Margin="2"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Command, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
-                    <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Content="Message: " ToolTip="What will bot write when command is typed in chat. Type {0} to write name of the user who typed message, type {1} to get what he typed. For instance '{0} has written {1}' " Margin="2"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
-                    <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Content="Permission: " ToolTip="Permission needed to activate command. King is broadcaster" Margin="2"/>
-                    <ComboBox  Grid.Column="1" Grid.Row="2" ItemsSource="{Binding PermissionSource}" SelectedItem="{Binding Permission}" Margin="2"/>
-                    <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Content="Is command timed: " ToolTip="If checked, command will be showed in chat every 40 minutes" Margin="2"/>
-                    <CheckBox  Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsTimed}" Margin="2" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Grid.Row="4" Content="Add Command" HorizontalAlignment="Right" MinWidth="80" Command="{Binding AddCommandCommand}" Margin="2" Visibility="{Binding CanAddCommand}" />
-                    <local:CommandsDataGridUserControl Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"/>
+					<Button Grid.Row="0" Content="Add Command" HorizontalAlignment="Left" MinWidth="80" Command="{Binding AddCommandCommand}" Margin="2"/>
+					<local:CommandsDataGridUserControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
                 </Grid>
 
             </TabItem>

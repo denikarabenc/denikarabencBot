@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:denikarabencBot.Views"
              xmlns:converters="clr-namespace:denikarabencBot.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d" >
     <UserControl.Resources>
         <converters:UserPermissionToStringConverter x:Key="userPermissionToStringConverter"/>
     </UserControl.Resources>
@@ -18,14 +17,19 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding CommandList}" SelectedItem="{Binding SelectedCommand}" IsReadOnly="True">
+        <DataGrid AutoGenerateColumns="False" Grid.Row="0" ItemsSource="{Binding CommandList}" SelectedItem="{Binding SelectedCommand}" IsReadOnly="True" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Command" Width="*" Binding="{Binding Command}"/>
                 <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Message}"/>
                 <DataGridTextColumn Header="Permission" Width="*" Binding="{Binding UserPermission, Converter={StaticResource userPermissionToStringConverter}}"/>
                 <DataGridTextColumn Header="IsTimed" Width="Auto" Binding="{Binding IsTimed}"/>
+				<DataGridTextColumn Header="IsActive" Width="Auto" Binding="{Binding IsActive}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Content="Remove command" Command="{Binding RemoveSelectedCommandCommand}"/>
-    </Grid>
+		<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+			<Button Content="Edit Command" HorizontalAlignment="Right" MinWidth="80" Command="{Binding EditCommandCommand}" Margin="2"/>
+			<Button HorizontalAlignment="Right" Content="Remove command" Command="{Binding RemoveSelectedCommandCommand}" Margin="2"/>
+		</StackPanel>
+
+	</Grid>
 </UserControl>
