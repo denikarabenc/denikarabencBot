@@ -106,6 +106,12 @@ namespace BotCore.CommandHandlers
         {
             string parsedMessage = messageParser.GetParsedMessage(message);
             string userWhoSentMessage = messageParser.GetMessageSenderUserName(message);
+
+            if (!botCommands.IsActive(parsedMessage.Split(' ')[0]))
+            {
+                return;
+            }
+
             CommandType commandType = botCommands.GetCommandType(parsedMessage.Split(' ')[0]);
             switch (commandType)
             {

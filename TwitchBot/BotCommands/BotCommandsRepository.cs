@@ -46,7 +46,7 @@ namespace BotCore.BotCommands
 
             List<BotCommand> botCommands = new List<BotCommand>();
             var serializer = new XmlSerializer(botCommands.GetType(), new XmlRootAttribute("commands"));
-            if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
             {
                 using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
                 {
@@ -56,7 +56,7 @@ namespace BotCore.BotCommands
 
             filename = "buildInCommands";
 
-            if (!File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
+            if (File.Exists(serializablesFolderPath + "/" + filename + ".xml"))
             {
                 using (StreamReader reader = new StreamReader(serializablesFolderPath + "/" + filename + ".xml"))
                 {
@@ -267,6 +267,15 @@ namespace BotCore.BotCommands
             }
 
             return UserType.Invalid;
+        }
+
+        public bool IsActive(string message)
+        {
+            if (CommandExists(message))
+            {
+                return GetBotCommand(message).IsActive;
+            }
+            return true; //If command does not get found, return it is active so it Checks if it ping command. This is workaround
         }
 
         public string GetAllCommands()
