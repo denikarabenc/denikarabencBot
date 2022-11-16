@@ -11,7 +11,7 @@ namespace TwitchBot.TwitchStream
 {
     public class TwitchStreamUpdater : IStreamUpdater
     {
-        private string channelId;        
+        private string channelId;
         public TwitchStreamUpdater(string channelId)
         {
             channelId.ThrowIfNull(nameof(channelId));
@@ -77,8 +77,8 @@ namespace TwitchBot.TwitchStream
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelId);
                 request.Method = "PUT";
-                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
-                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr"; //TODO make safe read of client ID. This is placeholder clientID
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967"; //TODO make safe read of auth. This is placeholder OAuth key
                 request.ContentType = "application/json";
                 request.Accept = $"application/vnd.twitchtv.v5+json";
 

@@ -23,7 +23,7 @@ namespace TwitchBot.Helpers
         /// Get's what user typed
         /// </summary>
         /// <param name="message">original message got via irc</param>
-        /// <returns></returns>
+        /// <returns>user's message</returns>
         public string GetParsedMessage(string message)
         {
             try
@@ -31,7 +31,7 @@ namespace TwitchBot.Helpers
                 int intIndexParseSign = message.IndexOf(" :");
                 message = message.Substring(intIndexParseSign + 2);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 string messageForLog = message ?? "null";
                 BotLogger.Logger.Log(Common.Models.LoggingType.Warning, string.Format("[MessageParser] -> GetParsedMessage warning! Message was: {0}", messageForLog), e);
@@ -44,7 +44,7 @@ namespace TwitchBot.Helpers
         /// Get's what user typed
         /// </summary>
         /// <param name="message">original message got via irc</param>
-        /// <returns></returns>
+        /// <returns>mod's message</returns>
         public string GetParsedModsMessage(string message)
         {
             int intIndexParseSign = message.IndexOf(": ");

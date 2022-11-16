@@ -14,7 +14,7 @@ namespace TwitchIntegration.Helpers
 {
     public static class TwitchUserInformationHelper
     {
-        public static string GetChannelId(string channelName) //TODO prebaci u TwitchCommonHelper
+        public static string GetChannelId(string channelName) //TODO extract to TwitchCommonHelper
         {
             try
             {

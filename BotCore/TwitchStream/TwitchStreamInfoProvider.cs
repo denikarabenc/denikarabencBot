@@ -43,8 +43,8 @@ namespace TwitchBot.TwitchStream
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + channelId);
                 request.Method = "GET";
-                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967";
-                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+                request.Headers["Authorization"] = $"OAuth agjzfjjarinmxy46lc9zzae9r4e967"; //TODO make safe read of auth. This is placeholder OAuth key
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr"; //TODO make safe read of client ID. This is placeholder clientID
                 request.ContentType = "application/json";
                 request.Accept = $"application/vnd.twitchtv.v5+json";
 
@@ -72,7 +72,7 @@ namespace TwitchBot.TwitchStream
             //This works only if online.And json needs to be adjusted
             //try
             //{
-            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/streams?user_id=31999722"); //This is Deni's Id
+            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/streams?user_id=31999722"); //This is Deni's Id. User Ids are publically available
             //    request.Method = "GET";
             //    request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
             //    request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
@@ -148,7 +148,7 @@ namespace TwitchBot.TwitchStream
                 return twitchJsonRootObject.Stream.Status;
             }
             return null;
-        }  
+        }
 
         public IList<string> GetStreamGamesWhichWouldNotBeChanged()
         {

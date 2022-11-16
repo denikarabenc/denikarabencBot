@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Timers;
-using System.Xml.Serialization; //TODO ovo treba skinuti odavde i napraviti tool za prebacivanje komandi
+using System.Xml.Serialization; //TODO This should not be here, but a tool should be made for commands
 using WindowsInput;
 
 namespace BotCore.BotCommands
@@ -33,7 +33,7 @@ namespace BotCore.BotCommands
             commandPool = new Dictionary<string, BotCommand>();
             commandSaver = new CommandSaver();
             DefineBuiltInCommands(commandPool);
-           // DefinePredefinedCommands(commandPool); //This should be tool method
+            // DefinePredefinedCommands(commandPool); //This should be tool method
             AddAllCommandsFromXML();
 
             AddAllCommandsCommand(commandPool);
@@ -77,7 +77,7 @@ namespace BotCore.BotCommands
         }
 
         private void DefineBuiltInCommands(Dictionary<string, BotCommand> commandPools) //Make gamesplayed command which will contain game that has been played and for how long
-        {            
+        {
             commandPool.Add("!replayfeature", new BotCommand("!replayfeature", "You can use '!replay' to get an instant replay PogChamp", UserType.Regular, false, true));
             commandPool.Add("!follow", new BotCommand("!follow", "Hey you! If you haven't already followed, now is a good chance! Come over to the twitch.tv/{1} and give that cool streamer some love! <3 ", UserType.Mod, true, false, true, CommandType.UserInputCommand));
             commandPool.Add("!gamesplayed", new BotCommand("!gamesplayed", "Games played this stream are: {0}", UserType.Regular, true, false, true, CommandType.TwitchStatusCommand));
@@ -115,7 +115,7 @@ namespace BotCore.BotCommands
         }
 
         private void DefinePredefinedCommands(Dictionary<string, BotCommand> commandPool) //Make gamesplayed command which will contain game that has been played and for how long
-        {      
+        {
             commandPool.Add("!hello", new BotCommand("!hello", "Hello to you, {0}! <3", UserType.Regular, true));
             commandPool.Add("Kappa", new BotCommand("Kappa", "Kappa"));
             commandPool.Add("PogChamp", new BotCommand("PogChamp", "PogChamp"));
@@ -129,7 +129,7 @@ namespace BotCore.BotCommands
             commandPool.Add("!cam", new BotCommand("!cam", "Deni is using experimental feature where you can control if camera is on or off. Use !camON or !camOFF to control it"));
             commandPool.Add("!camON", new BotCommand("!camON", "Jebaited"));
             commandPool.Add("!camOFF", new BotCommand("!camOFF", "Ok FeelsBadMan"));
-            commandPool.Add("!schedule", new BotCommand("!schedule", "There is no strong schedule, but I'll try to stream every work day from 18h CET (17h GMT, 12 EST)"));           
+            commandPool.Add("!schedule", new BotCommand("!schedule", "There is no strong schedule, but I'll try to stream every work day from 18h CET (17h GMT, 12 EST)"));
 
             string serializablesFolderPath = Directory.GetCurrentDirectory() + "/" + "Serializables";
             string filename = "commands";
@@ -171,7 +171,7 @@ namespace BotCore.BotCommands
 
             commandPool.Add("!commands", new BotCommand("!commands", allCommands));
         }
-        
+
         private List<string> GetSpecialCommandNames()
         {
             List<string> specialCommandNamesList = new List<string>(5);
@@ -367,7 +367,7 @@ namespace BotCore.BotCommands
         {
             DateTime requestedTime = DateTime.Now;
             InputSimulator.SimulateKeyDown(VirtualKeyCode.F13);
-            System.Threading.Thread.Sleep(200);         
+            System.Threading.Thread.Sleep(200);
             InputSimulator.SimulateKeyUp(VirtualKeyCode.F13);
 
             System.Threading.Thread.Sleep(5000);
@@ -383,7 +383,7 @@ namespace BotCore.BotCommands
                 BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> No files in directory!");
                 return String.Empty;
             }
-            
+
             FileInfo myFile = directory.GetFiles()
              .OrderByDescending(f => f.LastWriteTime)
              .First();
@@ -395,7 +395,7 @@ namespace BotCore.BotCommands
             }
 
             if (myFile.Extension != ".mp4")
-            {              
+            {
                 BotLogger.Logger.Log(LoggingType.Warning, "[GetMediaCommandFileName] -> Latest file created is not .mp4");
                 return String.Empty;
             }
@@ -408,7 +408,7 @@ namespace BotCore.BotCommands
             {
                 return replayPath + "/" + myFile.Name;
             }
-            
+
         }
 
         public void CreateClipCommandFileNameAndPath(string clipId)
@@ -418,11 +418,11 @@ namespace BotCore.BotCommands
             fc.CreateFileIfNotExist(clipPath, "clipHTML", "html");
 
             //clipId = "EphemeralAntsyChoughDeIlluminati";
-            using (StreamWriter writer = new StreamWriter(clipPath+"/" + "clipHTML.html", false))
+            using (StreamWriter writer = new StreamWriter(clipPath + "/" + "clipHTML.html", false))
             {
                 writer.Write(@"<!DOCTYPE html><html><head><title> Clip </title></head><body><iframe src=""https://clips.twitch.tv/embed?clip=" + clipId + @"&autoplay=true"" width=""1024"" height=""575"" frameborder=""0"" scrolling=""no"" allowfullscreen=""false"" ></iframe></body></html>");
             }
-            
+
             InputSimulator.SimulateKeyDown(VirtualKeyCode.F14);
             System.Threading.Thread.Sleep(200);
             InputSimulator.SimulateKeyUp(VirtualKeyCode.F14);
@@ -430,7 +430,7 @@ namespace BotCore.BotCommands
             clipTimer.AutoReset = false;
             clipTimer.Enabled = true;
             clipTimer.Elapsed += ClipTimer_Elapsed;
-            
+
             //System.Threading.Thread.Sleep(5000);
 
             //if (!Directory.Exists(replayPath))

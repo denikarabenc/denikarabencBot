@@ -2,11 +2,11 @@
 using Common.Helpers;
 using Common.Interfaces;
 using Common.Models;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
 using TwitchBot.TwitchStream.Json;
-using Newtonsoft.Json;
 
 namespace TwitchBot.TwitchStream
 {
@@ -22,7 +22,7 @@ namespace TwitchBot.TwitchStream
             if (string.IsNullOrEmpty(streamerID))
             {
                 BotLogger.Logger.Log(LoggingType.Warning, "[TwitchStreamClipProvider] => streamerID is null!");
-                //TODO Sta ako pukne ovde nalazenje, treba ponovo pokusati da pronadje
+                //TODO Find again if this fails
             }
         }
 
@@ -53,14 +53,14 @@ namespace TwitchBot.TwitchStream
             }
         }
 
-        private string GetChannelId(string channelName) //TODO prebaci u TwitchCommonHelper
+        private string GetChannelId(string channelName) //TODO transfer to TwitchCommonHelper
         {
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/helix/users?login=" + channelName);
                 request.Method = "GET";
-                request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay";
-                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr";
+                request.Headers["Authorization"] = $"Bearer zbhu1ji38wte5ovbnt785fg67hj9ay"; //TODO make safe read of auth. This is placeholder key
+                request.Headers["Client-ID"] = $"fdl7tng741x3oys8g5ohh5s6z1zsrr"; //TODO make safe read of client ID. This is placeholder clientID
                 //request.ContentType = "application/json";
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
